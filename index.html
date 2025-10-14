@@ -54,6 +54,9 @@
         html.dark .leaflet-tile { filter: brightness(0.6) invert(1) contrast(3) hue-rotate(200deg) saturate(0.3) brightness(0.7); }
         html.dark .dropdown-menu { background: rgba(31, 41, 55, 0.95); }
         html.dark .mobile-menu-bg { background: rgba(31, 41, 55, 0.95); }
+        html.dark .spiritual-journey { background: #1f2937; }
+        html.dark .element-card { background: #374151; }
+        html.dark .ritual-step h4, html.dark .ritual-step p { color: #d1d5db; }
 
         .nav-link.active { color: var(--clan-gold); border-bottom: 2px solid var(--clan-gold); background: rgba(212, 175, 55, 0.1); }
         html.dark .nav-link.active { background: rgba(212, 175, 55, 0.2); }
@@ -78,6 +81,33 @@
         .slide { display: none; animation: fade 1.5s ease-in-out; background-size: cover; background-position: center; }
         .slide.active { display: block; }
         @keyframes fade { from { opacity: .4 } to { opacity: 1 } }
+        
+        /* Spiritual Journey Styles */
+        .spiritual-journey { background: linear-gradient(135deg, #fef9e7 0%, #fdf2e9 100%); }
+        .mystical-stone { transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .mystical-stone:hover { transform: scale(1.1); box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15); }
+        .stone-selected { transform: scale(1.15) !important; box-shadow: 0 0 20px rgba(161, 98, 7, 0.5) !important; border: 3px solid #a16207; }
+        .element-card { transition: transform 0.2s ease, box-shadow 0.2s ease; border: 2px solid transparent; }
+        .element-card:hover { transform: translateY(-5px); box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1); }
+        .element-card.selected { border-color: #a16207; background: #fef9e7; }
+        html.dark .element-card.selected { background: #4b5563; }
+        .mystical-glow { animation: mysticalGlow 3s ease-in-out infinite alternate; }
+        @keyframes mysticalGlow { from { box-shadow: 0 0 10px rgba(212, 175, 55, 0.3); } to { box-shadow: 0 0 25px rgba(212, 175, 55, 0.6); } }
+        
+        /* Family Tree Styles */
+        .tree ul { padding-top: 20px; position: relative; transition: all 0.5s; display: flex; justify-content: center;}
+        .tree li { float: left; text-align: center; list-style-type: none; position: relative; padding: 20px 5px 0 5px; transition: all 0.5s; }
+        .tree li::before, .tree li::after{ content: ''; position: absolute; top: 0; right: 50%; border-top: 2px solid var(--clan-stone); width: 50%; height: 20px; }
+        .tree li::after{ right: auto; left: 50%; border-left: 2px solid var(--clan-stone); }
+        .tree li:only-child::after, .tree li:only-child::before { display: none; }
+        .tree li:only-child{ padding-top: 0;}
+        .tree li:first-child::before, .tree li:last-child::after{ border: 0 none; }
+        .tree li:last-child::before{ border-right: 2px solid var(--clan-stone); border-radius: 0 5px 0 0; }
+        .tree li:first-child::after{ border-radius: 5px 0 0 0; }
+        .tree ul ul::before{ content: ''; position: absolute; top: 0; left: 50%; border-left: 2px solid var(--clan-stone); width: 0; height: 20px; }
+        .tree li a{ border: 2px solid var(--clan-stone); padding: 10px; text-decoration: none; color: #333; background-color: var(--parchment); font-family: 'Cinzel', serif; display: inline-block; border-radius: 5px; transition: all 0.5s; min-width: 100px; }
+        .tree li a.selected { border-color: var(--clan-gold); box-shadow: 0 0 10px var(--clan-gold); }
+
     </style>
 </head>
 <body class="text-stone-800">
@@ -118,10 +148,7 @@
                 clans: { title: "Clans", icon: "fa-shield-alt", inDropdown: false },
                 genealogy: { title: "Genealogy", icon: "fa-sitemap", inDropdown: false },
                 tourism: { title: "Trip Planner", icon: "fa-map-marked-alt", inDropdown: true },
-                'name-generator': { title: "Ancestor's Name", icon: "fa-id-card", inDropdown: true },
-                saga: { title: "Highland Saga", icon: "fa-book-reader", inDropdown: true },
-                '3d-heritage': { title: "3D Heritage", icon: "fa-cube", inDropdown: true },
-                finder: { title: "Clan Finder", icon: "fa-magic", inDropdown: true },
+                finder: { title: "Spiritual Clan", icon: "fa-magic", inDropdown: true },
                 legends: { title: "Legends", icon: "fa-scroll", inDropdown: true },
                 'tartan-designer': { title: "Tartan Designer", icon: "fa-palette", inDropdown: true },
                 recipes: { title: "Recipes", icon: "fa-utensils", inDropdown: true },
@@ -414,3 +441,4 @@
     </script>
 </body>
 </html>
+
