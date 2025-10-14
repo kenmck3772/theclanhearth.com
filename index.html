@@ -3,1666 +3,414 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Clan Hearth - Scottish Heritage & Tourism Platform</title>
-    <meta name="description" content="Discover your Scottish heritage. Explore detailed clan histories, design tartans, plan trips, and discover the legends that shaped Scotland.">
+    <title>The Clan Hearth - Ultimate Scottish Heritage Platform</title>
+    <meta name="description" content="Discover your Scottish heritage through interactive clan exploration, premium heritage tours, spiritual clan finding, Ogham readings, and authentic cultural experiences.">
     
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <!-- Favicons and Touch Icons -->
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="apple-touch-icon" href="apple-touch-icon.jpg">
+
+    <!-- External Libraries & Fonts -->
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Scripts -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+                "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+            }
+        }
+    </script>
 
     <style>
-        body { font-family: 'Inter', sans-serif; }
-        .font-title { font-family: 'Cinzel', serif; }
+        :root {
+            --clan-gold: #d4af37;
+            --clan-burgundy: #800020;
+            --clan-forest: #2d5016;
+            --clan-stone: #8b7355;
+            --parchment: #f4f1e8;
+            --aged-paper: #f0ead6;
+        }
         
-        /* Core App Styles */
-        .nav-link.active { color: #a16207; border-bottom: 2px solid #a16207; }
+        /* Light Mode Default */
+        body { font-family: 'Inter', sans-serif; background: var(--parchment); color: #374151; }
+        .font-title { font-family: 'Cinzel', serif; }
+
+        /* Dark Mode Styles */
+        html.dark body { background: #111827; color: #d1d5db; }
+        html.dark .content-card, html.dark .bg-white\/80 { background: rgba(31, 41, 55, 0.9); }
+        html.dark .bg-stone-100 { background: #374151; }
+        html.dark .text-stone-800, html.dark .text-gray-900 { color: #e5e7eb; }
+        html.dark .text-stone-600, html.dark .text-gray-600, html.dark .text-gray-700 { color: #9ca3af; }
+        html.dark .text-yellow-800 { color: var(--clan-gold); }
+        html.dark .border-stone-200, html.dark .border-gray-200 { border-color: #4b5563; }
+        html.dark .header-bg { background: rgba(17, 24, 39, 0.8); }
+        html.dark .leaflet-tile { filter: brightness(0.6) invert(1) contrast(3) hue-rotate(200deg) saturate(0.3) brightness(0.7); }
+        html.dark .dropdown-menu { background: rgba(31, 41, 55, 0.95); }
+        html.dark .mobile-menu-bg { background: rgba(31, 41, 55, 0.95); }
+
+        .nav-link.active { color: var(--clan-gold); border-bottom: 2px solid var(--clan-gold); background: rgba(212, 175, 55, 0.1); }
+        html.dark .nav-link.active { background: rgba(212, 175, 55, 0.2); }
+        
         .page-section { display: none; }
         .page-section.active { display: block; }
-        .modal { backdrop-filter: blur(4px); background-color: rgba(0,0,0,0.6); }
-        .content-card { transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out; }
-        .content-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
-        .animate-fade-in { animation: fadeIn 0.5s ease-in-out; }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        
+        .btn-primary { background: linear-gradient(45deg, var(--clan-burgundy), var(--clan-forest)); color: white; border: 2px solid var(--clan-gold); transition: all 0.3s ease; }
+        .btn-primary:hover { background: linear-gradient(45deg, var(--clan-forest), var(--clan-burgundy)); transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.2); }
+        
+        .dropdown .dropdown-menu { display: none; }
+        .dropdown:hover .dropdown-menu { display: block; }
 
-        /* Sidebar Styles */
-        .sidebar-scroll::-webkit-scrollbar { width: 4px; }
-        .sidebar-scroll::-webkit-scrollbar-track { background: #E8D5B7; }
-        .sidebar-scroll::-webkit-scrollbar-thumb { background: #a16207; border-radius: 2px; }
-        .active-item { background-color: #E8D5B7; color: #44403c; font-weight: 600; }
-        .tab-button.active { border-color: #a16207; color: #a16207; font-weight: 600; }
+        .tab-button.active { border-color: var(--clan-gold); color: var(--clan-gold); font-weight: 600; background-color: var(--aged-paper); }
+        html.dark .tab-button.active { background-color: #374151; }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
 
-        /* Map Styles */
-        #clanMap, #tourismMap {
-            height: 100%;
-            min-height: 60vh;
-            width: 100%;
-            border-radius: 0.5rem;
-        }
-        .leaflet-control-zoom-in, .leaflet-control-zoom-out {
-            background-color: #a16207 !important;
-            color: white !important;
-            border-radius: 0.25rem !important;
-        }
+        #clanMap, #tourismMap { min-height: 60vh; border-radius: 0.5rem; }
 
-        /* Tartan Designer Styles */
-        .color-box { transition: transform 0.2s ease-in-out; }
-        .color-box:hover { transform: scale(1.1); }
-        .color-box.selected { box-shadow: 0 0 0 3px #a16207; transform: scale(1.1); }
-        .tooltip { position: relative; display: inline-block; }
-        .tooltip .tooltiptext {
-            visibility: hidden; width: 140px; background-color: #555; color: #fff;
-            text-align: center; border-radius: 6px; padding: 5px; position: absolute;
-            z-index: 1; bottom: 150%; left: 50%; margin-left: -70px;
-            opacity: 0; transition: opacity 0.3s;
-        }
-        .tooltip:hover .tooltiptext { visibility: visible; opacity: 1; }
-
-        /* Tourism Map Styles */
-        .map-emoji-icon {
-            font-size: 24px;
-            text-align: center;
-            line-height: 24px;
-            text-shadow: 0 0 3px #ffffff;
-        }
-        #itinerary-panel {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            z-index: 20;
-            background-color: white;
-            box-shadow: 0 -4px 12px rgba(0,0,0,0.1);
-            transition: transform 0.3s ease-in-out;
-            transform: translateY(100%);
-        }
-        #itinerary-panel.open {
-            transform: translateY(0);
-        }
-        #suggestion-box {
-            position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 30;
-            background-color: white;
-            padding: 16px;
-            border-radius: 8px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-            width: 90%;
-            max-width: 400px;
-            transition: opacity 0.3s, transform 0.3s;
-            opacity: 0;
-            transform: translateX(-50%) translateY(20px);
-            pointer-events: none;
-        }
-        #suggestion-box.visible {
-            opacity: 1;
-            transform: translateX(-50%) translateY(0);
-            pointer-events: auto;
-        }
-        .leaflet-container.placing-hearthstone {
-            cursor: crosshair !important;
-        }
-
-        /* Clan Finder Styles */
-        .quiz-question { display: none; }
-        .quiz-question.active { display: block; }
-        .quiz-option {
-            transition: background-color 0.2s, border-color 0.2s;
-        }
-        .quiz-option:hover {
-            background-color: #E8D5B7;
-            border-color: #a16207;
-        }
-
-        /* Spiritual Clan Finder Styles */
-        .spiritual-journey {
-            background: linear-gradient(135deg, #fef9e7 0%, #fdf2e9 100%);
-            border-radius: 1rem;
-            padding: 2rem;
-            box-shadow: 0 10px 25px rgba(161, 98, 7, 0.1);
-            margin-bottom: 2rem;
-        }
-        .mystical-stone {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2rem;
-            margin: 0 auto 1.5rem;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            cursor: pointer;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        .mystical-stone:hover {
-            transform: scale(1.1);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-        }
-        .stone-selected {
-            transform: scale(1.15);
-            box-shadow: 0 0 20px rgba(161, 98, 7, 0.5);
-            border: 3px solid #a16207;
-        }
-        .element-card {
-            background: white;
-            border-radius: 0.75rem;
-            padding: 1.5rem;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-            cursor: pointer;
-            border: 2px solid transparent;
-        }
-        .element-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
-        }
-        .element-card.selected {
-            border-color: #a16207;
-            background: #fef9e7;
-        }
-        .ritual-step {
-            position: relative;
-            padding-left: 2rem;
-            margin-bottom: 1.5rem;
-        }
-        .ritual-step::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0.5rem;
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: #a16207;
-        }
-        .ritual-step h4 {
-            font-weight: 600;
-            color: #333;
-        }
-        .ritual-step p {
-            color: #666;
-            margin-top: 0.25rem;
-        }
-        .mystical-glow {
-            animation: mysticalGlow 3s ease-in-out infinite alternate;
-        }
-        @keyframes mysticalGlow {
-            from { box-shadow: 0 0 10px rgba(161, 98, 7, 0.3); }
-            to { box-shadow: 0 0 25px rgba(161, 98, 7, 0.6); }
-        }
-        .clan-symbol {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-        }
-        .spiritual-result {
-            text-align: center;
-            padding: 2rem;
-            background: white;
-            border-radius: 1rem;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-        }
-
-        /* Clan Visualization Styles */
-        .clan-card {
-            transition: all 0.3s ease;
-            border: 2px solid transparent;
-        }
-        .clan-card:hover {
-            transform: translateY(-5px);
-            border-color: #a16207;
-            box-shadow: 0 10px 25px rgba(161, 98, 7, 0.2);
-        }
-        .clan-emblem {
-            width: 100px;
-            height: 100px;
-            background-size: contain;
-            background-repeat: no-repeat;
-            background-position: center;
-            margin: 0 auto 1rem;
-        }
-        .tartan-preview {
-            height: 80px;
-            background-size: 50px 50px;
-            border-radius: 0.5rem;
-            margin: 1rem 0;
-        }
-        .clan-map-preview {
-            height: 120px;
-            border-radius: 0.5rem;
-            background-size: cover;
-            background-position: center;
-            margin: 1rem 0;
-        }
-
-        /* Family Tree Styles */
-        .family-tree-container {
-            background: white;
-            border-radius: 0.5rem;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-        }
-        .family-tree {
-            display: flex;
-            justify-content: center;
-            overflow-x: auto;
-            padding: 2rem 0;
-        }
-        .tree-node {
-            position: relative;
-            padding: 1rem;
-            border: 2px solid #d4a017;
-            border-radius: 0.5rem;
-            background: #fef9e7;
-            min-width: 180px;
-            text-align: center;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-        .tree-node.root {
-            background: #fdf2e9;
-            border-color: #a16207;
-            font-weight: bold;
-        }
-        .tree-node.clan-connected {
-            background: #e8f5e9;
-            border-color: #4caf50;
-        }
-        .node-name {
-            font-weight: 600;
-            color: #333;
-        }
-        .node-dates {
-            font-size: 0.875rem;
-            color: #666;
-            margin-top: 0.25rem;
-        }
-        .node-clan {
-            font-size: 0.875rem;
-            color: #2e7d32;
-            margin-top: 0.25rem;
-            font-weight: 500;
-        }
-        .node-connection {
-            position: absolute;
-            top: -20px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 2px;
-            height: 20px;
-            background: #a16207;
-        }
-        .tree-children {
-            display: flex;
-            justify-content: center;
-            margin-top: 2rem;
-            position: relative;
-        }
-        .tree-children::before {
-            content: '';
-            position: absolute;
-            top: -20px;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background: #a16207;
-        }
-        .tree-child {
-            position: relative;
-            margin: 0 1rem;
-        }
-        .tree-child::before {
-            content: '';
-            position: absolute;
-            top: -20px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 2px;
-            height: 20px;
-            background: #a16207;
-        }
-        .add-person-btn {
-            margin-top: 1rem;
-            padding: 0.5rem 1rem;
-            background: #a16207;
-            color: white;
-            border: none;
-            border-radius: 0.25rem;
-            cursor: pointer;
-            font-weight: 500;
-            transition: background 0.2s;
-        }
-        .add-person-btn:hover {
-            background: #8a5506;
-        }
-        .tree-controls {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-        .tree-btn {
-            padding: 0.5rem 1rem;
-            background: #e8d5b7;
-            border: none;
-            border-radius: 0.25rem;
-            cursor: pointer;
-            font-weight: 500;
-            transition: background 0.2s;
-        }
-        .tree-btn:hover {
-            background: #d4c0a1;
-        }
-        .tree-btn.primary {
-            background: #a16207;
-            color: white;
-        }
-        .tree-btn.primary:hover {
-            background: #8a5506;
-        }
-
-        /* PDF Export Optimization */
-        @media print {
-            .page-section { display: block !important; page-break-inside: avoid; }
-            .nav-link, .mobile-menu-btn, #mobile-menu { display: none; }
-            header { display: none; }
-            .modal { display: none !important; }
-            body { background: white; }
-        }
+        /* Slideshow Styles */
+        .slide { display: none; animation: fade 1.5s ease-in-out; background-size: cover; background-position: center; }
+        .slide.active { display: block; }
+        @keyframes fade { from { opacity: .4 } to { opacity: 1 } }
     </style>
 </head>
-<body class="text-stone-800 bg-gradient-to-br from-[#FBF6E8] via-[#F5E6D3] to-[#E8D5B7]">
-    
-    <header class="bg-white/80 backdrop-blur-sm shadow-lg sticky top-0 z-40">
+<body class="text-stone-800">
+    <header class="bg-white/80 backdrop-blur-sm shadow-lg sticky top-0 z-40 header-bg">
         <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-            <h1 class="text-2xl md:text-3xl font-title font-bold text-yellow-800">
-                🏴󠁧󠁢󠁳󠁣󠁴󠁿 The Clan Hearth
-            </h1>
-            <nav id="main-nav" class="hidden md:flex items-center space-x-2 md:space-x-4">
-                <button class="nav-link font-semibold text-stone-600 hover:text-yellow-800 px-3 py-2" data-target="home">Home</button>
-                <button class="nav-link font-semibold text-stone-600 hover:text-yellow-800 px-3 py-2" data-target="tourism">Trip Planner</button>
-                <button class="nav-link font-semibold text-stone-600 hover:text-yellow-800 px-3 py-2" data-target="clans">Clans</button>
-                <button class="nav-link font-semibold text-stone-600 hover:text-yellow-800 px-3 py-2" data-target="finder">Clan Finder</button>
-                <button class="nav-link font-semibold text-stone-600 hover:text-yellow-800 px-3 py-2" data-target="spiritual">Spiritual Clan</button>
-                <button class="nav-link font-semibold text-stone-600 hover:text-yellow-800 px-3 py-2" data-target="legends">Legends</button>
-                <button class="nav-link font-semibold text-stone-600 hover:text-yellow-800 px-3 py-2" data-target="tartan-designer">Tartan Designer</button>
-                <button class="nav-link font-semibold text-stone-600 hover:text-yellow-800 px-3 py-2" data-target="recipes">Recipes</button>
+            <div class="flex items-center space-x-4">
+                 <img src="icon.jpg" alt="The Clan Hearth Emblem" class="w-14 h-14 rounded-full border-2 border-yellow-800">
+                <h1 class="text-2xl md:text-3xl font-title font-bold text-yellow-800">The Clan Hearth</h1>
+            </div>
+            <nav id="main-nav" class="hidden md:flex items-center space-x-1">
+                <!-- Desktop Nav Links Populated by JS -->
             </nav>
-            <button id="mobile-menu-btn" class="md:hidden text-stone-700">
-                <i class="fas fa-bars text-xl"></i>
-            </button>
+            <div class="flex items-center space-x-4">
+                <button id="dark-mode-toggle" class="text-stone-600 hover:text-yellow-800 transition-colors text-lg"><i class="fas fa-moon"></i></button>
+                <button id="mobile-menu-btn" class="md:hidden text-stone-700"><i class="fas fa-bars text-xl"></i></button>
+            </div>
         </div>
-        <div id="mobile-menu" class="hidden md:hidden bg-white/95">
-            <button class="block w-full text-left nav-link font-semibold text-stone-600 hover:text-yellow-800 p-4 border-t" data-target="home">Home</button>
-            <button class="block w-full text-left nav-link font-semibold text-stone-600 hover:text-yellow-800 p-4 border-t" data-target="tourism">Trip Planner</button>
-            <button class="block w-full text-left nav-link font-semibold text-stone-600 hover:text-yellow-800 p-4 border-t" data-target="clans">Clans</button>
-            <button class="block w-full text-left nav-link font-semibold text-stone-600 hover:text-yellow-800 p-4 border-t" data-target="finder">Clan Finder</button>
-            <button class="block w-full text-left nav-link font-semibold text-stone-600 hover:text-yellow-800 p-4 border-t" data-target="spiritual">Spiritual Clan</button>
-            <button class="block w-full text-left nav-link font-semibold text-stone-600 hover:text-yellow-800 p-4 border-t" data-target="legends">Legends</button>
-            <button class="block w-full text-left nav-link font-semibold text-stone-600 hover:text-yellow-800 p-4 border-t" data-target="tartan-designer">Tartan Designer</button>
-            <button class="block w-full text-left nav-link font-semibold text-stone-600 hover:text-yellow-800 p-4 border-t" data-target="recipes">Recipes</button>
-        </div>
+        <div id="mobile-menu" class="hidden md:hidden bg-white/95 mobile-menu-bg"></div>
     </header>
 
-    <main class="max-w-7xl mx-auto px-4 py-8">
-        
-        <!-- Home Section -->
-        <section id="home-section" class="page-section">
-            <div class="text-center mb-12 bg-white/70 rounded-2xl shadow-xl p-8">
-                <img src="https://i.imgur.com/kNmxvpO.png" alt="The Clan Hearth Emblem" class="w-96 h-96 mx-auto mb-6 rounded-lg shadow-lg">
-                <h2 class="text-4xl md:text-5xl font-bold font-title text-stone-900 mb-4">Welcome to The Clan Hearth</h2>
-                <p class="text-lg text-stone-600 mb-8 max-w-3xl mx-auto italic">Troimh theine tha sinn aonaichte (Through fire, we are united)</p>
-                <p class="text-lg md:text-xl text-stone-700 max-w-3xl mx-auto">Your digital gateway to Scottish heritage. Explore detailed clan histories, plan authentic Scottish journeys, design personal tartans, and discover the legends that shaped Scotland. Your heritage journey starts here.</p>
-            </div>
-            
-            <!-- Quick Access Cards -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-                <div class="bg-white/80 rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow cursor-pointer" onclick="navigateTo('clans')">
-                    <div class="text-4xl mb-4 text-center">🛡️</div>
-                    <h3 class="text-xl font-bold font-title text-stone-800 mb-2 text-center">Clan Histories</h3>
-                    <p class="text-stone-600 text-center">Explore detailed clan territories, emblems, and traditions</p>
-                </div>
-                <div class="bg-white/80 rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow cursor-pointer" onclick="navigateTo('tartan-designer')">
-                    <div class="text-4xl mb-4 text-center">🧵</div>
-                    <h3 class="text-xl font-bold font-title text-stone-800 mb-2 text-center">Tartan Designer</h3>
-                    <p class="text-stone-600 text-center">Create your own unique clan tartan patterns</p>
-                </div>
-                <div class="bg-white/80 rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow cursor-pointer" onclick="navigateTo('tourism')">
-                    <div class="text-4xl mb-4 text-center">🗺️</div>
-                    <h3 class="text-xl font-bold font-title text-stone-800 mb-2 text-center">Trip Planner</h3>
-                    <p class="text-stone-600 text-center">Plan authentic Scottish heritage journeys</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- Tourism Map Section -->
-        <section id="tourism-section" class="page-section">
-            <div class="bg-white/90 rounded-2xl shadow-xl overflow-hidden">
-                <div class="p-6 border-b">
-                    <h2 class="text-3xl font-bold font-title text-stone-900 text-center">Plan Your Scottish Journey</h2>
-                    <p class="text-center text-stone-600 mt-2">Interactive map to discover and plan your authentic Scottish experience</p>
-                </div>
-                
-                <div class="relative">
-                    <div id="tourismMap" style="height: 70vh;"></div>
-
-                    <div id="map-controls" class="absolute top-5 right-5 bg-white/90 backdrop-blur-sm p-4 rounded-lg shadow-lg z-40 w-64 max-h-96 overflow-y-auto">
-                        <h3 class="text-xl font-bold text-gray-900 mb-4">Explore Scotland</h3>
-                        <div class="space-y-3">
-                            <div><label class="flex items-center space-x-3 cursor-pointer"><input type="checkbox" id="clans-toggle" class="h-5 w-5 rounded text-blue-600" checked><span class="text-gray-700 font-medium">🛡️ Clan Seats</span></label></div>
-                            <div><label class="flex items-center space-x-3 cursor-pointer"><input type="checkbox" id="distilleries-toggle" class="h-5 w-5 rounded text-amber-600" checked><span class="text-gray-700 font-medium">🥃 Distilleries</span></label></div>
-                            <div><label class="flex items-center space-x-3 cursor-pointer"><input type="checkbox" id="attractions-toggle" class="h-5 w-5 rounded text-green-600" checked><span class="text-gray-700 font-medium">🏰 Castles</span></label></div>
-                            <div><label class="flex items-center space-x-3 cursor-pointer"><input type="checkbox" id="myths-toggle" class="h-5 w-5 rounded text-purple-600" checked><span class="text-gray-700 font-medium">✨ Myths & Legends</span></label></div>
-                            <div><label class="flex items-center space-x-3 cursor-pointer"><input type="checkbox" id="golf-toggle" class="h-5 w-5 rounded text-teal-600" checked><span class="text-gray-700 font-medium">⛳ Golf Courses</span></label></div>
-                            <div><label class="flex items-center space-x-3 cursor-pointer"><input type="checkbox" id="film-toggle" class="h-5 w-5 rounded text-pink-600" checked><span class="text-gray-700 font-medium">🎬 Film Locations</span></label></div>
-                        </div>
-                        
-                        <div class="mt-6 pt-4 border-t">
-                            <h4 class="text-lg font-bold text-gray-800 mb-2">Signature Journeys</h4>
-                            <select id="journey-select" class="w-full p-2 border border-gray-300 rounded-md">
-                                <option value="none">Select a Journey</option>
-                                <option value="outlander">The Outlander Tour (4 Days)</option>
-                                <option value="highland">Highland History & Myths (3 Days)</option>
-                                <option value="whisky">Speyside Whisky Trail (2 Days)</option>
-                            </select>
-                        </div>
-
-                        <div class="mt-6 pt-4 border-t">
-                            <h4 class="text-lg font-bold text-gray-800 mb-2">Add Your Hearthstone</h4>
-                            <button id="add-hearthstone-btn" class="w-full bg-red-600 text-white py-2 px-4 rounded-lg font-semibold hover:bg-red-700 transition">❤️ Mark Special Place</button>
-                        </div>
-                    </div>
-
-                    <div id="itinerary-panel" class="max-h-60">
-                        <div id="itinerary-header" class="bg-gray-800 text-white p-4 flex justify-between items-center cursor-pointer">
-                            <h3 class="text-lg font-bold">My Scottish Journey (<span id="trip-count">0</span>)</h3>
-                            <span>Click to Expand</span>
-                        </div>
-                        <div id="itinerary-body" class="p-4 overflow-y-auto" style="max-height: 200px;">
-                            <ul id="trip-list" class="space-y-2">
-                                <li class="text-gray-500">Your journey is empty. Add locations from the map!</li>
-                            </ul>
-                        </div>
-                        <div class="p-4 bg-gray-100 border-t flex justify-end space-x-2">
-                            <button id="show-route-btn" class="bg-blue-600 text-white py-2 px-4 rounded-lg font-semibold">Show Route</button>
-                            <button id="clear-trip-btn" class="bg-red-600 text-white py-2 px-4 rounded-lg font-semibold">Clear Trip</button>
-                        </div>
-                    </div>
-                    
-                    <div id="suggestion-box">
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <h4 class="font-bold text-gray-800">Smart Suggestion</h4>
-                                <p id="suggestion-text" class="text-sm text-gray-600 mt-1"></p>
-                            </div>
-                            <button id="suggestion-close-btn" class="text-gray-400 hover:text-gray-700">&times;</button>
-                        </div>
-                        <div class="mt-4 flex space-x-2">
-                            <button id="suggestion-add-btn" class="w-full bg-blue-600 text-white py-2 px-3 text-sm rounded-md">Add to Trip</button>
-                            <button id="suggestion-dismiss-btn" class="w-full bg-gray-200 text-gray-700 py-2 px-3 text-sm rounded-md">Dismiss</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Clans Section -->
-        <section id="clans-section" class="page-section">
-            <div class="flex flex-col md:flex-row min-h-96 bg-white/80 rounded-2xl shadow-xl overflow-hidden">
-                <aside class="w-full md:w-64 lg:w-72 bg-stone-100 border-r border-stone-200 p-4 flex flex-col">
-                    <h2 class="text-xl font-bold text-stone-800 font-title mb-4">Scottish Clans</h2>
-                    <div id="clan-sidebar-list" class="sidebar-scroll overflow-y-auto flex-grow max-h-80"></div>
-                </aside>
-                <main id="clans-main-content" class="flex-1 p-4 sm:p-6 lg:p-8">
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                        <div class="lg:col-span-2">
-                            <div id="clanMap" class="w-full h-80 rounded-lg shadow-lg"></div>
-                        </div>
-                        <div class="bg-stone-50 p-4 rounded-lg shadow-inner">
-                            <h3 class="text-xl font-bold mb-4 font-title">Clan Details</h3>
-                            <div id="map-info" class="space-y-4">
-                                <p class="text-stone-500">Select a clan from the list to see their territory and details.</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Clan Visualization Grid -->
-                    <div class="mt-10">
-                        <h3 class="text-2xl font-bold font-title text-stone-800 mb-6">Featured Clans</h3>
-                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            <div class="clan-card bg-white rounded-xl shadow-lg p-6 border border-stone-200">
-                                <div class="clan-emblem" style="background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Coat_of_arms_of_the_Duke_of_Argyll.svg/220px-Coat_of_arms_of_the_Duke_of_Argyll.svg.png')"></div>
-                                <h4 class="text-xl font-bold font-title text-center mb-2">Clan Campbell</h4>
-                                <div class="tartan-preview" style="background-image: url('https://www.tartanregister.gov.uk/tpsimages/2000/2000.png')"></div>
-                                <p class="text-stone-600 text-sm text-center">"Ne Obliviscaris"</p>
-                            </div>
-                            <div class="clan-card bg-white rounded-xl shadow-lg p-6 border border-stone-200">
-                                <div class="clan-emblem" style="background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/7/7d/Coat_of_arms_of_the_MacDonald_clan.svg/220px-Coat_of_arms_of_the_MacDonald_clan.svg.png')"></div>
-                                <h4 class="text-xl font-bold font-title text-center mb-2">Clan MacDonald</h4>
-                                <div class="tartan-preview" style="background-image: url('https://www.tartanregister.gov.uk/tpsimages/1000/1000.png')"></div>
-                                <p class="text-stone-600 text-sm text-center">"Per Mare Per Terras"</p>
-                            </div>
-                            <div class="clan-card bg-white rounded-xl shadow-lg p-6 border border-stone-200">
-                                <div class="clan-emblem" style="background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/Coat_of_arms_of_the_MacKenzie_clan.svg/220px-Coat_of_arms_of_the_MacKenzie_clan.svg.png')"></div>
-                                <h4 class="text-xl font-bold font-title text-center mb-2">Clan MacKenzie</h4>
-                                <div class="tartan-preview" style="background-image: url('https://www.tartanregister.gov.uk/tpsimages/1400/1400.png')"></div>
-                                <p class="text-stone-600 text-sm text-center">"Luceo non uro"</p>
-                            </div>
-                        </div>
-                    </div>
-                </main>
-            </div>
-        </section>
-
-        <!-- Clan Finder Section -->
-        <section id="finder-section" class="page-section">
-            <div class="bg-white/90 rounded-2xl shadow-xl p-6 md:p-8">
-                <div class="text-center mb-8">
-                    <h2 class="text-3xl md:text-4xl font-title font-bold text-stone-900">The Clan Finder</h2>
-                    <p class="text-lg text-stone-600 mt-2">Answer five questions to discover your spirit clan.</p>
-                </div>
-                <div id="quiz-container" class="max-w-2xl mx-auto">
-                    <!-- Questions will be injected here -->
-                </div>
-                <div id="quiz-result" class="hidden text-center max-w-2xl mx-auto">
-                    <!-- Result will be injected here -->
-                </div>
-            </div>
-        </section>
-
-        <!-- Spiritual Clan Finder Section -->
-        <section id="spiritual-section" class="page-section">
-            <div class="bg-white/90 rounded-2xl shadow-xl p-6 md:p-8">
-                <div class="text-center mb-8">
-                    <h2 class="text-3xl md:text-4xl font-title font-bold text-stone-900">The Spiritual Clan Finder</h2>
-                    <p class="text-lg text-stone-600 mt-2">Connect with your ancestral spirit through ancient Scottish traditions and mysticism</p>
-                </div>
-                
-                <div class="spiritual-journey">
-                    <div id="spiritual-welcome" class="text-center">
-                        <div class="clan-symbol">🔮</div>
-                        <h3 class="text-2xl font-bold font-title text-stone-800 mb-4">The Ancient Ritual of Connection</h3>
-                        <p class="text-stone-700 mb-6 max-w-2xl mx-auto">
-                            In the old ways of Scotland, our ancestors believed that every person carried the spirit of a clan within them. 
-                            Through sacred stones, elemental connections, and ancient wisdom, you can discover which clan's spirit calls to you.
-                        </p>
-                        <button id="start-spiritual-journey" class="bg-yellow-800 text-white px-8 py-3 rounded-lg font-semibold hover:bg-yellow-900 transition shadow-lg">
-                            Begin the Mystical Journey
-                        </button>
-                    </div>
-                    
-                    <div id="spiritual-steps" class="hidden">
-                        <!-- Step 1: Sacred Stones -->
-                        <div id="stone-step" class="step active">
-                            <h3 class="text-xl font-bold font-title text-stone-800 mb-6 text-center">The Sacred Stones of Scotland</h3>
-                            <p class="text-stone-700 text-center mb-8">
-                                Our ancestors believed that certain stones held the essence of clan spirits. 
-                                Choose the stone that resonates with your inner being:
-                            </p>
-                            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
-                                <div class="mystical-stone bg-gradient-to-br from-amber-200 to-amber-400" data-stone="amber">
-                                    <span title="Amber">琥</span>
-                                </div>
-                                <div class="mystical-stone bg-gradient-to-br from-blue-300 to-blue-500" data-stone="sapphire">
-                                    <span title="Sapphire">🔹</span>
-                                </div>
-                                <div class="mystical-stone bg-gradient-to-br from-emerald-300 to-emerald-500" data-stone="emerald">
-                                    <span title="Emerald">💚</span>
-                                </div>
-                                <div class="mystical-stone bg-gradient-to-br from-red-400 to-red-600" data-stone="ruby">
-                                    <span title="Ruby">❤️</span>
-                                </div>
-                                <div class="mystical-stone bg-gradient-to-br from-purple-300 to-purple-500" data-stone="amethyst">
-                                    <span title="Amethyst">💜</span>
-                                </div>
-                                <div class="mystical-stone bg-gradient-to-br from-gray-300 to-gray-500" data-stone="onyx">
-                                    <span title="Onyx">⚫</span>
-                                </div>
-                                <div class="mystical-stone bg-gradient-to-br from-yellow-200 to-yellow-400" data-stone="topaz">
-                                    <span title="Topaz">💛</span>
-                                </div>
-                                <div class="mystical-stone bg-gradient-to-br from-green-400 to-green-600" data-stone="jade">
-                                    <span title="Jade">🍀</span>
-                                </div>
-                            </div>
-                            <div class="text-center mt-8">
-                                <p id="stone-description" class="text-stone-600 mb-4">Select a stone to reveal its ancient meaning</p>
-                                <button id="next-to-elements" class="bg-yellow-800 text-white px-6 py-2 rounded-lg font-semibold hover:bg-yellow-900 transition hidden">
-                                    Continue to Elemental Connection
-                                </button>
-                            </div>
-                        </div>
-                        
-                        <!-- Step 2: Elemental Connection -->
-                        <div id="element-step" class="step hidden">
-                            <h3 class="text-xl font-bold font-title text-stone-800 mb-6 text-center">The Elements of the Highlands</h3>
-                            <p class="text-stone-700 text-center mb-8">
-                                The ancient Celts believed that each clan was connected to one of the four sacred elements. 
-                                Which element calls to your spirit?
-                            </p>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-                                <div class="element-card" data-element="earth">
-                                    <div class="text-4xl mb-3">🏔️</div>
-                                    <h4 class="font-bold text-lg mb-2">Earth - The Mountains</h4>
-                                    <p class="text-stone-600">Stability, strength, and deep roots. Connected to the land and its ancient wisdom.</p>
-                                </div>
-                                <div class="element-card" data-element="water">
-                                    <div class="text-4xl mb-3">🌊</div>
-                                    <h4 class="font-bold text-lg mb-2">Water - The Lochs</h4>
-                                    <p class="text-stone-600">Flow, intuition, and emotional depth. Connected to the mystical waters of Scotland.</p>
-                                </div>
-                                <div class="element-card" data-element="fire">
-                                    <div class="text-4xl mb-3">🔥</div>
-                                    <h4 class="font-bold text-lg mb-2">Fire - The Hearth</h4>
-                                    <p class="text-stone-600">Passion, courage, and transformation. Connected to the sacred hearth fires.</p>
-                                </div>
-                                <div class="element-card" data-element="air">
-                                    <div class="text-4xl mb-3">💨</div>
-                                    <h4 class="font-bold text-lg mb-2">Air - The Winds</h4>
-                                    <p class="text-stone-600">Freedom, communication, and inspiration. Connected to the Highland winds.</p>
-                                </div>
-                            </div>
-                            <div class="text-center mt-8">
-                                <button id="next-to-ritual" class="bg-yellow-800 text-white px-6 py-2 rounded-lg font-semibold hover:bg-yellow-900 transition hidden">
-                                    Proceed to the Sacred Ritual
-                                </button>
-                            </div>
-                        </div>
-                        
-                        <!-- Step 3: Sacred Ritual -->
-                        <div id="ritual-step" class="step hidden">
-                            <h3 class="text-xl font-bold font-title text-stone-800 mb-6 text-center">The Sacred Connection Ritual</h3>
-                            <p class="text-stone-700 text-center mb-8">
-                                Perform this ancient ritual to awaken your spiritual connection to your clan:
-                            </p>
-                            <div class="max-w-2xl mx-auto bg-amber-50 rounded-lg p-6 border border-amber-200">
-                                <div class="ritual-step">
-                                    <h4>1. Center Yourself</h4>
-                                    <p>Close your eyes and take three deep breaths. Feel the connection to the ancient lands of Scotland.</p>
-                                </div>
-                                <div class="ritual-step">
-                                    <h4>2. Honor Your Stone</h4>
-                                    <p>Hold your chosen stone (or imagine it) and feel its energy connecting you to the earth.</p>
-                                </div>
-                                <div class="ritual-step">
-                                    <h4>3. Invoke Your Element</h4>
-                                    <p>Visualize your chosen element surrounding you with its protective and empowering energy.</p>
-                                </div>
-                                <div class="ritual-step">
-                                    <h4>4. Speak the Ancient Words</h4>
-                                    <p>Say aloud: "Through stone and element, I claim my ancestral spirit. Show me my clan."</p>
-                                </div>
-                            </div>
-                            <div class="text-center mt-8">
-                                <button id="reveal-clan" class="bg-yellow-800 text-white px-8 py-3 rounded-lg font-semibold hover:bg-yellow-900 transition shadow-lg mystical-glow">
-                                    Reveal My Spiritual Clan
-                                </button>
-                            </div>
-                        </div>
-                        
-                        <!-- Result -->
-                        <div id="spiritual-result" class="step hidden">
-                            <div class="spiritual-result">
-                                <div class="clan-symbol" id="result-symbol">🛡️</div>
-                                <h3 class="text-3xl font-bold font-title text-stone-900 mb-2" id="result-clan-name">Your Clan</h3>
-                                <p class="text-yellow-800 font-semibold mb-4" id="result-motto">Motto</p>
-                                <p class="text-stone-700 mb-6 max-w-2xl mx-auto" id="result-description">
-                                    Through the ancient wisdom of stones and elements, you have been connected to this clan's spirit.
-                                </p>
-                                <div class="bg-amber-50 rounded-lg p-6 mb-6">
-                                    <h4 class="font-bold text-stone-800 mb-3">Your Spiritual Connection Ritual</h4>
-                                    <p class="text-stone-700 mb-4" id="result-ritual">
-                                        You chose the <span id="chosen-stone" class="font-semibold"></span> stone and connected with the element of <span id="chosen-element" class="font-semibold"></span>.
-                                    </p>
-                                    <p class="text-stone-700">
-                                        This combination resonates with the spirit of <span id="clan-name-full" class="font-semibold"></span>, 
-                                        whose values of <span id="clan-values" class="font-semibold"></span> align with your inner nature.
-                                    </p>
-                                </div>
-                                <button id="restart-spiritual" class="bg-yellow-800 text-white px-6 py-2 rounded-lg font-semibold hover:bg-yellow-900 transition">
-                                    Begin a New Journey
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="mt-10 bg-stone-50 rounded-xl p-6 border border-stone-200">
-                    <h3 class="text-xl font-bold font-title text-stone-800 mb-4">The Ancient Wisdom</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div class="text-center">
-                            <div class="text-3xl mb-3">💎</div>
-                            <h4 class="font-bold text-stone-800 mb-2">Sacred Stones</h4>
-                            <p class="text-stone-600 text-sm">
-                                In Celtic tradition, stones were believed to hold the memories and spirits of ancestors, 
-                                serving as conduits to the Otherworld.
-                            </p>
-                        </div>
-                        <div class="text-center">
-                            <div class="text-3xl mb-3">⚡</div>
-                            <h4 class="font-bold text-stone-800 mb-2">Elemental Wisdom</h4>
-                            <p class="text-stone-600 text-sm">
-                                The Celts saw the world through the lens of four elements, each representing different aspects 
-                                of human nature and spiritual connection.
-                            </p>
-                        </div>
-                        <div class="text-center">
-                            <div class="text-3xl mb-3">🪄</div>
-                            <h4 class="font-bold text-stone-800 mb-2">Ritual Power</h4>
-                            <p class="text-stone-600 text-sm">
-                                Sacred rituals were used to connect with ancestral spirits and receive guidance from the clan ancestors.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Legends Section -->
-        <section id="legends-section" class="page-section">
-            <div class="flex flex-col md:flex-row min-h-96 bg-white/80 rounded-2xl shadow-xl overflow-hidden">
-                <aside class="w-full md:w-64 lg:w-72 bg-stone-100 border-r border-stone-200 p-4">
-                    <h2 class="text-xl font-bold text-stone-800 font-title mb-4">Scottish Legends</h2>
-                    <div class="sidebar-scroll overflow-y-auto max-h-80"></div>
-                </aside>
-                <main id="legends-main-content" class="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto max-h-96"></main>
-            </div>
-        </section>
-        
-        <!-- Tartan Designer Section -->
-        <section id="tartan-designer-section" class="page-section">
-            <div class="bg-white/90 rounded-2xl shadow-xl p-6 md:p-8">
-                <div class="text-center mb-8">
-                    <h2 class="text-3xl md:text-4xl font-title font-bold text-stone-900">Design Your Own Tartan</h2>
-                    <p class="text-lg text-stone-600 mt-2">Create, save, and share a unique pattern that tells your story.</p>
-                </div>
-                <div class="flex flex-col lg:flex-row gap-8">
-                    <div class="lg:w-1/3 bg-stone-50 p-6 rounded-xl border border-stone-200">
-                        <div class="mb-6 p-4 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-800 rounded-r-lg">
-                            <h3 class="font-bold">How to Design Your Tartan</h3>
-                            <p class="text-sm mt-1">A tartan is a repeating pattern of colored stripes. Create your core pattern (sett) and we'll mirror it automatically.</p>
-                        </div>
-                        
-                        <div class="space-y-6">
-                            <div>
-                                <h3 class="text-lg font-semibold mb-2">1. Pick a Colour</h3>
-                                <div id="color-palette" class="grid grid-cols-5 sm:grid-cols-6 gap-3"></div>
-                            </div>
-                            <div>
-                                <h3 class="text-lg font-semibold mb-2">2. Set Stripe Size & Add</h3>
-                                <div class="flex items-center gap-3">
-                                    <input type="number" id="thread-count" class="w-full p-2 border border-stone-300 rounded-lg focus:ring-2 focus:ring-yellow-600" placeholder="e.g., 24" min="2">
-                                    <button id="add-stripe-btn" class="bg-yellow-800 text-white font-semibold px-5 py-2 rounded-lg hover:bg-yellow-900 transition-colors shadow">Add</button>
-                                </div>
-                            </div>
-                            <div>
-                                <h3 class="text-lg font-semibold mb-2">3. Build Your Pattern</h3>
-                                <div id="pattern-list" class="bg-white p-4 rounded-lg h-40 overflow-y-auto border"></div>
-                                <div class="flex justify-end mt-2">
-                                    <button id="clear-pattern-btn" class="bg-red-700 text-white font-semibold px-4 py-2 rounded-lg hover:bg-red-800 transition-colors shadow text-sm">Clear</button>
-                                </div>
-                            </div>
-                            <div>
-                                <h3 class="text-lg font-semibold mb-2">4. Name & Save</h3>
-                                <input type="text" id="tartan-name" class="w-full p-2 border border-stone-300 rounded-lg focus:ring-2 focus:ring-yellow-600" placeholder="e.g., 'Highland Dreams'">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="lg:w-3/4 flex flex-col">
-                        <div class="bg-white p-2 rounded-xl shadow-inner border flex-grow">
-                            <canvas id="tartan-canvas" class="w-full rounded-lg" style="height: 400px;"></canvas>
-                        </div>
-                        <div class="mt-4 bg-white p-4 rounded-xl border flex items-center justify-center gap-4">
-                            <button id="save-btn" class="flex items-center gap-2 bg-green-700 text-white font-semibold px-6 py-3 rounded-lg hover:bg-green-800 transition-colors shadow">
-                                <i class="fas fa-save"></i>
-                                Save as Image
-                            </button>
-                            <div class="tooltip">
-                                <button id="share-btn" class="flex items-center gap-2 bg-blue-700 text-white font-semibold px-6 py-3 rounded-lg hover:bg-blue-800 transition-colors shadow">
-                                    <i class="fas fa-share"></i>
-                                    Share Link
-                                </button>
-                                <span class="tooltiptext" id="share-tooltip">Copy sharable link</span>
-                            </div>
-                        </div>
-                        <div class="mt-6">
-                            <h3 class="text-lg font-semibold text-center mb-4">Or, start with a famous tartan:</h3>
-                            <div id="tartan-examples-grid" class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                <div class="bg-white p-4 rounded-lg shadow border cursor-pointer hover:shadow-lg transition-shadow" data-example="royal-stewart">
-                                    <div class="h-20 mb-2 rounded border overflow-hidden">
-                                        <img src="https://www.tartanregister.gov.uk/tpsimages/3000/3000.png" alt="Royal Stewart Tartan" class="w-full h-full object-cover">
-                                    </div>
-                                    <p class="text-center font-semibold text-sm">Royal Stewart</p>
-                                </div>
-                                <div class="bg-white p-4 rounded-lg shadow border cursor-pointer hover:shadow-lg transition-shadow" data-example="black-watch">
-                                    <div class="h-20 mb-2 rounded border overflow-hidden">
-                                        <img src="https://www.tartanregister.gov.uk/tpsimages/2000/2000.png" alt="Black Watch Tartan" class="w-full h-full object-cover">
-                                    </div>
-                                    <p class="text-center font-semibold text-sm">Black Watch</p>
-                                </div>
-                                <div class="bg-white p-4 rounded-lg shadow border cursor-pointer hover:shadow-lg transition-shadow" data-example="macleod">
-                                    <div class="h-20 mb-2 rounded border overflow-hidden">
-                                        <img src="https://www.tartanregister.gov.uk/tpsimages/1400/1400.png" alt="MacLeod Tartan" class="w-full h-full object-cover">
-                                    </div>
-                                    <p class="text-center font-semibold text-sm">MacLeod</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Recipes Section -->
-        <section id="recipes-section" class="page-section">
-            <div class="text-center mb-10">
-                <h1 class="text-4xl md:text-5xl font-bold font-title text-stone-900">The Highlander's Larder</h1>
-                <p class="text-lg text-stone-600 mt-2">Traditional Scottish recipes from clan kitchens and Highland homes.</p>
-            </div>
-            <div class="bg-white/80 rounded-xl shadow-lg p-6 md:p-8 mb-10 animate-fade-in">
-                <h3 class="text-2xl font-bold font-title text-stone-800 mb-4 text-center">Recipe Collection</h3>
-                <div id="recipe-index-list" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-2"></div>
-            </div>
-            <div id="recipe-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
-        </section>
-
+    <main id="main-content">
+        <!-- Sections will be injected here by JS -->
     </main>
 
-    <!-- Generic Modal -->
-    <div id="generic-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 modal">
-        <div id="modal-content" class="bg-[#FBF6E8] rounded-lg shadow-2xl max-w-4xl w-full max-h-90vh overflow-y-auto"></div>
-    </div>
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
-    <!-- Message Box -->
-    <div id="message-box" class="hidden fixed top-20 right-5 text-white py-2 px-4 rounded-lg shadow-lg transition-opacity duration-300 z-50">
-        <p id="message-text"></p>
-    </div>
-
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Comprehensive Clan Data including MacKenzie
-        const clanData = [
-            {
-                id: "armstrong",
-                name: "Clan Armstrong",
-                gaelicName: "MacGhillielàidir",
-                motto: "Invictus Maneo (I remain unvanquished)",
-                crest: "An arm from the shoulder, armed, Proper",
-                plantBadge: "N/A",
-                warCry: "N/A",
-                territories: "Liddesdale (The Borders)",
-                historicSeats: "Gilnockie Tower",
-                rival: "Scottish & English Crowns",
-                lore: `Perhaps the most feared of all the Border Reiver clans, the Armstrongs were a famously lawless and formidable force in Liddesdale, the wild frontier between Scotland and England. Their very name struck terror into the hearts of their enemies and into the hearts of both the Scottish and English Crowns, who found them nearly impossible to control. The Armstrongs were essentially a law unto themselves, ruling their territory like feudal princes and launching devastating raids across the border with impunity. Their power was so great that they maintained their own system of justice, complete with their own executioner, and were said to be able to field 3,000 mounted men at short notice. The clan's downfall came in 1530, when the young King James V of Scotland decided that their lawlessness had to end. He invited the famous Johnnie Armstrong of Gilnockie to a meeting under safe conduct, then treacherously seized and hanged him along with thirty-six of his followers. This act of royal duplicity became the subject of one of the most famous Border ballads, and the memory of Johnnie Armstrong's betrayal has endured for nearly five centuries as a symbol of royal treachery.`,
-                events: [
-                    { year: "c. 1376", event: "The first record of the Armstrong name in Liddesdale." },
-                    { year: "1530", event: "Johnnie Armstrong of Gilnockie, the famous Reiver chief, is captured and hanged by King James V." },
-                    { year: "1969", event: "Neil Armstrong, the first man on the moon, visits the Armstrong ancestral lands." },
-                ],
-                mottoLore: "This defiant motto perfectly captures the spirit of a clan that survived for centuries in the violent frontier of the Borders, facing down both English invaders and Scottish royal authority.",
-                tartan: {
-                    description: "The Armstrong tartan features deep green, navy blue, and black strokes on a white background, with thin red and yellow accent lines.",
-                    colors: ["#004225", "#1a2d57", "#000000"],
-                    image: "https://www.tartanregister.gov.uk/tpsimages/1000/1000.png"
-                },
-                famousNames: [
-                    { name: "Johnnie Armstrong of Gilnockie (d. 1530)", desc: "The legendary Border Reiver whose execution became a symbol of royal treachery." },
-                    { name: "Neil Armstrong (1930-2012)", desc: "The first human to walk on the Moon, of Armstrong descent." },
-                ],
-                recipe: {
-                    name: "Border Reiver's Hot Pot",
-                    link: "A hearty, one-pot meal that could be cooked over a campfire during a long raid.",
-                    ingredients: ["2 lbs lamb neck chops", "3 large onions, sliced", "3 lbs potatoes, sliced", "2 cups lamb stock", "Salt and pepper", "Butter"],
-                    method: [
-                        "Preheat oven to 325°F (160°C).",
-                        "Layer lamb chops, onions, and potatoes in a casserole dish, seasoning each layer.",
-                        "Pour over stock and arrange final layer of potatoes on top.",
-                        "Cover and bake for 2 hours, then uncover for 30 minutes to brown.",
-                        "Serve hot with crusty bread."
-                    ]
-                },
-                spiritual: {
-                    stone: "ruby",
-                    element: "fire",
-                    values: "courage, independence, and fierce loyalty"
-                },
-                emblem: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7d/Coat_of_arms_of_the_MacDonald_clan.svg/220px-Coat_of_arms_of_the_MacDonald_clan.svg.png"
-            },
-            {
-                id: "campbell",
-                name: "Clan Campbell",
-                gaelicName: "Na Caimbeulaich",
-                motto: "Ne Obliviscaris (Forget Not)",
-                crest: "A boar's head erased fessways, Or",
-                plantBadge: "Bog Myrtle / Fir Club Moss",
-                warCry: "Cruachan!",
-                territories: "Argyll, Perthshire, Cawdor, Loudoun, Breadalbane",
-                historicSeats: "Inveraray Castle, Castle Campbell",
-                rival: "Clan MacDonald",
-                lore: `The history of Clan Campbell is a masterclass in the acquisition and consolidation of power in medieval and early modern Scotland. From their origins as minor chiefs in Argyll, they rose to become one of the most powerful families in the kingdom, acquiring vast estates, multiple titles, and enormous political influence through a combination of military prowess, strategic marriages, and most importantly an uncanny ability to back the winning side in Scotland's frequent civil wars. Their rivals, particularly the MacDonalds, accused them of treachery and opportunism, but the Campbells would argue that they simply understood the changing nature of Scottish politics better than anyone else. Where other Highland clans clung to ancient traditions and feudal independence, the Campbells embraced the centralizing power of the Scottish Crown and later the British state, and they were richly rewarded for their loyalty. By the 18th century, they were the premier ducal house of Scotland, with the Duke of Argyll wielding power that extended far beyond the Highlands.`,
-                events: [
-                    { year: "c. 1263", event: "Earliest record mentions Campbell Gillespie as a witness." },
-                    { year: "1314", event: "The Campbells fight alongside Robert the Bruce at Bannockburn." },
-                    { year: "1457", event: "Colin Campbell becomes 1st Earl of Argyll." },
-                    { year: "1692", event: "The Massacre of Glencoe stains the Campbell name." },
-                ],
-                mottoLore: "This powerful motto serves as both a reminder to remember past wrongs and a warning to enemies that no injury will be forgotten.",
-                tartan: {
-                    description: "The Campbell tartan forms the basis of the Black Watch military tartan, featuring dark green crossed with navy blue and black lines.",
-                    colors: ["#004225", "#1a2d57", "#000000"],
-                    image: "https://www.tartanregister.gov.uk/tpsimages/2000/2000.png"
-                },
-                famousNames: [
-                    { name: "Cailean Mór Campbell (d. 1296)", desc: "Known as 'Colin the Great,' the clan's legendary progenitor." },
-                    { name: "Archibald Campbell, 1st Marquess of Argyll (1607–1661)", desc: "Powerful Covenanter leader and de facto head of Scottish government." },
-                ],
-                recipe: {
-                    name: "Argyll Lamb Stovies",
-                    link: "A traditional dish from Campbell territory combining local lamb with potatoes in a slow-cooked one-pot meal.",
-                    ingredients: ["2 lbs lamb shoulder, cubed", "2 lbs potatoes, sliced", "2 large onions, sliced", "2 cups lamb stock", "2 tbsp butter", "Salt and pepper"],
-                    method: [
-                        "Melt butter and cook onions until soft and golden.",
-                        "Brown lamb chunks on all sides.",
-                        "Layer potatoes, onions, and lamb in pot, seasoning each layer.",
-                        "Pour in stock, cover tightly and cook slowly for 1.5-2 hours.",
-                        "Serve hot garnished with fresh parsley."
-                    ]
-                },
-                spiritual: {
-                    stone: "sapphire",
-                    element: "water",
-                    values: "wisdom, strategic thinking, and adaptability"
-                },
-                emblem: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Coat_of_arms_of_the_Duke_of_Argyll.svg/220px-Coat_of_arms_of_the_Duke_of_Argyll.svg.png"
-            },
-            {
-                id: "mackenzie",
-                name: "Clan MacKenzie",
-                gaelicName: "MacCoinnich",
-                motto: "Luceo non uro (I shine, not burn)",
-                crest: "A mount in flames, Proper",
-                plantBadge: "Deer's Grass",
-                warCry: "Tulach Àrd!",
-                territories: "Ross-shire, Kintail, Lewis",
-                historicSeats: "Castle Leod, Eilean Donan Castle",
-                rival: "Clan MacDonald",
-                lore: `Clan MacKenzie rose from humble origins to become one of the most powerful Highland clans, controlling vast territories in the northwest Highlands and the Outer Hebrides. The clan's name comes from Kenneth (Coinneach in Gaelic), and they claim descent from Colin Fitzgerald, son of an Irish prince. Their rise to power began in earnest in the 14th century when they allied themselves with Robert the Bruce. The MacKenzies were master strategists, expanding their influence through both warfare and clever political alliances. They acquired the island of Lewis through marriage and built a maritime empire that rivaled the MacDonalds. The clan is forever associated with the Brahan Seer (Coinneach Odhar), whose prophecies became legendary throughout the Highlands. Kenneth MacKenzie, 3rd Earl of Seaforth, was known as the "last of the Seaforths," and his death fulfilled one of the Seer's most famous prophecies. The MacKenzies were staunch Jacobites, supporting the Stuart cause in multiple risings, which ultimately led to their decline after Culloden.`,
-                events: [
-                    { year: "1362", event: "Murdoch MacKenzie receives a charter for lands in Kintail from David II." },
-                    { year: "1491", event: "Kenneth MacKenzie receives the lands of Lochalsh and becomes chief." },
-                    { year: "1609", event: "Kenneth MacKenzie is created 1st Lord MacKenzie of Kintail." },
-                    { year: "1623", event: "The clan is elevated to the Earldom of Seaforth." },
-                    { year: "1719", event: "The MacKenzies support the Jacobite rising and fight at Glen Shiel." },
-                    { year: "1781", event: "The Seaforth Highlanders regiment is raised by the clan." },
-                ],
-                mottoLore: "This elegant motto reflects the clan's philosophy of measured strength and wisdom over destructive force. Unlike the blazing fire that consumes, the MacKenzies preferred to shine with steady light.",
-                tartan: {
-                    description: "The MacKenzie tartan is a striking pattern of red and green with blue and black accents, symbolizing the clan's connection to both Highland landscapes and royal heritage.",
-                    colors: ["#C41E3A", "#004225", "#1a2d57"],
-                    image: "https://www.tartanregister.gov.uk/tpsimages/1400/1400.png"
-                },
-                famousNames: [
-                    { name: "Kenneth MacKenzie, 3rd Earl of Seaforth (1635-1678)", desc: "Known as 'Coinneach Mór,' a powerful chief who expanded MacKenzie influence." },
-                    { name: "The Brahan Seer (Coinneach Odhar)", desc: "Legendary prophet connected to the MacKenzies whose predictions became Highland folklore." },
-                    { name: "Lieutenant-General Sir Alexander MacKenzie (1758-1835)", desc: "Distinguished military commander and colonial administrator." },
-                ],
-                recipe: {
-                    name: "Kintail Venison with Rowan Jelly",
-                    link: "From the deer-rich highlands of MacKenzie territory, this dish celebrates the clan's hunting heritage.",
-                    ingredients: ["2 lbs venison haunch, sliced", "4 tbsp rowan jelly", "2 tbsp whisky", "1 onion, sliced", "2 tbsp butter", "1 cup beef stock", "Salt and pepper"],
-                    method: [
-                        "Season venison slices with salt and pepper.",
-                        "Heat butter in a heavy pan and brown venison on both sides.",
-                        "Remove venison and sauté onions until soft.",
-                        "Add whisky and rowan jelly, stirring until melted.",
-                        "Return venison to pan, add stock, and simmer gently for 20 minutes.",
-                        "Serve with neeps and tatties, garnished with fresh herbs."
-                    ]
-                },
-                spiritual: {
-                    stone: "emerald",
-                    element: "earth",
-                    values: "wisdom, prophecy, and connection to the land"
-                },
-                emblem: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/Coat_of_arms_of_the_MacKenzie_clan.svg/220px-Coat_of_arms_of_the_MacKenzie_clan.svg.png"
-            },
-            {
-                id: "macdonald",
-                name: "Clan MacDonald",
-                gaelicName: "MacDhòmhnaill",
-                motto: "Per Mare Per Terras (By Sea and Land)",
-                crest: "A hand in armour fessways, holding a cross crosslet fitchée Gules",
-                plantBadge: "Heather",
-                warCry: "Fraoch Eilean! (The Heathery Isle!)",
-                territories: "The Hebrides, Antrim, Kintyre, Islay",
-                historicSeats: "Finlaggan Castle, Dunaverty Castle",
-                rival: "Clan Campbell",
-                lore: `Clan MacDonald, the mighty "Lords of the Isles," built a maritime empire that at its height rivaled the Kingdom of Scotland itself. Descended from Somerled, the 12th-century Norse-Gaelic warrior king, the MacDonalds controlled a vast network of islands and coastal territories stretching from Antrim to the Outer Hebrides. Their power was based not on land alone, but on their mastery of the seas and their fleet of galleys that could strike anywhere along Scotland's western coast. The Lordship of the Isles was essentially an independent kingdom, with its own parliament at Finlaggan, its own laws, and its own diplomatic relations with foreign powers. The MacDonalds' Gaelic culture flourished under their rule, producing magnificent poetry, music, and art. However, their independence inevitably brought them into conflict with the centralizing Scottish monarchy. The final blow came in 1493 when James IV forfeited the Lordship, but the MacDonalds never truly accepted this loss, and their resentment would fuel centuries of rebellion and romance.`,
-                events: [
-                    { year: "1164", event: "Somerled, progenitor of the MacDonalds, dies at the Battle of Renfrew." },
-                    { year: "1336", event: "John MacDonald becomes the first Lord of the Isles." },
-                    { year: "1411", event: "The Battle of Red Harlaw sees MacDonalds clash with royal forces." },
-                    { year: "1493", event: "James IV abolishes the Lordship of the Isles." },
-                    { year: "1692", event: "The Massacre of Glencoe devastates a MacDonald sept." },
-                ],
-                mottoLore: "This motto perfectly captures the MacDonald mastery of both maritime and terrestrial domains, reflecting their unique position as sea-kings of the Highlands.",
-                tartan: {
-                    description: "The MacDonald tartan features a bold red background with green and blue stripes, symbolizing the blood, land, and sea that defined their realm.",
-                    colors: ["#C41E3A", "#004225", "#1a2d57"],
-                    image: "https://www.tartanregister.gov.uk/tpsimages/1000/1000.png"
-                },
-                famousNames: [
-                    { name: "John MacDonald, 1st Lord of the Isles (c. 1306-1386)", desc: "Founder of the MacDonald maritime empire." },
-                    { name: "Flora MacDonald (1722-1790)", desc: "Jacobite heroine who helped Bonnie Prince Charlie escape." },
-                ],
-                recipe: {
-                    name: "Hebridean Salmon with Dulse",
-                    link: "Fresh Atlantic salmon enhanced with traditional seaweed from the MacDonald isles.",
-                    ingredients: ["4 salmon fillets", "2 tbsp dried dulse seaweed", "2 tbsp butter", "1 lemon", "Sea salt", "Black pepper"],
-                    method: [
-                        "Soak dulse in warm water for 10 minutes, then drain and chop.",
-                        "Season salmon with sea salt and pepper.",
-                        "Heat butter in a pan and cook salmon skin-side down for 4 minutes.",
-                        "Flip and cook 2-3 minutes more.",
-                        "Sprinkle chopped dulse over salmon and squeeze lemon juice.",
-                        "Serve immediately with oatcakes and island butter."
-                    ]
-                },
-                spiritual: {
-                    stone: "sapphire",
-                    element: "water",
-                    values: "maritime mastery, independence, and noble pride"
-                },
-                emblem: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7d/Coat_of_arms_of_the_MacDonald_clan.svg/220px-Coat_of_arms_of_the_MacDonald_clan.svg.png"
-            },
-            {
-                id: "stewart",
-                name: "Clan Stewart",
-                gaelicName: "Stiùbhart",
-                motto: "Virescit vulnere virtus (Courage grows strong at a wound)",
-                crest: "A pelican in her piety, Proper",
-                plantBadge: "Oak",
-                warCry: "N/A",
-                territories: "Renfrewshire, Teviotdale, Menteith, Atholl",
-                historicSeats: "Dundonald Castle, Methven Castle",
-                rival: "Various (as Royal House)",
-                lore: `The Royal House of Stewart ruled Scotland for over three centuries, producing some of the most fascinating and tragic figures in Scottish history. The family's rise began with Walter FitzAlan, who came to Scotland as Steward to King David I in the 12th century. The title "Steward" eventually became their surname, and through marriage to Marjory Bruce, daughter of Robert the Bruce, they gained a claim to the Scottish throne. Robert II Stewart became the first Stewart king in 1371, founding a dynasty that would rule Scotland until the Union of the Crowns in 1603, and later Britain until 1714. The Stewarts were a passionate, artistic, and often doomed family - Mary Queen of Scots lost her throne and her head, while Bonnie Prince Charlie's romantic but failed attempt to reclaim the crown ended in the tragedy of Culloden. Their legacy is one of both glory and heartbreak, of magnificent achievements shadowed by dramatic failures.`,
-                events: [
-                    { year: "1124", event: "Walter FitzAlan becomes Steward of Scotland under David I." },
-                    { year: "1371", event: "Robert II becomes the first Stewart King of Scotland." },
-                    { year: "1603", event: "James VI of Scotland becomes James I of England, uniting the crowns." },
-                    { year: "1745-46", event: "Bonnie Prince Charlie's final attempt to reclaim the throne ends at Culloden." },
-                ],
-                mottoLore: "This noble motto reflects the Stewart ability to emerge stronger from adversity, a trait that served them through centuries of political turmoil.",
-                tartan: {
-                    description: "The Royal Stewart tartan is perhaps the most famous tartan in the world, featuring a bold red background with green and blue stripes.",
-                    colors: ["#C41E3A", "#004225", "#1a2d57"],
-                    image: "https://www.tartanregister.gov.uk/tpsimages/3000/3000.png"
-                },
-                famousNames: [
-                    { name: "Mary Queen of Scots (1542-1587)", desc: "The tragic queen whose life epitomized Stewart romance and tragedy." },
-                    { name: "Prince Charles Edward Stuart 'Bonnie Prince Charlie' (1720-1788)", desc: "The Young Pretender whose 1745 rising became legendary." },
-                ],
-                recipe: {
-                    name: "Royal Atholl Brose",
-                    link: "A traditional drink fit for kings, from the Stewart lands of Atholl.",
-                    ingredients: ["1/2 cup pinhead oatmeal", "4 tbsp heather honey", "4 tbsp Scotch whisky", "2 cups heavy cream"],
-                    method: [
-                        "Soak oatmeal in water for 30 minutes, then strain liquid.",
-                        "Mix the oat liquid with honey until dissolved.",
-                        "Add whisky and mix well.",
-                        "Whip cream to soft peaks.",
-                        "Fold cream into oat mixture gently.",
-                        "Serve in glasses, garnished with a drizzle of honey."
-                    ]
-                },
-                spiritual: {
-                    stone: "ruby",
-                    element: "fire",
-                    values: "royal destiny, passion, and resilience"
-                },
-                emblem: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/10/Royal_Arms_of_Scotland.svg/220px-Royal_Arms_of_Scotland.svg.png"
-            }
-        ];
-
-        // Stone meanings
-        const stoneMeanings = {
-            amber: "Amber represents warmth, protection, and the life force. Those drawn to amber are often nurturing and protective.",
-            sapphire: "Sapphire embodies wisdom, truth, and spiritual insight. It connects you to higher knowledge and intuition.",
-            emerald: "Emerald symbolizes growth, healing, and connection to nature. It brings harmony and balance to your spirit.",
-            ruby: "Ruby represents passion, courage, and strength. It ignites the fire of determination within you.",
-            amethyst: "Amethyst embodies spiritual wisdom, peace, and transformation. It opens your mind to ancient knowledge.",
-            onyx: "Onyx represents grounding, strength, and protection. It connects you to the earth's ancient power.",
-            topaz: "Topaz symbolizes clarity, joy, and manifestation. It helps you see your true path clearly.",
-            jade: "Jade represents harmony, wisdom, and good fortune. It brings balance between mind, body, and spirit."
-        };
-
-        // Element meanings
-        const elementMeanings = {
-            earth: "Earth represents stability, grounding, and connection to the land. You value tradition and deep roots.",
-            water: "Water embodies emotion, intuition, and adaptability. You flow with life's changes and trust your inner wisdom.",
-            fire: "Fire symbolizes passion, courage, and transformation. You have strong will and the drive to overcome obstacles.",
-            air: "Air represents intellect, communication, and freedom. You value knowledge and seek to understand the world."
-        };
-
-        // Comprehensive Legends Data including The Brahan Seer
-        const legendsData = [
-            {
-                name: "The Brahan Seer",
-                title: "Coinneach Odhar, The Highland Prophet",
-                lore: `Coinneach Odhar MacKenzie, known in English as the Brahan Seer, is the most famous prophet in Scottish Highland folklore. Born in the early 17th century on the Isle of Lewis, he possessed the gift of second sight and made predictions that shaped Highland culture for centuries. His prophecies ranged from the mundane to the momentous - he foresaw the coming of railways, the depopulation of the Highlands, and the doom of great families. His most famous prophecy concerned the end of the Seaforth MacKenzies: "When the last Seaforth chief is both deaf and dumb, his four fair sons will die before him, his daughter will kill her sister, and the ancient line will end." This prophecy was fulfilled with eerie accuracy in 1815. The Seer's downfall came when he revealed an uncomfortable truth about the infidelity of Isabella, Countess of Seaforth. In her fury, she had him burned alive in a tar barrel at Chanonry Point in 1662. Legend says he threw his divining stone into Loch Ussie before his death, prophesying that whoever found it would possess the same gift. The stone has never been recovered, but the Brahan Seer's legacy lives on as the most celebrated figure in Highland supernatural tradition.`,
-                recipe: {
-                    name: "Seer's Highland Brose",
-                    link: "A simple, sustaining meal that connected the prophet to his humble Lewis origins.",
-                    ingredients: ["1/2 cup coarse oatmeal", "Pinch of salt", "1 tbsp butter", "1 tbsp heather honey", "Boiling water", "1 tbsp single malt whisky"],
-                    method: [
-                        "Place oatmeal and salt in a sturdy bowl.",
-                        "Add butter and honey.",
-                        "Pour over just enough boiling water to cover the oats.",
-                        "Stir vigorously with a spurtle or wooden spoon.",
-                        "Cover and let stand for 10 minutes to swell.",
-                        "Stir in whisky just before eating for warmth and comfort."
-                    ]
-                }
-            },
-            {
-                name: "Flora MacDonald",
-                title: "The Jacobite Heroine of Skye",
-                lore: `Flora MacDonald became immortalized in Scottish legend for her role in helping Bonnie Prince Charlie escape after his defeat at Culloden. Born in 1722 on South Uist, she was raised in a Jacobite household but was not initially involved in politics. Her moment of destiny came in June 1746 when she agreed to help the fugitive prince escape from the Outer Hebrides to Skye. Disguising him as her Irish maid "Betty Burke," she sailed with him across the treacherous waters to Portree. Her courage and quick thinking saved the Stuart cause from complete destruction and made her a romantic icon. Captured and imprisoned in the Tower of London, she became a celebrity, with even her Hanoverian guards admiring her loyalty and bravery. After her release, she married Allan MacDonald and emigrated to North Carolina, where ironically she found herself on the loyalist side during the American Revolution. She returned to Scotland in 1779 and lived quietly until her death in 1790. Her funeral on Skye was attended by thousands, and her legacy as the embodiment of Highland loyalty and courage has never dimmed.`,
-                recipe: {
-                    name: "Skye Oatcakes for Travelers",
-                    link: "Simple, portable sustenance that Flora would have carried on her dangerous journeys.",
-                    ingredients: ["2 cups fine oatmeal", "1/2 tsp salt", "1/4 cup melted butter", "3-4 tbsp hot water"],
-                    method: [
-                        "Mix oatmeal and salt in a bowl.",
-                        "Add melted butter and mix until crumbly.",
-                        "Gradually add hot water until dough holds together.",
-                        "Roll very thin on an oatmeal-dusted surface.",
-                        "Cut into triangles and cook on a hot griddle.",
-                        "Store in an airtight container - perfect for long journeys."
-                    ]
-                }
-            },
-            {
-                name: "Rob Roy MacGregor",
-                title: "The Highland Rogue",
-                lore: `Robert "Rob Roy" MacGregor (1671–1734) was a real historical figure who became the stuff of legend through Sir Walter Scott's romanticization. Born into the proscribed Clan MacGregor, he lived as a cattleman and Jacobite in the wild country around Loch Katrine. When his business failed and he was declared an outlaw by the Duke of Montrose, Rob Roy took to the hills and became Scotland's most famous brigand. For over twenty years, he waged a personal war against Montrose while protecting his own people and anyone who sought his help. He was captured several times but always escaped, earning a reputation for both cunning and honor. Unlike common criminals, Rob Roy was seen as a Highland gentleman who never broke his word and never harmed the innocent. His story embodies the conflict between the old Gaelic world and the new commercial Scotland. Even his enemies respected his courage and integrity. After receiving a royal pardon in 1726, he lived quietly until his death, but his legend as the "Scottish Robin Hood" has endured for three centuries.`,
-                recipe: {
-                    name: "Highland Cattle Rustler's Stew",
-                    link: "A hearty meal made from 'liberated' beef, cooked over an open fire in the hills.",
-                    ingredients: ["2 lbs beef steak, cubed", "4 potatoes, chunked", "2 onions, sliced", "1 cup Scottish ale", "2 tbsp butter", "Wild herbs (thyme, nettle)", "Salt and pepper"],
-                    method: [
-                        "Brown beef cubes in a heavy pot over high heat.",
-                        "Add onions and cook until soft.",
-                        "Pour in ale and add herbs, bring to boil.",
-                        "Add potatoes and simmer covered for 2 hours.",
-                        "Season with salt and pepper.",
-                        "Serve with bannocks around a Highland campfire."
-                    ]
-                }
-            },
-            {
-                name: "William Wallace",
-                title: "Guardian of Scotland",
-                lore: `Sir William Wallace (c. 1270–1305) is Scotland's greatest national hero, a man whose courage and sacrifice inspired a nation's struggle for freedom. Born into the minor nobility of Renfrewshire, he rose from obscurity to lead the Scottish resistance during the first Wars of Independence. His greatest triumph came at the Battle of Stirling Bridge in 1297, where his tactical genius allowed a smaller Scottish force to devastate a superior English army. Appointed Guardian of Scotland, he became the de facto leader of the nation and carried the fight to England itself. Though later defeated at Falkirk, his spirit remained unbroken. Captured through treachery in 1305, he was taken to London and subjected to the barbaric punishment reserved for traitors - hanged, drawn, and quartered. His final words, "Freedom!" became a rallying cry that echoed through the ages. Wallace's martyrdom inspired Robert the Bruce to continue the fight, ultimately achieving the independence that Wallace had died for. His legacy transcends history to become myth - the embodiment of the Scottish determination never to be conquered.`,
-                recipe: {
-                    name: "Guardian's Battle Bannocks",
-                    link: "Hardy field rations that sustained Wallace's army during their campaigns for Scottish freedom.",
-                    ingredients: ["2 cups barley flour", "1 cup oatmeal", "1 tsp salt", "1 tbsp honey", "Water as needed", "Fat for frying"],
-                    method: [
-                        "Mix barley flour, oatmeal, and salt in a large bowl.",
-                        "Add honey and enough water to form a stiff dough.",
-                        "Knead briefly and roll into thick cakes.",
-                        "Cook on a hot stone or griddle until golden.",
-                        "Store wrapped in cloth - these keep for days on campaign.",
-                        "Eat with whatever provisions are available."
-                    ]
-                }
-            },
-            {
-                name: "Robert the Bruce",
-                title: "The Warrior King",
-                lore: `Robert I (1274–1329), known to history as Robert the Bruce, transformed himself from a political opportunist into Scotland's greatest king and military strategist. His path to the throne was marked by controversy - he killed his rival John Comyn in Greyfriars Kirk, Dumfries, an act that made him both king and outlaw. Crowned at Scone in 1306, he faced immediate disaster and spent years as a fugitive in the hills and islands. But Bruce learned the art of guerrilla warfare and slowly reconquered his kingdom through a series of brilliant campaigns. His greatest victory came at Bannockburn in 1314, where his tactical mastery and inspirational leadership led to the most famous victory in Scottish military history. The Declaration of Arbroath in 1320, asserting Scotland's independence, was made in his name. Bruce understood that kingship was earned through service to his people, and his reign established Scotland as a truly independent nation. His dying wish was for his heart to be taken on crusade to the Holy Land, symbolizing his desire to serve God as he had served Scotland.`,
-                recipe: {
-                    name: "King's Champion Haggis",
-                    link: "A noble version of Scotland's national dish, fit for victory feasts at Bannockburn.",
-                    ingredients: ["1 sheep's heart", "1/2 lb lamb liver", "1/2 lb beef suet", "1 cup pinhead oatmeal", "1 large onion, chopped", "Whisky", "Spices (nutmeg, mace)", "Salt and pepper"],
-                    method: [
-                        "Boil heart and liver until tender, then mince finely.",
-                        "Toast oatmeal in a dry pan until nutty.",
-                        "Mix meat with suet, oatmeal, and onion.",
-                        "Season with spices, salt, pepper, and a splash of whisky.",
-                        "Form into a round and wrap in cloth.",
-                        "Boil for 2 hours, serve with neeps and tatties and a dram."
-                    ]
-                }
-            },
-            {
-                name: "Mary Queen of Scots",
-                title: "The Tragic Queen",
-                lore: `Mary Stewart (1542-1587) embodied both the romance and tragedy that seemed to follow the Stewart dynasty. Crowned Queen of Scotland when just six days old, her life was marked by political intrigue, passionate love affairs, and ultimately, devastating loss. Raised in the sophisticated French court, she returned to Scotland as a Catholic queen in a newly Protestant land. Her marriages - first to the sickly Lord Darnley, then to the Earl of Bothwell after Darnley's mysterious murder - scandalized both Scotland and Europe. Forced to abdicate in favor of her infant son James VI, she fled to England expecting sanctuary from her cousin Elizabeth I. Instead, she found herself a prisoner for 19 years. Her beauty, intelligence, and tragic circumstances made her a romantic figure, but her Catholic faith and potential claim to the English throne made her a political threat. Elizabeth's eventual decision to execute her cousin shocked Europe and created a martyr whose memory would inspire Catholic and Jacobite resistance for centuries to come.`,
-                recipe: {
-                    name: "Queen's French Almond Tart",
-                    link: "A refined dessert reflecting Mary's French upbringing and sophisticated tastes.",
-                    ingredients: ["Pastry case", "1 cup ground almonds", "1/2 cup sugar", "4 eggs", "1/4 cup cream", "2 tbsp rose water", "Sliced almonds for topping"],
-                    method: [
-                        "Preheat oven to 350°F (175°C).",
-                        "Line a tart case with pastry.",
-                        "Beat eggs and sugar until pale.",
-                        "Fold in ground almonds, cream, and rose water.",
-                        "Pour into pastry case and top with sliced almonds.",
-                        "Bake 30-35 minutes until golden and set.",
-                        "Serve with a glass of French wine, as befits a queen."
-                    ]
-                }
-            },
-            {
-                name: "Sir Walter Scott",
-                title: "The Wizard of the North",
-                lore: `Sir Walter Scott (1771-1832) single-handedly created the modern romantic image of Scotland that captivates the world to this day. Born in Edinburgh's Cowgate, he was fascinated from childhood by the Border ballads and Highland traditions. His epic poems like 'The Lay of the Last Minstrel' and novels such as 'Waverley,' 'Rob Roy,' and 'Ivanhoe' transformed how the world saw Scotland. Scott didn't just write about Scottish history and legend - he invented much of what we consider "traditionally Scottish." He organized George IV's visit to Edinburgh in 1822, creating the pageantry of Highland dress and clan ceremony that had barely existed before. His home at Abbotsford became a shrine to Scottish romanticism, filled with relics and curiosities. Though his later years were shadowed by financial ruin, he worked heroically to pay his debts through his writing. Scott's Scotland - of noble Highlanders, chivalrous knights, and ancient castles - may have been largely fictional, but it became more real than reality itself, inspiring the Scottish cultural revival that continues today.`,
-                recipe: {
-                    name: "Abbotsford Seed Cake",
-                    link: "Scott's favorite teatime treat, served to literary guests at his beloved home.",
-                    ingredients: ["2 cups flour", "1 cup butter", "3/4 cup sugar", "4 eggs", "2 tbsp caraway seeds", "1 tsp baking powder", "Milk as needed"],
-                    method: [
-                        "Cream butter and sugar until light.",
-                        "Beat in eggs one at a time.",
-                        "Fold in flour, baking powder, and caraway seeds.",
-                        "Add milk to achieve dropping consistency.",
-                        "Pour into lined cake tin.",
-                        "Bake at 350°F for 45 minutes until golden.",
-                        "Perfect with tea while discussing Scottish literature."
-                    ]
-                }
-            },
-            {
-                name: "Robert Burns",
-                title: "Scotland's National Bard",
-                lore: `Robert Burns (1759-1796) gave voice to the Scottish soul like no other poet before or since. Born into a poor farming family in Ayrshire, he experienced firsthand the hardships and joys of rural Scottish life that would inspire his greatest works. His poetry captured the speech, humor, and humanity of ordinary Scots while addressing universal themes of love, nature, and social justice. Songs like "Auld Lang Syne," "A Red, Red Rose," and "Scots Wha Hae" became part of the fabric of Scottish identity. Burns wrote in both Scots dialect and English, proving that the vernacular language could express the deepest emotions and most profound thoughts. His satirical attacks on religious hypocrisy and social inequality made him a champion of the common man. Though his life was cut short at just 37, his annual celebration on Burns Night (January 25) has become Scotland's greatest cultural festival. Burns transformed Scottish literature and gave his country a national voice that resonates around the world wherever Scots have settled.`,
-                recipe: {
-                    name: "Burns Night Haggis with Neeps and Tatties",
-                    link: "The traditional meal celebrating Scotland's national bard, served with ceremony and whisky.",
-                    ingredients: ["1 haggis (traditional or vegetarian)", "2 lbs rutabaga (neeps)", "2 lbs potatoes (tatties)", "Butter", "Whisky for toasting", "Black pepper"],
-                    method: [
-                        "Boil haggis according to package instructions.",
-                        "Boil peeled neeps and tatties separately until tender.",
-                        "Mash neeps with butter and pepper until smooth.",
-                        "Mash tatties with butter until fluffy.",
-                        "Present haggis with ceremony and address it with Burns' poem.",
-                        "Serve with neeps, tatties, and a generous dram of whisky.",
-                        "Toast 'The Immortal Memory' of Robert Burns."
-                    ]
-                }
-            },
-            {
-                name: "Thomas the Rhymer",
-                title: "True Thomas of Erceldoune",
-                lore: `Thomas Learmont of Erceldoune (c. 1220-1297), known as Thomas the Rhymer or True Thomas, is one of Scotland's most mysterious legendary figures, straddling the line between history and myth. A real 13th-century poet and prophet from the Scottish Borders, he became the subject of ballads that told of his encounter with the Queen of Elfland. According to legend, while resting under the Eildon Tree, Thomas met a beautiful fairy queen who took him to her otherworldly realm for what seemed like three days but was actually seven years. When he returned, she had given him the gift of prophecy - but cursed him never to lie again, earning him the title "True Thomas." His predictions were remarkably accurate, including the death of Alexander III, the Wars of Independence, and the Union of the Crowns. The prophecies attributed to him were so respected that they influenced Scottish politics for centuries. His legend embodies the Celtic belief in the thin boundary between our world and the Otherworld, particularly strong in the mystical landscape of the Scottish Borders.`,
-                recipe: {
-                    name: "Eildon Hill Honey Cakes",
-                    link: "Sweet cakes inspired by the fairy food that sustained True Thomas in the Otherworld.",
-                    ingredients: ["2 cups flour", "1/2 cup honey", "1/4 cup butter", "2 eggs", "1 tsp ginger", "1/2 tsp cinnamon", "1 tsp baking soda", "Milk as needed"],
-                    method: [
-                        "Warm honey and butter until melted and mixed.",
-                        "Beat in eggs one at a time.",
-                        "Sift together flour, spices, and baking soda.",
-                        "Fold dry ingredients into honey mixture.",
-                        "Add milk to make a soft dropping consistency.",
-                        "Drop spoonfuls onto greased baking sheet.",
-                        "Bake at 350°F for 12-15 minutes until golden.",
-                        "These magical cakes are said to grant visions of the future."
-                    ]
-                }
-            }
-        ];
-
-        // Tourism Map Data
-        const tourismData = {
-            clans: [
-                { id: 'inveraray', lat: 56.2345, lng: -5.0654, name: 'Inveraray Castle', desc: 'Seat of Clan Campbell, the Dukes of Argyll.', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/Inveraray_Castle%2C_Argyll_and_Bute%2C_Scotland.jpg/320px-Inveraray_Castle%2C_Argyll_and_Bute%2C_Scotland.jpg' },
-                { id: 'eilean_donan', lat: 57.2736, lng: -5.5165, name: 'Eilean Donan Castle', desc: 'Historic seat of Clan MacKenzie.', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/10/Eilean_Donan_Castle%2C_Kyle%2C_Highland%2C_Scotland.jpg/320px-Eilean_Donan_Castle%2C_Kyle%2C_Highland%2C_Scotland.jpg' }
-            ],
-            distilleries: [
-                { id: 'talisker', lat: 57.3019, lng: -6.3582, name: 'Talisker Distillery', desc: 'Oldest distillery on the Isle of Skye.', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Talisker_distillery.jpg/320px-Talisker_distillery.jpg' },
-                { id: 'lagavulin', lat: 55.6355, lng: -6.1268, name: 'Lagavulin Distillery', desc: 'Famous Islay single malt whisky.', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/Lagavulin_Distillery%2C_Islay.jpg/320px-Lagavulin_Distillery%2C_Islay.jpg' }
-            ],
-            attractions: [
-                { id: 'stirling', lat: 56.1234, lng: -3.9482, name: 'Stirling Castle', desc: 'One of Scotland\'s grandest castles.', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/Stirling_Castle%2C_Scotland.jpg/320px-Stirling_Castle%2C_Scotland.jpg' },
-                { id: 'edinburgh', lat: 55.9486, lng: -3.1999, name: 'Edinburgh Castle', desc: 'Scotland\'s most famous fortress.', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/Edinburgh_Castle_from_Princes_Street_Gardens.jpg/320px-Edinburgh_Castle_from_Princes_Street_Gardens.jpg' }
-            ],
-            myths: [
-                { id: 'fairy_pools', lat: 57.2500, lng: -6.2580, name: 'Fairy Pools', desc: 'Magical blue pools on Skye, gateway to the fairy world.', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/Fairy_Pools%2C_Skye.jpg/320px-Fairy_Pools%2C_Skye.jpg' }
-            ],
-            golf: [
-                { id: 'st_andrews', lat: 56.3490, lng: -2.8010, name: 'St Andrews Old Course', desc: 'The Home of Golf.', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3d/St_Andrews_Old_Course.jpg/320px-St_Andrews_Old_Course.jpg' }
-            ],
-            film: [
-                { id: 'doune_castle', lat: 56.1850, lng: -4.0550, name: 'Doune Castle', desc: 'Famous as Castle Leoch in Outlander.', image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3d/Doune_Castle%2C_Scotland.jpg/320px-Doune_Castle%2C_Scotland.jpg' }
-            ]
-        };
-
-        // Recipe data from clans and legends
-        const allRecipes = [];
-        clanData.forEach(clan => {
-            if (clan.recipe) {
-                allRecipes.push({
-                    ...clan.recipe,
-                    context: `From the lands of ${clan.name}`
-                });
-            }
-        });
-        legendsData.forEach(legend => {
-            if (legend.recipe) {
-                allRecipes.push({
-                    ...legend.recipe,
-                    context: `A dish for ${legend.name}`
-                });
-            }
-        });
-
-        // Navigation
-        let currentSection = 'home';
-        let maps = {}; // Store map instances
-        
-        // Initialize navigation
-        function initNav() {
-            const navLinks = document.querySelectorAll('.nav-link');
-            const pageSections = document.querySelectorAll('.page-section');
-            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        document.addEventListener('DOMContentLoaded', function() {
+            const mainContent = document.getElementById('main-content');
             const mobileMenu = document.getElementById('mobile-menu');
+            const mainNav = document.getElementById('main-nav');
+            let maps = {};
+            const githubBaseUrl = 'https://raw.githubusercontent.com/kenmck3772/theclanhearth.com/main/';
 
-            navLinks.forEach(link => {
-                link.addEventListener('click', () => {
-                    const targetId = link.dataset.target + '-section';
-                    currentSection = link.dataset.target;
-                    
-                    pageSections.forEach(section => {
-                        section.classList.toggle('active', section.id === targetId);
-                    });
-                    
-                    navLinks.forEach(nav => nav.classList.remove('active'));
-                    document.querySelectorAll(`.nav-link[data-target="${link.dataset.target}"]`).forEach(l => l.classList.add('active'));
-                    
-                    // Initialize maps when needed
-                    if (targetId === 'tourism-section') {
-                        setTimeout(initTourismMap, 100);
-                    } else if (targetId === 'clans-section') {
-                        setTimeout(initClansMap, 100);
-                    } else if (targetId === 'spiritual-section') {
-                        setTimeout(initSpiritualFinder, 100);
-                    }
-                    
-                    mobileMenu.classList.add('hidden');
-                });
-            });
-            
-            mobileMenuBtn.addEventListener('click', () => {
-                mobileMenu.classList.toggle('hidden');
-            });
-
-            // Set home as default
-            document.querySelector('.nav-link[data-target="home"]').classList.add('active');
-            document.getElementById('home-section').classList.add('active');
-        }
-
-        // Quick navigation function
-        window.navigateTo = function(section) {
-            document.querySelectorAll('.page-section').forEach(sec => sec.classList.remove('active'));
-            document.getElementById(section + '-section').classList.add('active');
-            document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
-            document.querySelector(`.nav-link[data-target="${section}"]`).classList.add('active');
-            
-            // Initialize maps when needed
-            if (section === 'tourism') {
-                setTimeout(initTourismMap, 100);
-            } else if (section === 'clans') {
-                setTimeout(initClansMap, 100);
-            } else if (section === 'spiritual') {
-                setTimeout(initSpiritualFinder, 100);
-            }
-        };
-
-        // Tourism Map
-        function initTourismMap() {
-            if (maps.tourism) return; // Already initialized
-            
-            const mapEl = document.getElementById('tourismMap');
-            if (!mapEl) return;
-
-            maps.tourism = L.map('tourismMap').setView([56.8, -4.2], 7);
-            
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                maxZoom: 19,
-                attribution: '© OpenStreetMap contributors'
-            }).addTo(maps.tourism);
-
-            const createEmojiIcon = (emoji) => {
-                return L.divIcon({
-                    html: emoji,
-                    className: 'map-emoji-icon',
-                    iconSize: [24, 24],
-                    iconAnchor: [12, 12]
-                });
+            const pages = {
+                home: { title: "Home", icon: "fa-home", inDropdown: false },
+                clans: { title: "Clans", icon: "fa-shield-alt", inDropdown: false },
+                genealogy: { title: "Genealogy", icon: "fa-sitemap", inDropdown: false },
+                tourism: { title: "Trip Planner", icon: "fa-map-marked-alt", inDropdown: true },
+                'name-generator': { title: "Ancestor's Name", icon: "fa-id-card", inDropdown: true },
+                saga: { title: "Highland Saga", icon: "fa-book-reader", inDropdown: true },
+                '3d-heritage': { title: "3D Heritage", icon: "fa-cube", inDropdown: true },
+                finder: { title: "Clan Finder", icon: "fa-magic", inDropdown: true },
+                legends: { title: "Legends", icon: "fa-scroll", inDropdown: true },
+                'tartan-designer': { title: "Tartan Designer", icon: "fa-palette", inDropdown: true },
+                recipes: { title: "Recipes", icon: "fa-utensils", inDropdown: true },
+                'ai-assistant': { title: "Och-I Assistant", icon: "fa-robot", inDropdown: true }
             };
 
-            const layers = {
-                clans: L.layerGroup(),
-                distilleries: L.layerGroup(),
-                attractions: L.layerGroup(),
-                myths: L.layerGroup(),
-                golf: L.layerGroup(),
-                film: L.layerGroup()
-            };
-
-            const iconMap = {
-                clans: createEmojiIcon('🛡️'),
-                distilleries: createEmojiIcon('🥃'),
-                attractions: createEmojiIcon('🏰'),
-                myths: createEmojiIcon('✨'),
-                golf: createEmojiIcon('⛳'),
-                film: createEmojiIcon('🎬')
-            };
-
-            // Add markers
-            Object.keys(tourismData).forEach(category => {
-                if (layers[category] && iconMap[category]) {
-                    tourismData[category].forEach(item => {
-                        const marker = L.marker([item.lat, item.lng], { icon: iconMap[category] })
-                            .bindPopup(`
-                                <div class="text-center">
-                                    <h3 class="font-bold">${item.name}
-                                    
-
-${item.desc}</p>
-                                    <img src="${item.image}" alt="${item.name}" class="w-full h-24 object-cover rounded mt-2">
-                                    <button class="add-to-trip-btn mt-2 bg-yellow-700 text-white px-3 py-1 rounded text-sm" onclick="addToTrip('${item.id}', '${item.name}', ${item.lat}, ${item.lng})">Add to Trip</button>
-                                </div>
-                            `);
-                        marker.addTo(layers[category]);
-                    });
-                }
-            });
-
-            // Add all layers to map
-            Object.values(layers).forEach(layer => layer.addTo(maps.tourism));
-
-            // Layer controls
-            Object.keys(layers).forEach(key => {
-                const toggle = document.getElementById(`${key}-toggle`);
-                if (toggle) {
-                    toggle.addEventListener('change', (e) => {
-                        if (e.target.checked) {
-                            maps.tourism.addLayer(layers[key]);
-                        } else {
-                            maps.tourism.removeLayer(layers[key]);
-                        }
-                    });
-                }
-            });
-
-            // Trip planning functionality
-            let trip = [];
-            
-            window.addToTrip = (id, name, lat, lng) => {
-                if (!trip.some(item => item.id === id)) {
-                    trip.push({ id, name, lat, lng });
-                    updateTripList();
-                    showItinerary();
-                }
-            };
-
-            function updateTripList() {
-                const tripList = document.getElementById('trip-list');
-                const tripCount = document.getElementById('trip-count');
+            let mobileMenuHTML = '';
+            let mainNavHTML = '';
+            let dropdownHTML = '';
+            for (const [key, value] of Object.entries(pages)) {
+                const section = document.createElement('section');
+                section.id = `${key}-section`;
+                section.className = 'page-section';
+                mainContent.appendChild(section);
                 
-                if (!tripList || !tripCount) return;
-                
-                tripCount.textContent = trip.length;
-                
-                if (trip.length === 0) {
-                    tripList.innerHTML = '
+                const linkHTML = `<button class="nav-link font-semibold text-stone-600 hover:text-yellow-800 px-3 py-2 rounded-md" data-target="${key}">${value.title}</button>`;
+                const mobileLinkHTML = `<button class="nav-link block w-full text-left font-semibold text-stone-600 hover:text-yellow-800 p-4 border-t dark:border-gray-700" data-target="${key}"><i class="fas ${value.icon} mr-3 w-5 text-center"></i>${value.title}</button>`;
 
-Your journey is empty. Add locations from the map!
-';
+                mobileMenuHTML += mobileLinkHTML;
+                if (value.inDropdown) {
+                    dropdownHTML += linkHTML.replace('px-3 py-2 rounded-md', 'block w-full text-left p-3');
                 } else {
-                    tripList.innerHTML = trip.map((item, index) => 
-                        `
-${index + 1}. ${item.name}
-`
-                    ).join('');
+                    mainNavHTML += linkHTML;
                 }
             }
-
-            function showItinerary() {
-                const panel = document.getElementById('itinerary-panel');
-                if (panel) {
-                    panel.classList.add('open');
-                }
-            }
-
-            // Itinerary controls
-            const itineraryHeader = document.getElementById('itinerary-header');
-            if (itineraryHeader) {
-                itineraryHeader.addEventListener('click', () => {
-                    const panel = document.getElementById('itinerary-panel');
-                    panel.classList.toggle('open');
-                });
-            }
-
-            const clearBtn = document.getElementById('clear-trip-btn');
-            if (clearBtn) {
-                clearBtn.addEventListener('click', () => {
-                    trip = [];
-                    updateTripList();
-                });
-            }
-
-            updateTripList();
-        }
-
-        // Clans Map
-        function initClansMap() {
-            if (maps.clans) return; // Already initialized
+            mainNavHTML += `<div class="relative dropdown">
+                    <button class="font-semibold text-stone-600 hover:text-yellow-800 px-3 py-2 rounded-md">More <i class="fas fa-chevron-down text-xs"></i></button>
+                    <div class="dropdown-menu absolute right-0 mt-2 w-52 bg-white/95 backdrop-blur-lg rounded-xl shadow-lg z-10 dark:bg-gray-800/95">${dropdownHTML}</div>
+                </div>`;
             
-            const mapEl = document.getElementById('clanMap');
-            if (!mapEl) return;
-
-            maps.clans = L.map('clanMap').setView([56.8, -4.2], 7);
+            mainNav.innerHTML = mainNavHTML;
+            mobileMenu.innerHTML = mobileMenuHTML;
             
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                maxZoom: 19,
-                attribution: '© OpenStreetMap contributors'
-            }).addTo(maps.clans);
+            const clanData = [
+                { id: "armstrong", name: "Clan Armstrong", motto: "Invictus Maneo", lore: "A powerful and feared Border Reiver clan.", seat: { lat: 55.175, lng: -2.863 }, emblems: { traditional: `${githubBaseUrl}emblems/traditional/armstrong-emblem.jpg`, modern: `${githubBaseUrl}emblems/modern/armstrong-emblem.jpg`, celtic: `${githubBaseUrl}emblems/celtic/armstrong-emblem.jpg` }, tartan: { image: `${githubBaseUrl}tartans/armstrong.jpg`} },
+                { id: "cameron", name: "Clan Cameron", motto: "Aonaibh ri Chéile", lore: "A fierce Lochaber clan, loyal Jacobites.", seat: { lat: 56.879, lng: -5.074 }, emblems: { traditional: `${githubBaseUrl}emblems/traditional/cameron-emblem.jpg`, modern: `${githubBaseUrl}emblems/modern/cameron-emblem.jpg`, celtic: `${githubBaseUrl}emblems/celtic/cameron-emblem.jpg` }, tartan: { image: `${githubBaseUrl}tartans/cameron.jpg`} },
+                { id: "campbell", name: "Clan Campbell", motto: "Ne Obliviscaris", lore: "One of the largest and most powerful Highland clans.", seat: { lat: 56.234, lng: -5.072 }, emblems: { traditional: `${githubBaseUrl}emblems/traditional/campbell-emblem.jpg`, modern: `${githubBaseUrl}emblems/modern/campbell-emblem.jpg`, celtic: `${githubBaseUrl}emblems/celtic/campbell-emblem.jpg` }, tartan: { image: `${githubBaseUrl}tartans/campbell.jpg`} },
+                { id: "carnegie", name: "Clan Carnegie", motto: "Tache Sans Tache", lore: "A noble family who held the Dukedom of Fife.", seat: { lat: 56.716, lng: -2.578 }, emblems: { traditional: `${githubBaseUrl}emblems/traditional/carnegie-emblem.jpg`, modern: `${githubBaseUrl}emblems/modern/carnegie-emblem.jpg`, celtic: `${githubBaseUrl}emblems/celtic/carnegie-emblem.jpg` }, tartan: { image: `${githubBaseUrl}tartans/carnegie.jpg`} },
+                { id: "chattan", name: "Clan Chattan", motto: "Touch not the cat bot a glove", lore: "A powerful confederation of Highland clans.", seat: { lat: 57.135, lng: -4.054 }, emblems: { traditional: `${githubBaseUrl}emblems/traditional/chattan-emblem.jpg`, modern: `${githubBaseUrl}emblems/modern/chattan-emblem.jpg`, celtic: `${githubBaseUrl}emblems/celtic/chattan-emblem.jpg` }, tartan: { image: `${githubBaseUrl}tartans/chattan.jpg`} },
+                { id: "cunningham", name: "Clan Cunningham", motto: "Over Fork Over", lore: "An Ayrshire clan with a long and storied history.", seat: { lat: 55.637, lng: -4.753 }, emblems: { traditional: `${githubBaseUrl}emblems/traditional/cunningham-emblem.jpg`, modern: `${githubBaseUrl}emblems/modern/cunningham-emblem.jpg`, celtic: `${githubBaseUrl}emblems/celtic/cunningham-emblem.jpg` }, tartan: { image: `${githubBaseUrl}tartans/cunningham.jpg`} },
+                { id: "donald", name: "Clan Donald", motto: "Per Mare Per Terras", lore: "The Lords of the Isles, a great and powerful clan.", seat: { lat: 57.412, lng: -6.707 }, emblems: { traditional: `${githubBaseUrl}emblems/traditional/donald-emblem.jpg`, modern: `${githubBaseUrl}emblems/modern/donald-emblem.jpg`, celtic: `${githubBaseUrl}emblems/celtic/donald-emblem.jpg` }, tartan: { image: `${githubBaseUrl}tartans/donald.jpg`} },
+                { id: "douglas", name: "Clan Douglas", motto: "Jamais Arrière", lore: "A powerful Lowland family, often rivals to the throne.", seat: { lat: 55.776, lng: -3.883 }, emblems: { traditional: `${githubBaseUrl}emblems/traditional/douglas-emblem.jpg`, modern: `${githubBaseUrl}emblems/modern/douglas-emblem.jpg`, celtic: `${githubBaseUrl}emblems/celtic/douglas-emblem.jpg` }, tartan: { image: `${githubBaseUrl}tartans/douglas.jpg`} },
+                { id: "eliott", name: "Clan Eliott", motto: "Fortiter Et Recte", lore: "A Border Reiver clan known for their strength.", seat: { lat: 55.267, lng: -2.812 }, emblems: { traditional: `${githubBaseUrl}emblems/traditional/eliott-emblem.jpg`, modern: `${githubBaseUrl}emblems/modern/eliott-emblem.jpg`, celtic: `${githubBaseUrl}emblems/celtic/eliott-emblem.jpg` }, tartan: { image: `${githubBaseUrl}tartans/eliott.jpg`} },
+                { id: "erskine", name: "Clan Erskine", motto: "Je Pense Plus", lore: "Guardians of Scottish kings and queens.", seat: { lat: 56.115, lng: -3.793 }, emblems: { traditional: `${githubBaseUrl}emblems/traditional/erskine-emblem.jpg`, modern: `${githubBaseUrl}emblems/modern/erskine-emblem.jpg`, celtic: `${githubBaseUrl}emblems/celtic/erskine-emblem.jpg` }, tartan: { image: `${githubBaseUrl}tartans/erskine.jpg`} },
+                { id: "fraser", name: "Clan Fraser", motto: "Je Suis Prest", lore: "A powerful Highland clan of Norman origin.", seat: { lat: 57.383, lng: -4.483 }, emblems: { traditional: `${githubBaseUrl}emblems/traditional/fraser-emblem.jpg`, modern: `${githubBaseUrl}emblems/modern/fraser-emblem.jpg`, celtic: `${githubBaseUrl}emblems/celtic/fraser-emblem.jpg` }, tartan: { image: `${githubBaseUrl}tartans/fraser.jpg`} },
+                { id: "gordon", name: "Clan Gordon", motto: "Bydand", lore: "The 'Cock o' the North', powerful in the northeast.", seat: { lat: 57.449, lng: -2.859 }, emblems: { traditional: `${githubBaseUrl}emblems/traditional/gordon-emblem.jpg`, modern: `${githubBaseUrl}emblems/modern/gordon-emblem.jpg`, celtic: `${githubBaseUrl}emblems/celtic/gordon-emblem.jpg` }, tartan: { image: `${githubBaseUrl}tartans/gordon.jpg`} },
+                { id: "graham", name: "Clan Graham", motto: "Ne Oublie", lore: "A clan known for its great military leaders.", seat: { lat: 56.095, lng: -4.316 }, emblems: { traditional: `${githubBaseUrl}emblems/traditional/graham-emblem.jpg`, modern: `${githubBaseUrl}emblems/modern/graham-emblem.jpg`, celtic: `${githubBaseUrl}emblems/celtic/graham-emblem.jpg` }, tartan: { image: `${githubBaseUrl}tartans/graham.jpg`} },
+                { id: "grant", name: "Clan Grant", motto: "Stand Fast", lore: "A prominent Highland clan.", seat: { lat: 57.320, lng: -3.593 }, emblems: { traditional: `${githubBaseUrl}emblems/traditional/grant-emblem.jpg`, modern: `${githubBaseUrl}emblems/modern/grant-emblem.jpg`, celtic: `${githubBaseUrl}emblems/celtic/grant-emblem.jpg` }, tartan: { image: `${githubBaseUrl}tartans/grant.jpg`} },
+                { id: "guthrie", name: "Clan Guthrie", motto: "Sto Pro Veritate", lore: "An Angus clan with a history of royal service.", seat: { lat: 56.666, lng: -2.574 }, emblems: { traditional: `${githubBaseUrl}emblems/traditional/guthrie-emblem.jpg`, modern: `${githubBaseUrl}emblems/modern/guthrie-emblem.jpg`, celtic: `${githubBaseUrl}emblems/celtic/guthrie-emblem.jpg` }, tartan: { image: `${githubBaseUrl}tartans/guthrie.jpg`} },
+                { id: "leslie", name: "Clan Leslie", motto: "Grip Fast", lore: "A noble family with origins in Hungary.", seat: { lat: 57.320, lng: -2.850 }, emblems: { traditional: `${githubBaseUrl}emblems/traditional/leslie-emblem.jpg`, modern: `${githubBaseUrl}emblems/modern/leslie-emblem.jpg`, celtic: `${githubBaseUrl}emblems/celtic/leslie-emblem.jpg` }, tartan: { image: `${githubBaseUrl}tartans/leslie.jpg`} },
+                { id: "lindsay", name: "Clan Lindsay", motto: "Endure Fort", lore: "A noble family of Norman origin.", seat: { lat: 56.840, lng: -2.610 }, emblems: { traditional: `${githubBaseUrl}emblems/traditional/lindsay-emblem.jpg`, modern: `${githubBaseUrl}emblems/modern/lindsay-emblem.jpg`, celtic: `${githubBaseUrl}emblems/celtic/lindsay-emblem.jpg` }, tartan: { image: `${githubBaseUrl}tartans/lindsay.jpg`} },
+                { id: "macdougall", name: "Clan MacDougall", motto: "Buaidh No Bas", lore: "Descendants of Somerled, Lords of Lorn.", seat: { lat: 56.417, lng: -5.474 }, emblems: { traditional: `${githubBaseUrl}emblems/traditional/macdougall-emblem.jpg`, modern: `${githubBaseUrl}emblems/modern/macdougall-emblem.jpg`, celtic: `${githubBaseUrl}emblems/celtic/macdougall-emblem.jpg` }, tartan: { image: `${githubBaseUrl}tartans/macdougall.jpg`} },
+                { id: "macgregor", name: "Clan MacGregor", motto: "'S Rioghal Mo Dhream", lore: "The Children of the Mist, a proscribed clan.", seat: { lat: 56.376, lng: -4.482 }, emblems: { traditional: `${githubBaseUrl}emblems/traditional/macgregor-emblem.jpg`, modern: `${githubBaseUrl}emblems/modern/macgregor-emblem.jpg`, celtic: `${githubBaseUrl}emblems/celtic/macgregor-emblem.jpg` }, tartan: { image: `${githubBaseUrl}tartans/macgregor.jpg`} },
+                { id: "mackenzie", name: "Clan MacKenzie", motto: "Luceo Non Uro", lore: "A powerful Highland clan.", seat: { lat: 57.273, lng: -5.516 }, emblems: { traditional: `${githubBaseUrl}emblems/traditional/mackenzie-emblem.jpg`, modern: `${githubBaseUrl}emblems/modern/mackenzie-emblem.jpg`, celtic: `${githubBaseUrl}emblems/celtic/mackenzie-emblem.jpg` }, tartan: { image: `${githubBaseUrl}tartans/mackenzie.jpg`} },
+                { id: "mackintosh", name: "Clan Mackintosh", motto: "Touch not the cat bot a glove", lore: "Leaders of the Clan Chattan confederation.", seat: { lat: 57.433, lng: -4.050 }, emblems: { traditional: `${githubBaseUrl}emblems/traditional/mackintosh-emblem.jpg`, modern: `${githubBaseUrl}emblems/modern/mackintosh-emblem.jpg`, celtic: `${githubBaseUrl}emblems/celtic/mackintosh-emblem.jpg` }, tartan: { image: `${githubBaseUrl}tartans/mackintosh.jpg`} },
+                { id: "macleod", name: "Clan MacLeod", motto: "Hold Fast", lore: "A powerful clan of the Hebrides.", seat: { lat: 57.412, lng: -6.707 }, emblems: { traditional: `${githubBaseUrl}emblems/traditional/macleod-emblem.jpg`, modern: `${githubBaseUrl}emblems/modern/macleod-emblem.jpg`, celtic: `${githubBaseUrl}emblems/celtic/macleod-emblem.jpg` }, tartan: { image: `${githubBaseUrl}tartans/macleod.jpg`} },
+                { id: "macpherson", name: "Clan Macpherson", motto: "Touch not the cat bot a glove", lore: "A prominent member of the Clan Chattan.", seat: { lat: 57.068, lng: -4.032 }, emblems: { traditional: `${githubBaseUrl}emblems/traditional/macpherson-emblem.jpg`, modern: `${githubBaseUrl}emblems/modern/macpherson-emblem.jpg`, celtic: `${githubBaseUrl}emblems/celtic/macpherson-emblem.jpg` }, tartan: { image: `${githubBaseUrl}tartans/macpherson.jpg`} },
+                { id: "murray", name: "Clan Murray", motto: "Tout Prest", lore: "A powerful family, Dukes of Atholl.", seat: { lat: 56.772, lng: -3.738 }, emblems: { traditional: `${githubBaseUrl}emblems/traditional/murray-emblem.jpg`, modern: `${githubBaseUrl}emblems/modern/murray-emblem.jpg`, celtic: `${githubBaseUrl}emblems/celtic/murray-emblem.jpg` }, tartan: { image: `${githubBaseUrl}tartans/murray.jpg`} },
+                { id: "ogilvy", name: "Clan Ogilvy", motto: "A Fin", lore: "A noble Angus clan.", seat: { lat: 56.671, lng: -3.008 }, emblems: { traditional: `${githubBaseUrl}emblems/traditional/ogilvy-emblem.jpg`, modern: `${githubBaseUrl}emblems/modern/ogilvy-emblem.jpg`, celtic: `${githubBaseUrl}emblems/celtic/ogilvy-emblem.jpg` }, tartan: { image: `${githubBaseUrl}tartans/ogilvy.jpg`} },
+                { id: "ramsay", name: "Clan Ramsay", motto: "Ora Et Labora", seat: { lat: 56.002, lng: -3.076 }, emblems: { traditional: `${githubBaseUrl}emblems/traditional/ramsay-emblem.jpg`, modern: `${githubBaseUrl}emblems/modern/ramsay-emblem.jpg`, celtic: `${githubBaseUrl}emblems/celtic/ramsay-emblem.jpg` }, tartan: { image: `${githubBaseUrl}tartans/ramsay.jpg`} },
+                { id: "sinclair", name: "Clan Sinclair", motto: "Commit Thy Work to God", lore: "Earls of Orkney and Caithness.", seat: { lat: 58.587, lng: -3.064 }, emblems: { traditional: `${githubBaseUrl}emblems/traditional/sinclair-emblem.jpg`, modern: `${githubBaseUrl}emblems/modern/sinclair-emblem.jpg`, celtic: `${githubBaseUrl}emblems/celtic/sinclair-emblem.jpg` }, tartan: { image: `${githubBaseUrl}tartans/sinclair.jpg`} },
+                { id: "stewart", name: "Clan Stewart", motto: "Virescit Vulnere Virtus", lore: "The Royal House of Scotland.", seat: { lat: 56.123, lng: -3.948 }, emblems: { traditional: `${githubBaseUrl}emblems/traditional/stewart-emblem.jpg`, modern: `${githubBaseUrl}emblems/modern/stewart-emblem.jpg`, celtic: `${githubBaseUrl}emblems/celtic/stewart-emblem.jpg` }, tartan: { image: `${githubBaseUrl}tartans/stewart.jpg`} },
+                { id: "wallace", name: "Clan Wallace", motto: "Pro Libertate", lore: "The clan of Scotland's national hero.", seat: { lat: 55.883, lng: -4.433 }, emblems: { traditional: `${githubBaseUrl}emblems/traditional/wallace-emblem.jpg`, modern: `${githubBaseUrl}emblems/modern/wallace-emblem.jpg`, celtic: `${githubBaseUrl}emblems/celtic/wallace-emblem.jpg` }, tartan: { image: `${githubBaseUrl}tartans/wallace.jpg`} }
+            ];
+            
+            const slideData = [
+                 { "img": "https://raw.githubusercontent.com/kenmck3772/theclanhearth.com/main/slideshow/Highland-Lochs.jpg", "title": "Highland Lochs", "desc": "Mirror-like waters reflecting majestic mountains" },
+                { "img": "https://raw.githubusercontent.com/kenmck3772/theclanhearth.com/main/slideshow/Lakeside-Castles.jpg", "title": "Lakeside Castles", "desc": "Medieval fortresses nestled in pristine landscapes" },
+                { "img": "https://raw.githubusercontent.com/kenmck3772/theclanhearth.com/main/slideshow/Glacial-Valleys.jpg", "title": "Glacial Valleys", "desc": "Carved by ancient ice, bathed in sunlight" },
+                { "img": "https://raw.githubusercontent.com/kenmck3772/theclanhearth.com/main/slideshow/Historic-Landmarks.jpg", "title": "Historic Landmarks", "desc": "Ancient monuments standing guard over the waters" }
+            ];
+            
+            // --- ALL TEMPLATE AND FEATURE FUNCTIONS ARE NOW DEFINED ---
 
-            // Clan territories (simplified for demo)
-            const clanTerritories = {
-                campbell: {
-                    coords: [[56.2, -5.5], [56.6, -5.0], [56.3, -4.5]],
-                    color: '#004225',
-                    name: 'Clan Campbell'
-                },
-                macdonald: {
-                    coords: [[57.0, -6.5], [57.4, -6.0], [56.8, -6.2]],
-                    color: '#C41E3A',
-                    name: 'Clan MacDonald'
-                }
-            };
-
-            Object.keys(clanTerritories).forEach(clanId => {
-                const territory = clanTerritories[clanId];
-                const polygon = L.polygon(territory.coords, {
-                    color: territory.color,
-                    fillColor: territory.color,
-                    fillOpacity: 0.4,
-                    weight: 2
-                });
-                polygon.bindPopup(`${territory.name}</b>`);
-                polygon.addTo(maps.clans);
-            });
-
-            // Populate clan sidebar
-            const sidebar = document.getElementById('clan-sidebar-list');
-            if (sidebar) {
-                sidebar.innerHTML = clanData.map(clan => 
-                    `<button class="block w-full text-left px-4 py-2 rounded-md text-stone-600 hover:bg-stone-200 transition-colors flex items-center" data-clan="${clan.id}">
-                        
-
-                            
-
-                        
-
-                        ${clan.name}
-                    </button>`
-                ).join('');
-
-                sidebar.addEventListener('click', (e) => {
-                    if (e.target.dataset.clan) {
-                        showClanDetails(e.target.dataset.clan);
-                    } else if (e.target.closest('[data-clan]')) {
-                        showClanDetails(e.target.closest('[data-clan]').dataset.clan);
-                    }
-                });
-            }
-        }
-
-        function showClanDetails(clanId) {
-            const clan = clanData.find(c => c.id === clanId);
-            if (!clan) return;
-
-            const infoBox = document.getElementById('map-info');
-            if (infoBox) {
-                infoBox.innerHTML = `
-                    <div class="space-y-4">
-                        <div class="flex items-center">
-                            <div class="w-16 h-16 rounded-full mr-4 overflow-hidden">
-                                <img src="${clan.emblem}" alt="${clan.name} emblem" class="w-full h-full object-contain">
-                            </div>
+            function getHomePageHTML() {
+                 let slides = slideData.map((slide, index) => `
+                    <div class="slide ${index === 0 ? 'active' : ''} absolute inset-0" style="background-image:url('${slide.img}')">
+                        <div class="absolute inset-0 bg-black/50"></div>
+                        <div class="relative h-full flex items-center justify-center text-center p-8">
                             <div>
-                                <h3 class="text-xl font-bold">${clan.name}
-                                
-
-${clan.gaelicName}</p>
+                                <h2 class="text-5xl md:text-7xl font-bold font-title text-white drop-shadow-lg">${slide.title}</h2>
+                                <p class="text-xl md:text-2xl mt-4 italic text-white/90 drop-shadow-md">${slide.desc}</p>
                             </div>
                         </div>
-                        <p class="font-semibold">${clan.motto}
+                    </div>`).join('');
+                let dots = slideData.map((_, index) => `<span class="dot cursor-pointer h-3 w-3 mx-1 bg-white/50 rounded-full inline-block transition-colors duration-600 ease-in-out ${index === 0 ? 'active' : ''}" data-slide="${index}"></span>`).join('');
+                return `<div class="relative h-[70vh] min-h-[400px] text-white shadow-2xl overflow-hidden -mt-8">${slides}<div class="absolute bottom-5 z-30 w-full flex justify-center">${dots}</div></div>`;
+            }
 
+            function getClansPageHTML() { 
+                return `<div class="content-card flex flex-col md:flex-row min-h-screen rounded-2xl shadow-xl overflow-hidden">
+                    <aside class="w-full md:w-64 lg:w-72 bg-stone-100 p-4 flex flex-col">
+                        <h2 class="text-xl font-bold text-stone-800 font-title mb-4">Scottish Clans</h2>
+                        <div id="clan-sidebar-list" class="flex-grow overflow-y-auto"></div>
+                    </aside>
+                    <main id="clans-main-content" class="flex-1 p-4 sm:p-6 lg:p-8">
+                         <div class="text-stone-500 text-center py-20">Select a clan from the list to begin your journey.</div>
+                    </main>
+                </div>`;
+            }
+            function getGenealogyPageHTML() { return `<div class="content-card p-8 rounded-xl">Genealogy Tree Builder Coming Soon</div>`; }
+            function getTourismPageHTML() { return `<div class="content-card p-8 rounded-xl">Trip Planner Coming Soon</div>`; }
+            function getNameGeneratorPageHTML() { return `<div class="content-card p-8 rounded-xl">Name Generator Coming Soon</div>`; }
+            function getSagaPageHTML() { return `<div class="content-card p-8 rounded-xl">Highland Saga Coming Soon</div>`; }
+            function getGuidesPageHTML() { return `<div class="content-card p-8 rounded-xl">Heritage Guides coming soon.</div>`; }
+            function get3DPageHTML() { return `<div class="content-card p-8 rounded-xl">3D Heritage Explorer Coming Soon</div>`; }
+            function getFinderPageHTML() { return `<div class="content-card p-8 rounded-xl">Clan Finder Coming Soon</div>`; }
+            function getLegendsPageHTML() { return `<div class="content-card p-8 rounded-xl">Legends Coming Soon</div>`; }
+            function getTartanDesignerPageHTML() { return `<div class="content-card p-8 rounded-xl">Tartan Designer Coming Soon</div>`; }
+            function getRecipesPageHTML() { return `<div class="content-card p-8 rounded-xl">Recipes Coming Soon</div>`; }
+            function getAIAssistantPageHTML() { return `<div class="content-card p-8 rounded-xl">Och-I Assistant Coming Soon</div>`; }
 
+            function initNav() {
+                const navLinks = document.querySelectorAll('.nav-link');
+                const pageSections = document.querySelectorAll('.page-section');
+                const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+                const mobileMenu = document.getElementById('mobile-menu');
+
+                navLinks.forEach(link => {
+                    link.addEventListener('click', () => {
+                        const targetId = link.dataset.target;
                         
+                        if(targetId === 'home') {
+                            mainContent.className = '';
+                        } else {
+                            mainContent.className = 'max-w-7xl mx-auto px-4 py-8';
+                        }
 
-                            
-
+                        pageSections.forEach(section => section.classList.toggle('active', section.id === `${targetId}-section`));
+                        navLinks.forEach(nav => nav.classList.remove('active'));
+                        document.querySelectorAll(`.nav-link[data-target="${targetId}"]`).forEach(l => l.classList.add('active'));
                         
-
+                        if (targetId === 'clans' && !maps.clans) initClansMap();
                         
+                        setTimeout(() => {
+                           if (targetId === 'clans' && maps.clans) maps.clans.invalidateSize();
+                        }, 10);
 
-${clan.lore.substring(0, 200)}...</p>
-                        <button class="bg-yellow-800 text-white px-4 py-2 rounded-lg text-sm" onclick="openClanModal('${clan.id}')">
-                            View Full Details
+                        mobileMenu.classList.add('hidden');
+                    });
+                });
+                mobileMenuBtn.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
+            }
+
+            function setupDarkMode() {
+                const toggle = document.getElementById('dark-mode-toggle');
+                const icon = toggle.querySelector('i');
+                const htmlEl = document.documentElement;
+
+                if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                    htmlEl.classList.add('dark');
+                    icon.className = 'fas fa-sun';
+                } else {
+                    htmlEl.classList.remove('dark');
+                    icon.className = 'fas fa-moon';
+                }
+
+                toggle.addEventListener('click', () => {
+                    if (htmlEl.classList.toggle('dark')) {
+                        localStorage.theme = 'dark';
+                        icon.className = 'fas fa-sun';
+                    } else {
+                        localStorage.theme = 'light';
+                        icon.className = 'fas fa-moon';
+                    }
+                });
+            }
+
+            function initClansMap() { 
+                if (maps.clans) return;
+                const clansMain = document.getElementById('clans-main-content');
+                if(!clansMain) return;
+                
+                clansMain.innerHTML = `<div id="clanMap" class="w-full h-full rounded-lg shadow-lg"></div>`;
+                maps.clans = L.map('clanMap').setView([57.0, -4.5], 7);
+                L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png', { attribution: '&copy; CARTO' }).addTo(maps.clans);
+                
+                const sidebar = document.getElementById('clan-sidebar-list');
+                sidebar.innerHTML = clanData.map(clan => `<button class="block w-full text-left px-4 py-2 rounded-md hover:bg-stone-200" data-clan-id="${clan.id}">${clan.name}</button>`).join('');
+                sidebar.addEventListener('click', e => {
+                    const button = e.target.closest('[data-clan-id]');
+                    if (button) {
+                        showClanDetails(button.dataset.clanId);
+                        document.querySelectorAll('#clan-sidebar-list button').forEach(btn => btn.classList.remove('active-item'));
+                        button.classList.add('active-item');
+                    }
+                });
+            }
+
+            function showClanDetails(clanId) { 
+                const clan = clanData.find(c => c.id === clanId);
+                const mainContent = document.getElementById('clans-main-content');
+                mainContent.innerHTML = `
+                    <div class="animate-fade-in grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        <div class="lg:col-span-2">
+                             <div id="clanMap" class="w-full h-96 lg:h-full rounded-lg shadow-lg"></div>
+                        </div>
+                        <div id="clan-dossier" class="lg:col-span-1">
+                            <h3 class="text-3xl font-bold font-title">${clan.name}</h3>
+                            <p class="font-semibold text-stone-600 italic mb-4">${clan.motto}</p>
+                            <div class="mt-4 border-b border-stone-200">
+                                <nav class="-mb-px flex space-x-2" aria-label="Tabs">
+                                    <button class="tab-button whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm active" data-tab="lore">Lore</button>
+                                    <button class="tab-button whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm" data-tab="emblems">Emblems</button>
+                                    <button class="tab-button whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm" data-tab="tartan">Tartan</button>
+                                </nav>
+                            </div>
+                            <div class="mt-4">
+                                <div id="lore-tab" class="tab-content active space-y-2 text-sm">${clan.lore || 'Details coming soon.'}</div>
+                                <div id="emblems-tab" class="tab-content">
+                                    <div class="grid grid-cols-3 gap-2">
+                                        <div><img src="${clan.emblems.traditional}" alt="Traditional Emblem" class="w-full rounded-md"><p class="text-xs text-center mt-1">Traditional</p></div>
+                                        <div><img src="${clan.emblems.modern}" alt="Modern Emblem" class="w-full rounded-md"><p class="text-xs text-center mt-1">Modern</p></div>
+                                        <div><img src="${clan.emblems.celtic}" alt="Celtic Emblem" class="w-full rounded-md"><p class="text-xs text-center mt-1">Celtic</p></div>
+                                    </div>
+                                </div>
+                                <div id="tartan-tab" class="tab-content">
+                                    <img src="${clan.tartan.image}" alt="${clan.name} Tartan" class="w-full rounded-md mb-2">
+                                    <p class="text-sm">${clan.tartan.description || ''}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                mainContent.querySelectorAll('.tab-button').forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        const tabId = e.currentTarget.dataset.tab;
+                        mainContent.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+                        mainContent.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+                        e.currentTarget.classList.add('active');
+                        mainContent.querySelector(`#${tabId}-tab`).classList.add('active');
+                    });
+                });
+                
+                maps.clans = L.map('clanMap').setView([clan.seat.lat, clan.seat.lng], 9);
+                L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png', { attribution: '&copy; CARTO' }).addTo(maps.clans);
+                L.marker([clan.seat.lat, clan.seat.lng]).addTo(maps.clans);
+            }
+            
+            function setupSlideshow() { 
+                let slideIndex = 0;
+                const slides = document.querySelectorAll(".slide");
+                const dots = document.querySelectorAll(".dot");
+                if (slides.length === 0) return;
+
+                function showSlides() {
+                    slides.forEach(s => s.classList.remove('active'));
+                    dots.forEach(d => d.classList.remove('active'));
+                    slideIndex++;
+                    if (slideIndex > slides.length) {slideIndex = 1}    
+                    slides[slideIndex-1].classList.add('active');
+                    dots[slideIndex-1].classList.add('active');
+                    setTimeout(showSlides, 5000); 
+                }
+                showSlides();
+            }
+
+            function initAllFeatures() {
+                Object.keys(pages).forEach(pageKey => {
+                    const pageElement = document.getElementById(`${pageKey}-section`);
+                    const templateFunc = window[`get${pageKey.charAt(0).toUpperCase() + pageKey.slice(1).replace(/-/g, '')}PageHTML`];
+                    if (templateFunc) {
+                        pageElement.innerHTML = templateFunc();
+                    }
+                });
+                if(document.querySelector('.slide')) setupSlideshow();
+            }
+            
+            window.getHomePageHTML = getHomePageHTML;
+            window.getClansPageHTML = getClansPageHTML;
+            window.getGenealogyPageHTML = getGenealogyPageHTML;
+            window.getTourismPageHTML = getTourismPageHTML;
+            window.getNameGeneratorPageHTML = getNameGeneratorPageHTML;
+            window.getSagaPageHTML = getSagaPageHTML;
+            window.getGuidesPageHTML = getGuidesPageHTML;
+            window.get3DPageHTML = get3DPageHTML;
+            window.getFinderPageHTML = getFinderPageHTML;
+            window.getLegendsPageHTML = getLegendsPageHTML;
+            window.getTartanDesignerPageHTML = getTartanDesignerPageHTML;
+            window.getRecipesPageHTML = getRecipesPageHTML;
+            window.getAIAssistantPageHTML = getAIAssistantPageHTML;
+            
+            initNav();
+            initAllFeatures();
+            setupDarkMode();
+            
+            document.querySelector('.nav-link[data-target="home"]').click();
+        });
+    </script>
+</body>
+</html>
