@@ -108,13 +108,66 @@
         .tree li a{ border: 2px solid var(--clan-stone); padding: 10px; text-decoration: none; color: #333; background-color: var(--parchment); font-family: 'Cinzel', serif; display: inline-block; border-radius: 5px; transition: all 0.5s; min-width: 100px; }
         .tree li a.selected { border-color: var(--clan-gold); box-shadow: 0 0 10px var(--clan-gold); }
 
+        /* PPT Content Styles */
+        .ppt-section {
+            background: linear-gradient(135deg, #fef9e7 0%, #fdf2e9 100%);
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        .ppt-section h2 {
+            color: var(--clan-burgundy);
+            font-family: 'Cinzel', serif;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid var(--clan-gold);
+            padding-bottom: 0.5rem;
+        }
+        .ppt-section h3 {
+            color: var(--clan-forest);
+            font-family: 'Cinzel', serif;
+            font-size: 1.5rem;
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        .ppt-section ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        .ppt-section li {
+            padding: 0.5rem 0;
+            position: relative;
+            padding-left: 1.5rem;
+        }
+        .ppt-section li:before {
+            content: "•";
+            color: var(--clan-gold);
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+        }
+        .ppt-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        .ppt-card {
+            background: white;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            border-left: 4px solid var(--clan-gold);
+        }
     </style>
 </head>
 <body class="text-stone-800">
     <header class="bg-white/80 backdrop-blur-sm shadow-lg sticky top-0 z-40 header-bg">
         <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
             <div class="flex items-center space-x-4">
-                 <img src="icon.jpg" alt="The Clan Hearth Emblem" class="w-14 h-14 rounded-full border-2 border-yellow-800">
+                 <!-- Updated Clan Hearth Icon -->
+                 <img src="https://raw.githubusercontent.com/kenmck3772/theclanhearth.com/main/assets/images/embelms/clan-badge-3.png" alt="The Clan Hearth Emblem" class="w-14 h-14 rounded-full border-2 border-yellow-800">
                 <h1 class="text-2xl md:text-3xl font-title font-bold text-yellow-800">The Clan Hearth</h1>
             </div>
             <nav id="main-nav" class="hidden md:flex items-center space-x-1">
@@ -640,7 +693,162 @@
                         </div>
                     </div>`).join('');
                 let dots = slideData.map((_, index) => `<span class="dot cursor-pointer h-3 w-3 mx-1 bg-white/50 rounded-full inline-block transition-colors duration-600 ease-in-out ${index === 0 ? 'active' : ''}" data-slide="${index}"></span>`).join('');
-                return `<div class="relative h-[70vh] min-h-[400px] text-white shadow-2xl overflow-hidden -mt-8">${slides}<div class="absolute bottom-5 z-30 w-full flex justify-center">${dots}</div></div>`;
+                
+                // PPT Content Section
+                const pptContent = `
+                <div class="max-w-7xl mx-auto px-4 py-12">
+                    <div class="ppt-section">
+                        <h2>The Clan Hearth</h2>
+                        <p class="text-xl italic mb-6">Troimh theine tha sinn aonaichte - Through Fire, We Are United</p>
+                        
+                        <h3>Scottish Landscapes</h3>
+                        <div class="ppt-grid">
+                            <div class="ppt-card">
+                                <h4 class="font-bold text-lg mb-2">Highland Lochs</h4>
+                                <p>Mirror-like waters reflecting majestic mountains</p>
+                            </div>
+                            <div class="ppt-card">
+                                <h4 class="font-bold text-lg mb-2">Glacial Valleys</h4>
+                                <p>Carved by ancient ice, bathed in sunlight</p>
+                            </div>
+                            <div class="ppt-card">
+                                <h4 class="font-bold text-lg mb-2">Historic Landmarks</h4>
+                                <p>Ancient monuments standing guard over the waters</p>
+                            </div>
+                            <div class="ppt-card">
+                                <h4 class="font-bold text-lg mb-2">Lakeside Castles</h4>
+                                <p>Medieval fortresses nestled in pristine landscapes</p>
+                            </div>
+                        </div>
+                        
+                        <h3>Scottish Castles</h3>
+                        <div class="ppt-grid">
+                            <div class="ppt-card">
+                                <h4 class="font-bold text-lg mb-2">Edinburgh Castle</h4>
+                                <p>Iconic fortress atop Castle Rock</p>
+                            </div>
+                            <div class="ppt-card">
+                                <h4 class="font-bold text-lg mb-2">Eilean Donan</h4>
+                                <p>Picturesque island castle</p>
+                            </div>
+                            <div class="ppt-card">
+                                <h4 class="font-bold text-lg mb-2">Highland Fortress</h4>
+                                <p>Majestic castle mirrored in loch waters</p>
+                            </div>
+                            <div class="ppt-card">
+                                <h4 class="font-bold text-lg mb-2">Historic Stronghold</h4>
+                                <p>Ancient stone bridge to medieval past</p>
+                            </div>
+                        </div>
+                        
+                        <h3>Highland Games</h3>
+                        <div class="ppt-grid">
+                            <div class="ppt-card">
+                                <h4 class="font-bold text-lg mb-2">Caber Toss</h4>
+                                <p>The signature event where athletes flip a large wooden pole</p>
+                                <ul>
+                                    <li>Ancient tradition</li>
+                                    <li>Test of strength</li>
+                                    <li>Prestigious event</li>
+                                </ul>
+                            </div>
+                            <div class="ppt-card">
+                                <h4 class="font-bold text-lg mb-2">Traditional Competitions</h4>
+                                <p>Athletes in kilts demonstrating strength and skill</p>
+                            </div>
+                            <div class="ppt-card">
+                                <h4 class="font-bold text-lg mb-2">Cultural Celebration</h4>
+                                <p>Music, dance and clan gatherings</p>
+                            </div>
+                        </div>
+                        
+                        <h3>Hunting & Fishing</h3>
+                        <div class="ppt-grid">
+                            <div class="ppt-card">
+                                <h4 class="font-bold text-lg mb-2">Highland Hunting</h4>
+                                <p>Red Deer Stalking - Traditional pursuit in rugged Highland terrain</p>
+                                <ul>
+                                    <li>Mountain terrain</li>
+                                    <li>Centuries-old tradition</li>
+                                </ul>
+                            </div>
+                            <div class="ppt-card">
+                                <h4 class="font-bold text-lg mb-2">Game Hunting</h4>
+                                <p>Managed hunting on historic estates</p>
+                            </div>
+                            <div class="ppt-card">
+                                <h4 class="font-bold text-lg mb-2">Loch Fishing</h4>
+                                <p>Salmon & Trout Fishing - World-class angling in pristine waters</p>
+                                <ul>
+                                    <li>Pristine lochs</li>
+                                    <li>Prestigious sport</li>
+                                </ul>
+                            </div>
+                            <div class="ppt-card">
+                                <h4 class="font-bold text-lg mb-2">Traditional Methods</h4>
+                                <p>Time-honored fishing techniques</p>
+                            </div>
+                        </div>
+                        
+                        <h3>Scottish Wildlife</h3>
+                        <div class="ppt-grid">
+                            <div class="ppt-card">
+                                <h4 class="font-bold text-lg mb-2">Highland Cattle</h4>
+                                <p>Iconic shaggy-coated cattle of the Highlands</p>
+                                <ul>
+                                    <li>Highland Cow - Distinctive long horns and flowing hair</li>
+                                    <li>Highland Breed - Hardy animals adapted to harsh conditions</li>
+                                    <li>Mountain Grazers - Thriving in rugged Highland terrain</li>
+                                </ul>
+                            </div>
+                            <div class="ppt-card">
+                                <h4 class="font-bold text-lg mb-2">Natural Habitat</h4>
+                                <p>Diverse ecosystems across Scotland</p>
+                                <ul>
+                                    <li>Conservation - Protecting Scotland's natural heritage</li>
+                                    <li>Native Species - Home to unique wildlife found nowhere else</li>
+                                    <li>Habitats - From mountains to lochs, diverse ecosystems</li>
+                                </ul>
+                            </div>
+                            <div class="ppt-card">
+                                <h4 class="font-bold text-lg mb-2">Heritage</h4>
+                                <p>Wildlife deeply tied to Scottish culture</p>
+                            </div>
+                        </div>
+                        
+                        <h3>Historical Sites</h3>
+                        <div class="ppt-grid">
+                            <div class="ppt-card">
+                                <h4 class="font-bold text-lg mb-2">Urquhart Castle</h4>
+                                <p>Iconic fortress ruins on the shores of Loch Ness</p>
+                                <p>13th - 17th Century</p>
+                            </div>
+                            <div class="ppt-card">
+                                <h4 class="font-bold text-lg mb-2">Culloden Battlefield</h4>
+                                <p>Site of the final Jacobite uprising</p>
+                            </div>
+                            <div class="ppt-card">
+                                <h4 class="font-bold text-lg mb-2">Ancient Strongholds</h4>
+                                <p>Medieval fortresses across the Highlands</p>
+                            </div>
+                            <div class="ppt-card">
+                                <h4 class="font-bold text-lg mb-2">Battlefields</h4>
+                                <p>Culloden, Bannockburn, and more</p>
+                            </div>
+                            <div class="ppt-card">
+                                <h4 class="font-bold text-lg mb-2">Castles</h4>
+                                <p>Over 2,000 castle sites across Scotland</p>
+                            </div>
+                            <div class="ppt-card">
+                                <h4 class="font-bold text-lg mb-2">Heritage</h4>
+                                <p>UNESCO World Heritage sites</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                `;
+                
+                return `<div class="relative h-[70vh] min-h-[400px] text-white shadow-2xl overflow-hidden -mt-8">${slides}<div class="absolute bottom-5 z-30 w-full flex justify-center">${dots}</div></div>${pptContent}`;
             }
 
             function getClansPageHTML() { 
