@@ -14,7 +14,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- Scripts -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
@@ -23,63 +23,86 @@
     <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/examples/js/controls/OrbitControls.js"></script>
 
     <style>
-        body { font-family: 'Inter', sans-serif; }
+        :root {
+            --clan-gold: #d4af37;
+            --clan-burgundy: #800020;
+            --clan-forest: #2d5016;
+            --clan-stone: #8b7355;
+            --parchment: #f4f1e8;
+            --aged-paper: #f0ead6;
+        }
+        
+        /* Light Mode Default */
+        body { font-family: 'Inter', sans-serif; background: var(--parchment); color: #374151; }
         .font-title { font-family: 'Cinzel', serif; }
-        
-        /* Light Mode Styles */
-        body { background: #f4f1e8; color: #374151; }
-        .header-bg { background: rgba(255, 255, 255, 0.8); }
-        .content-card { background: rgba(255, 255, 255, 0.7); }
-        .bg-stone-100 { background: #f5f5f4; }
-        .text-stone-800 { color: #292524; }
-        .text-stone-600 { color: #57534e; }
-        .text-yellow-800 { color: #854d0e; }
-        .border-stone-200 { border-color: #e7e5e4; }
-        
+
         /* Dark Mode Styles */
         html.dark body { background: #111827; color: #d1d5db; }
-        html.dark .header-bg { background: rgba(17, 24, 39, 0.8); }
         html.dark .content-card, html.dark .bg-white\/80, html.dark .bg-white\/90, html.dark .bg-white { background: rgba(31, 41, 55, 0.9); }
         html.dark .bg-stone-100, html.dark .bg-stone-50 { background: #374151; }
-        html.dark .text-stone-800, html.dark .text-stone-900, html.dark .text-gray-900 { color: #e5e7eb; }
-        html.dark .text-stone-600, html.dark .text-gray-700, html.dark .text-stone-500 { color: #9ca3af; }
-        html.dark .text-yellow-800 { color: #d4af37; }
-        html.dark .border-stone-200, html.dark .border-gray-300 { border-color: #4b5563; }
+        html.dark .text-stone-800, html.dark .text-gray-900, html.dark .text-stone-900 { color: #e5e7eb; }
+        html.dark .text-stone-600, html.dark .text-gray-600, html.dark .text-gray-700, html.dark .text-stone-500 { color: #9ca3af; }
+        html.dark .text-yellow-800 { color: var(--clan-gold); }
+        html.dark .border-stone-200, html.dark .border-gray-200, html.dark .border-gray-300 { border-color: #4b5563; }
+        html.dark .header-bg { background: rgba(17, 24, 39, 0.8); }
         html.dark .leaflet-tile { filter: brightness(0.6) invert(1) contrast(3) hue-rotate(200deg) saturate(0.3) brightness(0.7); }
         html.dark .dropdown-menu { background: rgba(31, 41, 55, 0.95); }
         html.dark .mobile-menu-bg { background: rgba(31, 41, 55, 0.95); }
-        html.dark #itinerary-panel { background-color: #1f2937; }
         html.dark .spiritual-journey { background: #1f2937; }
         html.dark .element-card { background: #374151; }
-        html.dark .ritual-step h4, html.dark .ritual-step p { color: #d1d5db; }
+        html.dark .ritual-step h4, html.dark .ritual-step p, html.dark .tree li a { color: #d1d5db; }
+        html.dark .tree li a { background-color: #374151; border-color: #6b7280;}
 
-        .nav-link.active { color: #a16207; border-bottom: 2px solid #a16207; }
+        .nav-link.active { color: var(--clan-gold); border-bottom: 2px solid var(--clan-gold); background: rgba(212, 175, 55, 0.1); }
+        html.dark .nav-link.active { background: rgba(212, 175, 55, 0.2); }
+        
         .page-section { display: none; }
         .page-section.active { display: block; }
         
+        .btn-primary { background: linear-gradient(45deg, var(--clan-burgundy), var(--clan-forest)); color: white; border: 2px solid var(--clan-gold); transition: all 0.3s ease; }
+        .btn-primary:hover { background: linear-gradient(45deg, var(--clan-forest), var(--clan-burgundy)); transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.2); }
+        
+        .dropdown .dropdown-menu { display: none; }
+        .dropdown:hover .dropdown-menu { display: block; }
+
+        .tab-button.active { border-color: var(--clan-gold); color: var(--clan-gold); font-weight: 600; background-color: var(--aged-paper); }
+        html.dark .tab-button.active { background-color: #374151; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        #clanMap, #tourismMap { min-height: 60vh; border-radius: 0.5rem; }
+
         /* Slideshow Styles */
         .slide { display: none; animation: fade 1.5s ease-in-out; background-size: cover; background-position: center; }
         .slide.active { display: block; }
         @keyframes fade { from { opacity: .4 } to { opacity: 1 } }
-
-        /* Other styles from merged file */
-        .tab-button.active { border-color: #a16207; color: #a16207; font-weight: 600; }
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
-        #clanMap, #tourismMap { min-height: 60vh; border-radius: 0.5rem; }
-        .map-emoji-icon { font-size: 24px; text-align: center; line-height: 24px; text-shadow: 0 0 3px #ffffff; }
-        #itinerary-panel { position: absolute; bottom: 0; left: 0; right: 0; z-index: 1000; box-shadow: 0 -4px 12px rgba(0,0,0,0.1); transition: transform 0.3s ease-in-out; transform: translateY(100%); }
-        #itinerary-panel.open { transform: translateY(0); }
-        .spiritual-journey { border-radius: 1rem; padding: 2rem; box-shadow: 0 10px 25px rgba(161, 98, 7, 0.1); margin-bottom: 2rem; }
-        .mystical-stone { width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; margin: 0 auto 1.5rem; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); cursor: pointer; transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        
+        /* Spiritual Journey Styles */
+        .spiritual-journey { background: linear-gradient(135deg, #fef9e7 0%, #fdf2e9 100%); }
+        .mystical-stone { transition: transform 0.3s ease, box-shadow 0.3s ease; }
         .mystical-stone:hover { transform: scale(1.1); box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15); }
-        .stone-selected { transform: scale(1.15); box-shadow: 0 0 20px rgba(161, 98, 7, 0.5); border: 3px solid #a16207; }
-        .element-card { background: white; border-radius: 0.75rem; padding: 1.5rem; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); transition: transform 0.2s ease, box-shadow 0.2s ease; cursor: pointer; border: 2px solid transparent; }
+        .stone-selected { transform: scale(1.15) !important; box-shadow: 0 0 20px rgba(161, 98, 7, 0.5) !important; border: 3px solid #a16207; }
+        .element-card { transition: transform 0.2s ease, box-shadow 0.2s ease; border: 2px solid transparent; }
         .element-card:hover { transform: translateY(-5px); box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1); }
         .element-card.selected { border-color: #a16207; background: #fef9e7; }
         html.dark .element-card.selected { background: #4b5563; }
         .mystical-glow { animation: mysticalGlow 3s ease-in-out infinite alternate; }
-        @keyframes mysticalGlow { from { box-shadow: 0 0 10px rgba(161, 98, 7, 0.3); } to { box-shadow: 0 0 25px rgba(161, 98, 7, 0.6); } }
+        @keyframes mysticalGlow { from { box-shadow: 0 0 10px rgba(212, 175, 55, 0.3); } to { box-shadow: 0 0 25px rgba(212, 175, 55, 0.6); } }
+        
+        /* Family Tree Styles */
+        .tree ul { padding-top: 20px; position: relative; transition: all 0.5s; display: flex; justify-content: center;}
+        .tree li { float: left; text-align: center; list-style-type: none; position: relative; padding: 20px 5px 0 5px; transition: all 0.5s; }
+        .tree li::before, .tree li::after{ content: ''; position: absolute; top: 0; right: 50%; border-top: 2px solid var(--clan-stone); width: 50%; height: 20px; }
+        .tree li::after{ right: auto; left: 50%; border-left: 2px solid var(--clan-stone); }
+        .tree li:only-child::after, .tree li:only-child::before { display: none; }
+        .tree li:only-child{ padding-top: 0;}
+        .tree li:first-child::before, .tree li:last-child::after{ border: 0 none; }
+        .tree li:last-child::before{ border-right: 2px solid var(--clan-stone); border-radius: 0 5px 0 0; }
+        .tree li:first-child::after{ border-radius: 5px 0 0 0; }
+        .tree ul ul::before{ content: ''; position: absolute; top: 0; left: 50%; border-left: 2px solid var(--clan-stone); width: 0; height: 20px; }
+        .tree li a{ border: 2px solid var(--clan-stone); padding: 10px; text-decoration: none; color: #333; background-color: var(--parchment); font-family: 'Cinzel', serif; display: inline-block; border-radius: 5px; transition: all 0.5s; min-width: 100px; }
+        .tree li a.selected { border-color: var(--clan-gold); box-shadow: 0 0 10px var(--clan-gold); }
+
     </style>
 </head>
 <body class="text-stone-800">
@@ -89,8 +112,8 @@
                  <img src="icon.jpg" alt="The Clan Hearth Emblem" class="w-14 h-14 rounded-full border-2 border-yellow-800">
                 <h1 class="text-2xl md:text-3xl font-title font-bold text-yellow-800">The Clan Hearth</h1>
             </div>
-            <nav id="main-nav" class="hidden md:flex items-center space-x-2 md:space-x-4">
-                <!-- Desktop Nav Populated by JS -->
+            <nav id="main-nav" class="hidden md:flex items-center space-x-1">
+                <!-- Desktop Nav Links Populated by JS -->
             </nav>
             <div class="flex items-center space-x-4">
                 <button id="dark-mode-toggle" class="text-stone-600 hover:text-yellow-800 transition-colors text-lg"><i class="fas fa-moon"></i></button>
@@ -104,8 +127,6 @@
         <!-- Sections will be injected here by JS -->
     </main>
 
-    <div id="generic-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4" style="backdrop-filter: blur(4px); background-color: rgba(0,0,0,0.6);"></div>
-
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const mainContent = document.getElementById('main-content');
@@ -115,28 +136,45 @@
             const githubBaseUrl = 'https://raw.githubusercontent.com/kenmck3772/theclanhearth.com/main/';
 
             const pages = {
-                home: { title: "Home", icon: "fa-home" },
-                tourism: { title: "Trip Planner", icon: "fa-map-marked-alt" },
-                clans: { title: "Clans", icon: "fa-shield-alt" },
-                finder: { title: "Spiritual Clan", icon: "fa-magic" },
-                legends: { title: "Legends", icon: "fa-scroll" },
-                'tartan-designer': { title: "Tartan Designer", icon: "fa-palette" },
-                recipes: { title: "Recipes", icon: "fa-utensils" },
-                genealogy: { title: "Family Tree", icon: "fa-sitemap" },
-                'ai-assistant': { title: "Och-I Assistant", icon: "fa-robot" },
-                '3d-heritage': { title: "3D Heritage", icon: "fa-cube" }
+                home: { title: "Home", icon: "fa-home", inDropdown: false },
+                clans: { title: "Clans", icon: "fa-shield-alt", inDropdown: false },
+                genealogy: { title: "Genealogy", icon: "fa-sitemap", inDropdown: false },
+                tourism: { title: "Trip Planner", icon: "fa-map-marked-alt", inDropdown: true },
+                finder: { title: "Spiritual Clan", icon: "fa-magic", inDropdown: true },
+                legends: { title: "Legends", icon: "fa-scroll", inDropdown: true },
+                'tartan-designer': { title: "Tartan Designer", icon: "fa-palette", inDropdown: true },
+                recipes: { title: "Recipes", icon: "fa-utensils", inDropdown: true },
+                'ai-assistant': { title: "Och-I Assistant", icon: "fa-robot", inDropdown: true },
+                '3d-heritage': { title: "3D Heritage", icon: "fa-cube", inDropdown: true }
             };
 
-            let navHTML = '';
+            // Dynamic Nav and Section creation
+            let mobileMenuHTML = '';
+            let mainNavHTML = '';
+            let dropdownHTML = '';
             for (const [key, value] of Object.entries(pages)) {
                 const section = document.createElement('section');
                 section.id = `${key}-section`;
                 section.className = 'page-section';
                 mainContent.appendChild(section);
-                navHTML += `<button class="nav-link font-semibold text-stone-600 hover:text-yellow-800 px-3 py-2" data-target="${key}">${value.title}</button>`;
-                mobileMenu.innerHTML += `<button class="block w-full text-left nav-link font-semibold text-stone-600 hover:text-yellow-800 p-4 border-t" data-target="${key}"><i class="fas ${value.icon} mr-3 w-5 text-center"></i>${value.title}</button>`;
+                
+                const linkHTML = `<button class="nav-link font-semibold text-stone-600 hover:text-yellow-800 px-3 py-2 rounded-md" data-target="${key}">${value.title}</button>`;
+                const mobileLinkHTML = `<button class="nav-link block w-full text-left font-semibold text-stone-600 hover:text-yellow-800 p-4 border-t dark:border-gray-700" data-target="${key}"><i class="fas ${value.icon} mr-3 w-5 text-center"></i>${value.title}</button>`;
+
+                mobileMenuHTML += mobileLinkHTML;
+                if (value.inDropdown) {
+                    dropdownHTML += linkHTML.replace('px-3 py-2 rounded-md', 'block w-full text-left p-3');
+                } else {
+                    mainNavHTML += linkHTML;
+                }
             }
-            mainNav.innerHTML = navHTML;
+            mainNavHTML += `<div class="relative dropdown">
+                    <button class="font-semibold text-stone-600 hover:text-yellow-800 px-3 py-2 rounded-md">More <i class="fas fa-chevron-down text-xs"></i></button>
+                    <div class="dropdown-menu absolute right-0 mt-2 w-52 bg-white/95 backdrop-blur-lg rounded-xl shadow-lg z-10 dark:bg-gray-800/95">${dropdownHTML}</div>
+                </div>`;
+            
+            mainNav.innerHTML = mainNavHTML;
+            mobileMenu.innerHTML = mobileMenuHTML;
             
             const clanData = [
                 { id: "armstrong", name: "Clan Armstrong", motto: "Invictus Maneo", lore: "A powerful and feared Border Reiver clan.", seat: { lat: 55.175, lng: -2.863 }, emblems: { traditional: `${githubBaseUrl}emblems/traditional/armstrong-emblem.jpg`, modern: `${githubBaseUrl}emblems/modern/armstrong-emblem.jpg`, celtic: `${githubBaseUrl}emblems/celtic/armstrong-emblem.jpg` }, tartan: { image: `${githubBaseUrl}tartans/armstrong.jpg`} },
@@ -207,16 +245,15 @@
             }
             function getGenealogyPageHTML() { return `<div class="content-card p-8 rounded-xl">Genealogy Tree Builder Coming Soon</div>`; }
             function getTourismPageHTML() { return `<div class="content-card p-8 rounded-xl">Trip Planner Coming Soon</div>`; }
-            function getFinderPageHTML() { return `<div class="content-card p-8 rounded-xl">Spiritual Clan Finder Coming Soon</div>`; }
+            function getNameGeneratorPageHTML() { return `<div class="content-card p-8 rounded-xl">Name Generator Coming Soon</div>`; }
+            function getSagaPageHTML() { return `<div class="content-card p-8 rounded-xl">Highland Saga Coming Soon</div>`; }
+            function getGuidesPageHTML() { return `<div class="content-card p-8 rounded-xl">Heritage Guides coming soon.</div>`; }
+            function get3DPageHTML() { return `<div class="content-card p-8 rounded-xl">3D Heritage Explorer Coming Soon</div>`; }
+            function getFinderPageHTML() { return `<div class="content-card p-8 rounded-xl">Clan Finder Coming Soon</div>`; }
             function getLegendsPageHTML() { return `<div class="content-card p-8 rounded-xl">Legends Coming Soon</div>`; }
             function getTartanDesignerPageHTML() { return `<div class="content-card p-8 rounded-xl">Tartan Designer Coming Soon</div>`; }
             function getRecipesPageHTML() { return `<div class="content-card p-8 rounded-xl">Recipes Coming Soon</div>`; }
             function getAIAssistantPageHTML() { return `<div class="content-card p-8 rounded-xl">Och-I Assistant Coming Soon</div>`; }
-            function get3DPageHTML() { return `<div class="content-card p-8 rounded-xl">3D Heritage Explorer Coming Soon</div>`; }
-            function getNameGeneratorPageHTML() { return `<div class="content-card p-8 rounded-xl">Name Generator Coming Soon</div>`; }
-            function getSagaPageHTML() { return `<div class="content-card p-8 rounded-xl">Saga Coming Soon</div>`; }
-            function getGuidesPageHTML() { return `<div class="content-card p-8 rounded-xl">Guides Coming Soon</div>`; }
-
 
             function initNav() {
                 const navLinks = document.querySelectorAll('.nav-link');
