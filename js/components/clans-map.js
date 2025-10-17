@@ -220,7 +220,7 @@
         <div class="max-w-full mx-auto py-3 px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between">
                 <div class="flex items-center">
-                    <img src="https://welltegra.network/assets/logo.png" alt="Well-Tegra Data Solutions Logo" class="h-12 w-auto mr-3" onerror="this.onerror=null;this.src='https://placehold.co/100x100/0f172a/ffffff?text=Logo';">
+                    <img src="https://welltegra.network/assets/logo.png" alt="Well-Tegra Data Solutions Logo" class="h-12 w-auto mr-3 img-fallback" data-fallback="https://placehold.co/100x100/0f172a/ffffff?text=Logo">
                     <h1 id="header-title" class="text-xl font-bold hidden md:block">Well-Tegra Data Solutions</h1>
                 </div>
                 <div id="header-nav" class="flex-1 flex items-center justify-center space-x-1 md:space-x-4">

@@ -3,6 +3,24 @@
 document.addEventListener('DOMContentLoaded', function() {
     'use strict';
 
+  // Ensure the non-blocking fallback stylesheet is applied when it finishes loading
+  try {
+    const fallbackLink = document.querySelector('link[href="/css/style.css"]');
+    if (fallbackLink) {
+      // If it's already loaded, apply immediately; otherwise wait for load event
+      if (fallbackLink.sheet || fallbackLink.loaded) {
+        fallbackLink.media = 'all';
+      } else {
+        fallbackLink.addEventListener('load', () => { fallbackLink.media = 'all'; });
+        // Some browsers don't fire load for CSS; apply after a short timeout as a fallback
+        setTimeout(() => { fallbackLink.media = 'all'; }, 3000);
+      }
+    }
+  } catch (e) {
+    // Non-critical
+    console.warn('fallback stylesheet handler failed', e);
+  }
+
     // --- GLOBAL APP STATE ---
     // Variables moved to the global scope to be accessible across multiple functions
     let maps = {};
@@ -87,6 +105,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
 });
 
+// Ensure any images already in the DOM are initialized once on load
+document.addEventListener('DOMContentLoaded', () => {
+  try { initFirstAvailableImages(document); } catch (e) {}
+  try { initFallbackImages(document); } catch (e) {}
+});
+
 document.addEventListener('DOMContentLoaded', async () => {
   const mount=document.getElementById('app');
   mount.outerHTML=`
@@ -130,7 +154,77 @@ document.addEventListener('DOMContentLoaded', async () => {
   const slug = s => String(s||'').toLowerCase().replace(/&/g,' and ').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
   const macVariants=x=>{const v=[]; if(/^mac/.test(x)) v.push(x.replace(/^mac/,'mc')); if(/^mc/.test(x)) v.push(x.replace(/^mc/,'mac')); return v; };
   const candidatesFor = clan => { const base=slug(clan.name.replace(/\\(.*?\\)/g,'')); const ss=(clan.surnames||[]).map(slug); const core=[base].concat(ss); const plus=core.flatMap(v=>[v,...macVariants(v)]); return Array.from(new Set(plus.concat(plus.map(v=>v.replace(/-/g,''))))); };
-  const firstAvailable = srcs => srcs.map(src=>`<img src="${src}" loading="lazy" onerror="this.dataset.bad=1; const nx=this.nextElementSibling; if(nx && nx.tagName==='IMG'){ this.remove(); nx.style.display=''; } else { this.style.display='none'; }" style="">`).join('') + '<img style="display:none">';
+  // Render a sequence of candidate images inside a container. We attach error handlers
+  // via JS after the HTML is inserted so we avoid inline event attributes.
+  const firstAvailable = (srcs) => {
+    return `<span class="first-available" data-src-count="${srcs.length}">` + srcs.map(src => ` <img src="${src}" loading="lazy" class="first-available-img" style="display:none"> `).join('') + `</span>`;
+  };
+
+  // Initialize fallback logic for image groups produced by `firstAvailable`.
+  function initFirstAvailableImages(root = document) {
+    const containers = (root || document).querySelectorAll('.first-available');
+    containers.forEach(container => {
+      if (container.dataset.initialized) return; // only once
+      const imgs = Array.from(container.querySelectorAll('img.first-available-img'));
+      if (!imgs.length) return;
+      imgs.forEach((img, i) => {
+        img.style.display = i === 0 ? '' : 'none';
+        img.addEventListener('error', function onErr() {
+          try { img.dataset.bad = '1'; } catch (e) {}
+          const next = imgs[i + 1];
+          if (next) {
+            // remove broken img and reveal next
+            img.removeEventListener('error', onErr);
+            img.remove();
+            next.style.display = '';
+          } else {
+            img.style.display = 'none';
+          }
+        });
+      });
+      container.dataset.initialized = '1';
+    });
+  }
+
+  // Generic image fallback initializer for single images that declare a data-fallback attr
+  function initFallbackImages(root = document) {
+    const imgs = (root || document).querySelectorAll('img.img-fallback');
+    imgs.forEach(img => {
+      if (img.dataset.fallbackInit) return;
+      const fb = img.dataset.fallback;
+      img.addEventListener('error', function onErr() {
+        img.onerror = null; // avoid infinite loops
+        if (fb) {
+          img.src = fb;
+          img.alt = img.alt || 'Image not available';
+        } else {
+          img.style.display = 'none';
+        }
+      });
+      img.dataset.fallbackInit = '1';
+    });
+  }
+
+  // Observe added nodes and initialize image fallbacks / first-available groups automatically.
+  try {
+    const mo = new MutationObserver((records) => {
+      for (const r of records) {
+        r.addedNodes && r.addedNodes.forEach(node => {
+          if (!(node instanceof HTMLElement)) return;
+          if (node.matches && node.matches('.first-available, img.img-fallback')) {
+            initFirstAvailableImages(node.parentNode || node);
+            initFallbackImages(node.parentNode || node);
+          } else {
+            initFirstAvailableImages(node);
+            initFallbackImages(node);
+          }
+        });
+      }
+    });
+    mo.observe(document, { childList: true, subtree: true });
+  } catch (e) {
+    // MutationObserver not critical; continue silently
+  }
 
   async function getJSON(p,f){ try{ const r=await fetch(p,{cache:'no-cache'}); if(!r.ok) throw 0; return await r.json(); } catch { return f; } }
   const clans=await getJSON('./data/clans.json', []);

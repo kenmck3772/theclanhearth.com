@@ -13,11 +13,10 @@ Discover your Scottish heritage through our comprehensive platform featuring cla
 - **Traditional Recipes**: Authentic Scottish cuisine
 - **Legends & Myths**: Stories from Scottish folklore
 
-# The Clan Hearth - Scottish Heritage Platform
+## Developer notes
 
-[![PR Build](https://github.com/kenmck3772/theclanhearth.com/actions/workflows/pr-build.yml/badge.svg)](https://github.com/kenmck3772/theclanhearth.com/actions/workflows/pr-build.yml)
-
-Discover your Scottish heritage through our comprehensive platform featuring clan histories, tartan design, trip planning, and legendary tales.
+- PRs run `npm ci` and `npm run build` via GitHub Actions; the badge above reflects the workflow.
+- We removed inline event attributes (e.g., `onerror`, `onclick`) from templates to improve security and CSP compatibility. Images now use `class="img-fallback"` with a `data-fallback` URL or the `first-available` pattern for multiple candidate images. The JS initializers (`initFallbackImages` and `initFirstAvailableImages`) are in `js/app.js` and run automatically on DOM insertions.
 
 ## Features
 
@@ -27,14 +26,6 @@ Discover your Scottish heritage through our comprehensive platform featuring cla
 - **Tartan Designer**: Create custom tartan patterns
 - **Traditional Recipes**: Authentic Scottish cuisine
 - **Legends & Myths**: Stories from Scottish folklore
-
-## Technologies Used
-
-- HTML5
-- CSS3 (Tailwind CSS)
-- JavaScript (ES6+)
-- Leaflet.js for interactive maps
-- Font Awesome for icons
 
 ## Setup Instructions
 

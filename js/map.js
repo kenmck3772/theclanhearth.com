@@ -226,8 +226,28 @@ document.addEventListener('DOMContentLoaded', function () {
   };
 
   const createPopupContent = (item) => {
-    return `<h3>${item.name}</h3><p>${item.desc}</p><button class="add-to-trip-btn" onclick="addToTrip('${item.id}', '${item.name}', ${item.lat}, ${item.lng})">Add to Trip</button>`;
+    // The button uses data attributes; click is handled when the popup opens to avoid inline handlers.
+    return `<h3>${item.name}</h3><p>${item.desc}</p><button class="add-to-trip-btn" data-id="${item.id}" data-name="${escapeHtml(item.name)}" data-lat="${item.lat}" data-lng="${item.lng}">Add to Trip</button>`;
   };
+
+  // Escape minimal characters for safe attribute embedding
+  function escapeHtml(s) { return String(s).replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+
+  // Attach a delegated click handler when any popup opens so we can read data-* and call addToTrip
+  map.on('popupopen', function(e) {
+    const popupNode = e.popup && e.popup._contentNode;
+    if (!popupNode) return;
+    const btn = popupNode.querySelector('.add-to-trip-btn');
+    if (btn) {
+      btn.addEventListener('click', function handleAdd() {
+        const id = btn.dataset.id;
+        const name = btn.dataset.name;
+        const lat = parseFloat(btn.dataset.lat);
+        const lng = parseFloat(btn.dataset.lng);
+        if (window.addToTrip) window.addToTrip(id, name, lat, lng);
+      });
+    }
+  });
 
   const allItems = {};
 
