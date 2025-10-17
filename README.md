@@ -23,8 +23,8 @@ Discover your Scottish heritage through our comprehensive platform featuring cla
 
 1. Clone the repository:
 
-```bash
-git clone https://github.com/kenmck3772/theclanhearth.com.git
+   ```bash
+   git clone https://github.com/kenmck3772/theclanhearth.com.git
 cd theclanhearth.com
 ```
 
