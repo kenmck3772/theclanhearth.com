@@ -1657,4 +1657,7 @@
             });
             
             function renderSelectedColors() {
-                selectedColorsFlex.innerHTML = selectedColors.map(c => `<div class="w-8 h-8 rounded-full border-2 border
+                selectedColorsFlex.innerHTML = selectedColors.map(c => `
+                    <div class="w-8 h-8 rounded-full border-2 border-gray-300 mr-2" style="background-color: ${c};"></div>
+                `).join('');
+            }
