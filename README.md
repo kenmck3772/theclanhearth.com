@@ -105,6 +105,19 @@ What to check in PRs:
 
 For more details and a short checklist, see `CONTRIBUTING.md`.
 
+If you prefer using Make, a small `Makefile` is provided with convenient targets:
+
+```bash
+# Install deps (uses npm ci)
+make install
+
+# Start vite dev server
+make dev
+
+# Build production CSS
+make build-css
+```
+
 ## Notes
 
 - Compiled CSS files (`css/*.css`) and `node_modules/` are ignored in the repository.
