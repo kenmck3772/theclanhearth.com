@@ -38,6 +38,10 @@ jobs:
           cache: 'npm'
       - name: Install dependencies
         run: npm install
+      - name: Build Tailwind CSS (production)
+        run: |
+          npm ci --prefer-offline --no-audit --progress=false || npm install
+          npm run build:css:prod
       - name: Build
         run: npm run build
       - name: Setup Pages
