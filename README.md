@@ -1,5 +1,7 @@
 # The Clan Hearth - Scottish Heritage Platform
 
+[![PR Build](https://github.com/kenmck3772/theclanhearth.com/actions/workflows/pr-build.yml/badge.svg)](https://github.com/kenmck3772/theclanhearth.com/actions/workflows/pr-build.yml)
+
 Discover your Scottish heritage through our comprehensive platform featuring clan histories, tartan design, trip planning, and legendary tales.
 
 ## Features
@@ -11,12 +13,9 @@ Discover your Scottish heritage through our comprehensive platform featuring cla
 - **Traditional Recipes**: Authentic Scottish cuisine
 - **Legends & Myths**: Stories from Scottish folklore
 
-## Technologies Used
-
-- HTML5
-- CSS3 (Tailwind CSS)
-- JavaScript (ES6+)
 # The Clan Hearth - Scottish Heritage Platform
+
+[![PR Build](https://github.com/kenmck3772/theclanhearth.com/actions/workflows/pr-build.yml/badge.svg)](https://github.com/kenmck3772/theclanhearth.com/actions/workflows/pr-build.yml)
 
 Discover your Scottish heritage through our comprehensive platform featuring clan histories, tartan design, trip planning, and legendary tales.
 
@@ -49,7 +48,7 @@ cd theclanhearth.com
 2. Install dependencies (CI uses `npm ci`):
 
 ```bash
-npm install
+npm ci
 ```
 
 ## Building CSS
@@ -124,3 +123,7 @@ make build-css
 
 - Compiled CSS files (`css/*.css`) and `node_modules/` are ignored in the repository.
 - The old `package.json` directory that caused an earlier install error was removed from the working tree; repository history retains any past content.
+
+## PR checks
+
+This repository runs a PR build check that executes `npm ci` and `npm run build` to ensure the site builds successfully before merging. If the PR build fails, check the Actions logs and fix any build-time errors locally before pushing a new commit.
