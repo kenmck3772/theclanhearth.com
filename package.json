@@ -6,6 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "test:e2e": "playwright test",
+    "test:e2e:headed": "playwright test --headed",
     "preview": "vite preview",
     "build:css": "postcss src/tailwind.css -o css/style.css",
     "build:css:prod": "NODE_ENV=production postcss src/tailwind.css -o css/style.min.css",
