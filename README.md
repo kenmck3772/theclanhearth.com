@@ -103,6 +103,8 @@ What to check in PRs:
 - Ensure `npm run build:css:prod` completes without errors.
 - Don't commit compiled files under `css/`—they are ignored.
 
+For more details and a short checklist, see `CONTRIBUTING.md`.
+
 ## Notes
 
 - Compiled CSS files (`css/*.css`) and `node_modules/` are ignored in the repository.
