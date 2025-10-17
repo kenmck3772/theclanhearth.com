@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# Run inline handlers & CDN check before allowing commits
+bash ./scripts/check-inline.sh || { echo "Pre-commit check failed."; exit 1; }
+exit 0

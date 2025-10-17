@@ -68,6 +68,22 @@ In CI (the included GitHub Actions `workflows/deploy.yml`), the workflow runs `n
 
 Important: do NOT use the Tailwind CDN (`https://cdn.tailwindcss.com`) in production. This repository builds Tailwind into a compiled stylesheet via PostCSS (see the npm scripts above). Using the CDN in production is discouraged — it bypasses your custom configuration and can leak content-size or cause unexpected differences between local and production CSS.
 
+Pre-commit & CI guard
+---------------------
+To prevent regressions we added a lightweight check that scans the tracked files for HTML-style inline event attributes (`onerror="..."`, `onclick='...'`, `onload="..."`) and any references to `cdn.tailwindcss.com` (in code files). The check runs on the PR workflow and will fail the build if forbidden patterns are found.
+
+To enable a local pre-commit hook (recommended):
+
+1. Run:
+
+```bash
+npm run enable-hooks
+```
+
+2. The hook will run `scripts/check-inline.sh` before commits; it prints any offending matches and prevents the commit if any are present.
+
+This is intentionally light-weight and only scans tracked source files (excluding `dist`, `node_modules`, and a README exception for the CDN note).
+
 ## Contributing / Testing
 
 If you're contributing or testing locally, these quick steps will help:
