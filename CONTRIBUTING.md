@@ -34,3 +34,14 @@ Small guidelines
 If you're unsure about a change, open an issue or draft PR and we can iterate.
 
 Thank you for contributing — your help improves the project for everyone!
+
+Dev environment
+
+If you want to develop interactively (live reload, faster iteration), use Vite's dev server:
+
+```bash
+npm install
+npm run dev
+```
+
+This starts a local server (usually at `http://localhost:5173`) with hot-module reloading. Use `npm run watch:css` if you prefer to only rebuild CSS while using another local server.
