@@ -76,6 +76,8 @@ npm run watch:css
 
 In CI (the included GitHub Actions `workflows/deploy.yml`), the workflow runs `npm ci` and `npm run build:css:prod` before building and deploying the site.
 
+Important: do NOT use the Tailwind CDN (`https://cdn.tailwindcss.com`) in production. This repository builds Tailwind into a compiled stylesheet via PostCSS (see the npm scripts above). Using the CDN in production is discouraged — it bypasses your custom configuration and can leak content-size or cause unexpected differences between local and production CSS.
+
 ## Contributing / Testing
 
 If you're contributing or testing locally, these quick steps will help:
