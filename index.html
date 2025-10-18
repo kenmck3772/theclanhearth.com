@@ -850,6 +850,28 @@
             ],
             colors: { 'red': '#B22222', 'dark-red': '#8B0000', 'green': '#006400', 'dark-green': '#003300', 'blue': '#000080', 'dark-blue': '#00004C', 'yellow': '#FFD700', 'dark-yellow': '#DAA520', 'white': '#F8F8F8', 'black': '#1a1a1a', 'purple': '#800080', 'brown': '#A52A2A', 'grey': '#808080', 'light-blue': '#ADD8E6' }
         };
+<script>
+(async function () {
+  try {
+    const res = await fetch('assets/clan_image_manifest.json');
+    const manifest = await res.json();
+    const byId = Object.fromEntries(manifest.map(m => [m.clan_id, m]));
+    if (window.APP_DATA && Array.isArray(APP_DATA.clanData)) {
+      APP_DATA.clanData = APP_DATA.clanData.map(c => {
+        const key = (c.id || c.name || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+        const m = byId[key];
+        return m ? { ...c, emblemImage: m.emblem_path || c.emblemImage, tartanImage: m.tartan_path || c.tartanImage } : c;
+      });
+    }
+    if (typeof populateClanList === 'function') {
+      populateClanList(document.getElementById('clan-search-input')?.value || '');
+    }
+  } catch (e) {
+    console.error('Could not load clan image manifest:', e);
+  }
+})();
+</script>
+
 
         // --- UTILITY FUNCTIONS ---
         function getImagePath(fileName) {
