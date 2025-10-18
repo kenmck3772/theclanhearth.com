@@ -1,0 +1,387 @@
+[
+  {
+    "clan_id": "macgregor-monument",
+    "clan_name_guess": "macgregor monument",
+    "emblem_path": "assets/images/clans/emblems/macgregor-monument.jpg",
+    "tartan_path": null,
+    "notes": "Uncertain classification for macgregor-monument.jpg"
+  },
+  {
+    "clan_id": "macdougall",
+    "clan_name_guess": "macdougall",
+    "emblem_path": "assets/images/clans/emblems/macdougall.jpg",
+    "tartan_path": "assets/images/clans/tartans/macdougall.jpg",
+    "notes": ""
+  },
+  {
+    "clan_id": "gordon",
+    "clan_name_guess": "gordon",
+    "emblem_path": "assets/images/clans/emblems/gordon.jpg",
+    "tartan_path": "assets/images/clans/tartans/gordon.jpg",
+    "notes": ""
+  },
+  {
+    "clan_id": "douglas",
+    "clan_name_guess": "douglas",
+    "emblem_path": "assets/images/clans/emblems/douglas.jpg",
+    "tartan_path": "assets/images/clans/tartans/douglas.jpg",
+    "notes": ""
+  },
+  {
+    "clan_id": "stuart",
+    "clan_name_guess": "stuart",
+    "emblem_path": "assets/images/clans/emblems/stuart.jpg",
+    "tartan_path": "assets/images/clans/tartans/stuart.jpg",
+    "notes": ""
+  },
+  {
+    "clan_id": "elliot",
+    "clan_name_guess": "elliot",
+    "emblem_path": null,
+    "tartan_path": "assets/images/clans/tartans/elliot.jpg",
+    "notes": ""
+  },
+  {
+    "clan_id": "mackintosh",
+    "clan_name_guess": "mackintosh",
+    "emblem_path": "assets/images/clans/emblems/mackintosh.jpg",
+    "tartan_path": "assets/images/clans/tartans/mackintosh.jpg",
+    "notes": ""
+  },
+  {
+    "clan_id": "cameron",
+    "clan_name_guess": "cameron",
+    "emblem_path": "assets/images/clans/emblems/cameron.jpg",
+    "tartan_path": "assets/images/clans/tartans/cameron.jpg",
+    "notes": ""
+  },
+  {
+    "clan_id": "trong",
+    "clan_name_guess": "trong",
+    "emblem_path": "assets/images/clans/emblems/trong.jpg",
+    "tartan_path": null,
+    "notes": ""
+  },
+  {
+    "clan_id": "wallace",
+    "clan_name_guess": "wallace",
+    "emblem_path": "assets/images/clans/emblems/wallace.jpg",
+    "tartan_path": "assets/images/clans/tartans/wallace.jpg",
+    "notes": ""
+  },
+  {
+    "clan_id": "macpherson",
+    "clan_name_guess": "macpherson",
+    "emblem_path": "assets/images/clans/emblems/macpherson.jpg",
+    "tartan_path": "assets/images/clans/tartans/macpherson.jpg",
+    "notes": ""
+  },
+  {
+    "clan_id": "graham",
+    "clan_name_guess": "graham",
+    "emblem_path": "assets/images/clans/emblems/graham.jpg",
+    "tartan_path": null,
+    "notes": ""
+  },
+  {
+    "clan_id": "stewart",
+    "clan_name_guess": "stewart",
+    "emblem_path": "assets/images/clans/emblems/stewart.jpg",
+    "tartan_path": "assets/images/clans/tartans/stewart.jpg",
+    "notes": ""
+  },
+  {
+    "clan_id": "campbell",
+    "clan_name_guess": "campbell",
+    "emblem_path": "assets/images/clans/emblems/campbell.jpg",
+    "tartan_path": "assets/images/clans/tartans/campbell.jpg",
+    "notes": ""
+  },
+  {
+    "clan_id": "cameron-monument",
+    "clan_name_guess": "cameron monument",
+    "emblem_path": "assets/images/clans/emblems/cameron-monument.jpg",
+    "tartan_path": null,
+    "notes": "Uncertain classification for cameron-monument.jpg"
+  },
+  {
+    "clan_id": "sinclair",
+    "clan_name_guess": "sinclair",
+    "emblem_path": "assets/images/clans/emblems/sinclair.jpg",
+    "tartan_path": "assets/images/clans/tartans/sinclair.jpg",
+    "notes": ""
+  },
+  {
+    "clan_id": "donald",
+    "clan_name_guess": "donald",
+    "emblem_path": "assets/images/clans/emblems/donald.jpg",
+    "tartan_path": "assets/images/clans/tartans/donald.jpg",
+    "notes": ""
+  },
+  {
+    "clan_id": "stuart-monument",
+    "clan_name_guess": "stuart monument",
+    "emblem_path": "assets/images/clans/emblems/stuart-monument.jpg",
+    "tartan_path": null,
+    "notes": "Uncertain classification for stuart-monument.jpg"
+  },
+  {
+    "clan_id": "douglas-monument",
+    "clan_name_guess": "douglas monument",
+    "emblem_path": "assets/images/clans/emblems/douglas-monument.jpg",
+    "tartan_path": null,
+    "notes": "Uncertain classification for douglas-monument.jpg"
+  },
+  {
+    "clan_id": "grant",
+    "clan_name_guess": "grant",
+    "emblem_path": "assets/images/clans/emblems/grant.jpg",
+    "tartan_path": "assets/images/clans/tartans/grant.jpg",
+    "notes": ""
+  },
+  {
+    "clan_id": "mackenzie-monument",
+    "clan_name_guess": "mackenzie monument",
+    "emblem_path": "assets/images/clans/emblems/mackenzie-monument.jpg",
+    "tartan_path": null,
+    "notes": "Uncertain classification for mackenzie-monument.jpg"
+  },
+  {
+    "clan_id": "scott",
+    "clan_name_guess": "scott",
+    "emblem_path": "assets/images/clans/emblems/scott.jpg",
+    "tartan_path": "assets/images/clans/tartans/scott.jpg",
+    "notes": ""
+  },
+  {
+    "clan_id": "erskine",
+    "clan_name_guess": "erskine",
+    "emblem_path": "assets/images/clans/emblems/erskine.jpg",
+    "tartan_path": "assets/images/clans/tartans/erskine.jpg",
+    "notes": ""
+  },
+  {
+    "clan_id": "campbell-monument",
+    "clan_name_guess": "campbell monument",
+    "emblem_path": "assets/images/clans/emblems/campbell-monument.jpg",
+    "tartan_path": null,
+    "notes": "Uncertain classification for campbell-monument.jpg"
+  },
+  {
+    "clan_id": "guthrie-monument",
+    "clan_name_guess": "guthrie monument",
+    "emblem_path": "assets/images/clans/emblems/guthrie-monument.jpg",
+    "tartan_path": null,
+    "notes": "Uncertain classification for guthrie-monument.jpg"
+  },
+  {
+    "clan_id": "eliott",
+    "clan_name_guess": "eliott",
+    "emblem_path": "assets/images/clans/emblems/eliott.jpg",
+    "tartan_path": null,
+    "notes": ""
+  },
+  {
+    "clan_id": "mackenzie-1",
+    "clan_name_guess": "mackenzie 1",
+    "emblem_path": null,
+    "tartan_path": "assets/images/clans/tartans/mackenzie-1.jpg",
+    "notes": ""
+  },
+  {
+    "clan_id": "cunningham",
+    "clan_name_guess": "cunningham",
+    "emblem_path": "assets/images/clans/emblems/cunningham.jpg",
+    "tartan_path": "assets/images/clans/tartans/cunningham.jpg",
+    "notes": ""
+  },
+  {
+    "clan_id": "murray",
+    "clan_name_guess": "murray",
+    "emblem_path": "assets/images/clans/emblems/murray.jpg",
+    "tartan_path": "assets/images/clans/tartans/murray.jpg",
+    "notes": ""
+  },
+  {
+    "clan_id": "guthrie-t",
+    "clan_name_guess": "guthrie t",
+    "emblem_path": "assets/images/clans/emblems/guthrie-t.jpg",
+    "tartan_path": null,
+    "notes": ""
+  },
+  {
+    "clan_id": "erskine-monument",
+    "clan_name_guess": "erskine monument",
+    "emblem_path": "assets/images/clans/emblems/erskine-monument.jpg",
+    "tartan_path": null,
+    "notes": "Uncertain classification for erskine-monument.jpg"
+  },
+  {
+    "clan_id": "macgregor",
+    "clan_name_guess": "macgregor",
+    "emblem_path": "assets/images/clans/emblems/macgregor.jpg",
+    "tartan_path": "assets/images/clans/tartans/macgregor.jpg",
+    "notes": ""
+  },
+  {
+    "clan_id": "fraser-monument",
+    "clan_name_guess": "fraser monument",
+    "emblem_path": "assets/images/clans/emblems/fraser-monument.jpg",
+    "tartan_path": null,
+    "notes": "Uncertain classification for fraser-monument.jpg"
+  },
+  {
+    "clan_id": "chattan",
+    "clan_name_guess": "chattan",
+    "emblem_path": "assets/images/clans/emblems/chattan.jpg",
+    "tartan_path": "assets/images/clans/tartans/chattan.jpg",
+    "notes": ""
+  },
+  {
+    "clan_id": "fraser",
+    "clan_name_guess": "fraser",
+    "emblem_path": "assets/images/clans/emblems/fraser.jpg",
+    "tartan_path": "assets/images/clans/tartans/fraser.jpg",
+    "notes": ""
+  },
+  {
+    "clan_id": "carnegie",
+    "clan_name_guess": "carnegie",
+    "emblem_path": "assets/images/clans/emblems/carnegie.jpg",
+    "tartan_path": "assets/images/clans/tartans/carnegie.jpg",
+    "notes": ""
+  },
+  {
+    "clan_id": "guthrie",
+    "clan_name_guess": "guthrie",
+    "emblem_path": "assets/images/clans/emblems/guthrie.jpg",
+    "tartan_path": "assets/images/clans/tartans/guthrie.jpg",
+    "notes": ""
+  },
+  {
+    "clan_id": "ramsay",
+    "clan_name_guess": "ramsay",
+    "emblem_path": "assets/images/clans/emblems/ramsay.jpg",
+    "tartan_path": null,
+    "notes": ""
+  },
+  {
+    "clan_id": "castlehome",
+    "clan_name_guess": "castlehome",
+    "emblem_path": "assets/images/clans/emblems/castlehome.jpg",
+    "tartan_path": null,
+    "notes": "Uncertain classification for castlehome.jpg"
+  },
+  {
+    "clan_id": "macleod",
+    "clan_name_guess": "macleod",
+    "emblem_path": "assets/images/clans/emblems/macleod.jpg",
+    "tartan_path": "assets/images/clans/tartans/macleod.jpg",
+    "notes": ""
+  },
+  {
+    "clan_id": "carnegie-monument",
+    "clan_name_guess": "carnegie monument",
+    "emblem_path": "assets/images/clans/emblems/carnegie-monument.jpg",
+    "tartan_path": null,
+    "notes": "Uncertain classification for carnegie-monument.jpg"
+  },
+  {
+    "clan_id": "leslie",
+    "clan_name_guess": "leslie",
+    "emblem_path": "assets/images/clans/emblems/leslie.jpg",
+    "tartan_path": "assets/images/clans/tartans/leslie.jpg",
+    "notes": ""
+  },
+  {
+    "clan_id": "gordon-monument",
+    "clan_name_guess": "gordon monument",
+    "emblem_path": "assets/images/clans/emblems/gordon-monument.jpg",
+    "tartan_path": null,
+    "notes": "Uncertain classification for gordon-monument.jpg"
+  },
+  {
+    "clan_id": "macleod-monument",
+    "clan_name_guess": "macleod monument",
+    "emblem_path": "assets/images/clans/emblems/macleod-monument.jpg",
+    "tartan_path": null,
+    "notes": "Uncertain classification for macleod-monument.jpg"
+  },
+  {
+    "clan_id": "lindsay",
+    "clan_name_guess": "lindsay",
+    "emblem_path": "assets/images/clans/emblems/lindsay.jpg",
+    "tartan_path": "assets/images/clans/tartans/lindsay.jpg",
+    "notes": ""
+  },
+  {
+    "clan_id": "macdonald",
+    "clan_name_guess": "macdonald",
+    "emblem_path": "assets/images/clans/emblems/macdonald.jpg",
+    "tartan_path": null,
+    "notes": ""
+  },
+  {
+    "clan_id": "mackenzie",
+    "clan_name_guess": "mackenzie",
+    "emblem_path": "assets/images/clans/emblems/mackenzie.jpg",
+    "tartan_path": "assets/images/clans/tartans/mackenzie.jpg",
+    "notes": ""
+  },
+  {
+    "clan_id": "snclair",
+    "clan_name_guess": "snclair",
+    "emblem_path": null,
+    "tartan_path": "assets/images/clans/tartans/snclair.jpg",
+    "notes": ""
+  },
+  {
+    "clan_id": "trong-monument",
+    "clan_name_guess": "trong monument",
+    "emblem_path": "assets/images/clans/emblems/trong-monument.jpg",
+    "tartan_path": null,
+    "notes": ""
+  },
+  {
+    "clan_id": "cunningham-monument",
+    "clan_name_guess": "cunningham monument",
+    "emblem_path": "assets/images/clans/emblems/cunningham-monument.jpg",
+    "tartan_path": null,
+    "notes": "Uncertain classification for cunningham-monument.jpg"
+  },
+  {
+    "clan_id": "lindsay-monument",
+    "clan_name_guess": "lindsay monument",
+    "emblem_path": "assets/images/clans/emblems/lindsay-monument.jpg",
+    "tartan_path": null,
+    "notes": "Uncertain classification for lindsay-monument.jpg"
+  },
+  {
+    "clan_id": "wallace-monument",
+    "clan_name_guess": "wallace monument",
+    "emblem_path": "assets/images/clans/emblems/wallace-monument.jpg",
+    "tartan_path": null,
+    "notes": "Uncertain classification for wallace-monument.jpg"
+  },
+  {
+    "clan_id": "murray-monument",
+    "clan_name_guess": "murray monument",
+    "emblem_path": "assets/images/clans/emblems/murray-monument.jpg",
+    "tartan_path": null,
+    "notes": "Uncertain classification for murray-monument.jpg"
+  },
+  {
+    "clan_id": "cameron-monument2",
+    "clan_name_guess": "cameron monument2",
+    "emblem_path": "assets/images/clans/emblems/cameron-monument2.jpg",
+    "tartan_path": null,
+    "notes": "Uncertain classification for cameron-monument2.jpg"
+  },
+  {
+    "clan_id": "ogilvy",
+    "clan_name_guess": "ogilvy",
+    "emblem_path": "assets/images/clans/emblems/ogilvy.jpg",
+    "tartan_path": null,
+    "notes": ""
+  }
+]
