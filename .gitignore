@@ -11,3 +11,4 @@ css/*.css
 
 # Backup directory created during setup
 package_json_dir_backup/
+dist

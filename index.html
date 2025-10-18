@@ -584,7 +584,7 @@
     </div>
 
     <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', async function() {
         'use strict';
 
         // --- GLOBAL APP STATE ---
@@ -1658,3 +1658,30 @@
             
             function renderSelectedColors() {
                 selectedColorsFlex.innerHTML = selectedColors.map(c => `<div class="w-8 h-8 rounded-full border-2 border
+-clan-gold" style="background-color: ${c};"></div>`).join('');
+            }
+            
+            // Continue with rest of tartan designer init...
+            // For now, close the function and event listener
+        }
+        
+        // Initialize all sections
+        setupNavigation();
+        setupMobileMenu();
+        displayGaelicPhrase();
+        populateClanList();
+        document.getElementById('clan-search-input')?.addEventListener('input', e => populateClanList(e.target.value));
+        initFinderCreator();
+        setupOghamCaster();
+        populateRecipesList();
+        populateLegendsList();
+        initTartanDesigner();
+    });
+    </script>
+
+    <div id="app"></div>
+    
+    <script src="/js/app.js"></script>
+
+</body>
+</html>

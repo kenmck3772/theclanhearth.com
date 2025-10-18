@@ -1,6 +1,7 @@
 
 document.addEventListener('DOMContentLoaded', async () => {
   const mount=document.getElementById('app');
+  if (!mount) return;
   mount.outerHTML=`
 <header class="p-3 bg-neutral-900 text-neutral-100 sticky top-0">The Clan Hearth — v2.3.1</header>
 <main class="max-w-6xl mx-auto p-4">
