@@ -14,6 +14,8 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" integrity="sha512-gMeUIRvrRZtGJPD7W82dManIeZDV4SSQdlqzTeWY5Avzkdxl3pNGdisz8Iky3Uczdlz7YT1DoP70uQgmO6ij1Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" integrity="sha512-9X7xL7sRKqzZo4PMBVXgS5aXoaZySUdkGFUTkOcJCIZy9FHn5Vf3L7hIwrKyYVJZZzKzbwQ6vurIWBLL8GMDJg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
@@ -26,6 +28,357 @@
             --clan-stone: #8b7355; /* Brown/Stone */
             --parchment: #f4f1e8;
             --aged-paper: #f0ead6;
+        }
+        
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: linear-gradient(135deg, var(--parchment) 0%, var(--aged-paper) 100%);
+        }
+        .font-title { font-family: 'Cinzel', serif; }
+        
+        /* Navigation & Sections */
+        .nav-link.active { 
+            color: var(--clan-gold); 
+            border-bottom: 2px solid var(--clan-gold); 
+            background: rgba(212, 175, 55, 0.1);
+        }
+        .page-section { display: none; }
+        .page-section.active { display: block; animation: fadeIn 0.6s ease-in-out; }
+
+        /* Thread of Ages Timeline */
+        .thread-of-ages {
+            position: relative;
+            overflow: hidden;
+            border-radius: 28px;
+            background: rgba(15, 23, 42, 0.78);
+            color: #f8fafc;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            box-shadow: 0 20px 45px -20px rgba(15, 23, 42, 0.8);
+        }
+        .thread-backdrop {
+            position: absolute;
+            inset: 0;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            filter: brightness(0.85) saturate(1.15);
+            transform: scale(1.05);
+            transition: background-image 0.8s ease, filter 0.6s ease;
+        }
+        .thread-overlay {
+            position: relative;
+            backdrop-filter: blur(6px);
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.92), rgba(45, 80, 22, 0.65));
+        }
+        .thread-track-wrapper {
+            overflow-x: auto;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(212, 175, 55, 0.6) rgba(15, 23, 42, 0.4);
+        }
+        .thread-track-wrapper::-webkit-scrollbar {
+            height: 10px;
+        }
+        .thread-track-wrapper::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.4);
+            border-radius: 9999px;
+        }
+        .thread-track-wrapper::-webkit-scrollbar-thumb {
+            background: linear-gradient(90deg, rgba(212, 175, 55, 0.9), rgba(125, 45, 45, 0.9));
+            border-radius: 9999px;
+        }
+        .thread-track {
+            display: flex;
+            align-items: stretch;
+            gap: 1.5rem;
+            padding: 1rem 0;
+            min-width: max-content;
+        }
+        .timeline-node {
+            position: relative;
+            min-width: 220px;
+            border-radius: 18px;
+            padding: 1.25rem 1rem;
+            background: rgba(15, 23, 42, 0.65);
+            border: 1px solid transparent;
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+            color: inherit;
+            transition: transform 0.35s ease, box-shadow 0.35s ease, border-color 0.35s ease;
+        }
+        .timeline-node::before {
+            content: '';
+            position: absolute;
+            inset: 8px;
+            border-radius: 14px;
+            background: linear-gradient(145deg, rgba(212, 175, 55, 0.18), rgba(128, 0, 32, 0.15));
+            opacity: 0;
+            transition: opacity 0.35s ease;
+            z-index: -1;
+        }
+        .timeline-node span {
+            display: block;
+        }
+        .timeline-node .node-year {
+            font-family: 'Cinzel', serif;
+            font-size: 1.15rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: rgba(248, 250, 252, 0.75);
+        }
+        .timeline-node .node-title {
+            margin-top: 0.5rem;
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+        .timeline-node .node-era {
+            margin-top: 0.25rem;
+            font-size: 0.85rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: rgba(248, 250, 252, 0.6);
+        }
+        .timeline-node:hover,
+        .timeline-node:focus {
+            transform: translateY(-6px);
+            border-color: rgba(212, 175, 55, 0.7);
+            box-shadow: 0 18px 35px -18px rgba(15, 23, 42, 0.85);
+        }
+        .timeline-node:hover::before,
+        .timeline-node:focus::before {
+            opacity: 1;
+        }
+        .timeline-node.active {
+            border-color: rgba(212, 175, 55, 0.95);
+            box-shadow: 0 22px 40px -18px rgba(212, 175, 55, 0.45);
+        }
+        .timeline-node.active::before {
+            opacity: 1;
+        }
+        .thread-story-card {
+            position: relative;
+            margin-top: 2rem;
+            border-radius: 24px;
+            background: rgba(248, 250, 252, 0.08);
+            border: 1px solid rgba(212, 175, 55, 0.25);
+            padding: 2rem;
+            color: #f8fafc;
+        }
+        .thread-story-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 24px;
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.12), rgba(125, 45, 45, 0.18));
+            opacity: 0.9;
+            pointer-events: none;
+        }
+        .thread-story-card > * {
+            position: relative;
+            z-index: 1;
+        }
+        .thread-era {
+            font-family: 'Cinzel', serif;
+            font-size: 0.85rem;
+            letter-spacing: 0.38em;
+            text-transform: uppercase;
+            color: rgba(248, 250, 252, 0.72);
+        }
+        .thread-title {
+            font-size: 2.2rem;
+            line-height: 1.15;
+            margin: 0.75rem 0 1rem;
+        }
+        .thread-summary {
+            font-size: 1.125rem;
+            line-height: 1.7;
+            color: rgba(248, 250, 252, 0.88);
+        }
+        .thread-highlights {
+            display: grid;
+            gap: 0.75rem;
+            margin-top: 1.5rem;
+        }
+        .thread-highlight {
+            padding: 0.85rem 1rem;
+            border-radius: 14px;
+            background: rgba(15, 23, 42, 0.45);
+            border: 1px solid rgba(248, 250, 252, 0.12);
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+        }
+        .thread-highlight i {
+            color: rgba(212, 175, 55, 0.9);
+            margin-top: 0.2rem;
+        }
+        .thread-media {
+            margin-top: 1.5rem;
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+        }
+        .thread-media img {
+            width: 100%;
+            height: 260px;
+            object-fit: cover;
+        }
+        .thread-cta {
+            margin-top: 1.5rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+        .thread-cta button,
+        .timeline-cta-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.95), rgba(125, 45, 45, 0.95));
+            color: #111827;
+            font-weight: 600;
+            padding: 0.75rem 1.25rem;
+            border-radius: 9999px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .thread-cta button:hover,
+        .timeline-cta-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px -20px rgba(212, 175, 55, 0.8);
+        }
+        .thread-related {
+            margin-top: 1.5rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            color: rgba(248, 250, 252, 0.78);
+        }
+        .thread-related span {
+            background: rgba(15, 23, 42, 0.45);
+            border-radius: 9999px;
+            padding: 0.4rem 0.9rem;
+            border: 1px solid rgba(248, 250, 252, 0.12);
+            font-size: 0.85rem;
+            letter-spacing: 0.04em;
+        }
+
+        @media (max-width: 768px) {
+            .timeline-node {
+                min-width: 180px;
+            }
+            .thread-story-card {
+                padding: 1.5rem;
+            }
+            .thread-title {
+                font-size: 1.8rem;
+            }
+            .thread-media img {
+                height: 200px;
+            }
+        }
+        
+        /* Components */
+        .clan-emblem {
+            background: linear-gradient(45deg, var(--clan-burgundy), var(--clan-forest));
+            border: 3px solid var(--clan-gold);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        .content-card { 
+            transition: all 0.3s ease-in-out; 
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+        }
+        .content-card:hover { 
+            transform: translateY(-4px); 
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1); 
+        }
+        .btn-primary {
+            background: linear-gradient(45deg, var(--clan-burgundy), var(--clan-forest));
+            color: white;
+            border: 2px solid var(--clan-gold);
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            background: linear-gradient(45deg, var(--clan-forest), var(--clan-burgundy));
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        .active-item { 
+            background: linear-gradient(90deg, var(--clan-gold), #f4d03f);
+            color: var(--clan-burgundy); 
+            font-weight: 600; 
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .map-emoji-icon { 
+            font-size: 24px; 
+            text-align: center; 
+            line-height: 24px; 
+            filter: drop-shadow(0 2px 2px rgba(0,0,0,0.3));
+        }
+        
+        /* Map Styles */
+        #clanMap, #tripBuilderMap {
+            height: 100%;
+            min-height: 60vh;
+            width: 100%;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .pulse-gold {
+            animation: pulseGold 2s infinite;
+        }
+        @keyframes pulseGold {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.7); }
+            50% { box-shadow: 0 0 0 20px rgba(212, 175, 55, 0); }
+        }
+        
+        /* Ogham */
+        .ogham-stave:hover {
+            transform: translateY(-5px) rotate(2deg);
+            box-shadow: 0 8px 25px rgba(212, 175, 55, 0.5);
+            border-color: var(--clan-gold);
+        }
+        .ogham-symbol-svg {
+            stroke: var(--parchment);
+            stroke-width: 4;
+            height: 100px;
+            width: 100%;
+        }
+        
+        /* Tartan Designer */
+        .color-box { 
+            transition: all 0.2s ease-in-out; 
+            border: 3px solid transparent;
+        }
+        .color-box.selected { 
+            border-color: var(--clan-gold); 
+            transform: scale(1.15); 
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.6);
+        }
+
+        /* Trip Itinerary Panel (from index.html) */
+        #itinerary-panel {
+            position: absolute; 
+            bottom: 0; 
+            left: 0; 
+            right: 0; 
+            z-index: 1000; 
+            background-color: white;
+            box-shadow: 0 -4px 12px rgba(0,0,0,0.1); 
+            transition: transform 0.3s ease-in-out;
+            transform: translateY(calc(100% - 50px)); /* Initial state: mostly hidden */
+        }
+        #itinerary-panel.open { transform: translateY(0); }
+        .itinerary-handle {
+            width: 60px;
+            height: 5px;
+            background-color: #d1d5db;
+            border-radius: 5px;
+            margin: 10px auto;
         }
     </style>
 </head>
@@ -90,6 +443,41 @@
                     Your premier gateway to authentic Scottish heritage. Discover clan histories, plan premium Highland tours, 
                     connect with your spiritual clan, and experience Scotland through the eyes of genuine Highland descendants.
                 </p>
+
+                <!-- Thread of Ages Timeline -->
+                <div id="thread-of-ages" class="thread-of-ages mt-16">
+                    <div id="thread-backdrop" class="thread-backdrop"></div>
+                    <div class="thread-overlay p-8 md:p-12">
+                        <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+                            <div class="max-w-2xl">
+                                <p class="thread-era tracking-[0.5em] text-yellow-200/80">Thread of Ages</p>
+                                <h3 class="thread-title font-title font-bold text-4xl md:text-5xl text-yellow-100">The Living Timeline of Scotland</h3>
+                                <p class="thread-summary text-lg md:text-xl mt-3">Glide through millennia of resilience, rebellion, and renaissance. Each luminous node reveals a cinematic story card woven with artefacts, lore, and connections to clans around the world.</p>
+                            </div>
+                            <div class="flex flex-col items-start gap-3 bg-white/10 border border-white/20 rounded-2xl p-5 max-w-sm">
+                                <div class="flex items-center gap-3">
+                                    <span class="w-3 h-3 rounded-full bg-yellow-400 animate-pulse"></span>
+                                    <p class="text-sm uppercase tracking-[0.35em] text-yellow-100/90">Interactive nodes</p>
+                                </div>
+                                <p class="text-sm text-yellow-50/90">Tap a moment to step inside its story. Related clans, artefacts, and itinerary hooks cascade into the rest of the experience.</p>
+                                <div class="thread-cta">
+                                    <button id="thread-scroll-next" class="inline-flex items-center gap-2 bg-white/20 text-yellow-50 font-semibold px-4 py-2 rounded-full hover:bg-white/30 transition">
+                                        <span>Jump to Present Day</span>
+                                        <i class="fas fa-arrow-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="thread-track-wrapper mt-10" tabindex="0" aria-label="Timeline of pivotal Scottish history moments">
+                            <div id="thread-track" class="thread-track" role="list">
+                                <!-- Timeline nodes injected by JS -->
+                            </div>
+                        </div>
+                        <section id="thread-story" class="thread-story-card mt-10" aria-live="polite" aria-atomic="true">
+                            <!-- Story card injected by JS -->
+                        </section>
+                    </div>
+                </div>
 
                 <!-- Gaelic Phrase of the Day -->
                 <div class="mt-12 mb-8 bg-clan-stone/20 p-6 rounded-2xl max-w-2xl mx-auto border-2 border-clan-gold/50">
@@ -488,6 +876,152 @@
                 { gaelic: "Slàinte mhath!", pronunciation: "Slan-je vah", translation: "Good health! (Cheers!)" },
                 { gaelic: "Tìoraidh an-dràsta!", pronunciation: "Chee-ree an-drasta", translation: "Bye for now!" },
             ],
+            timelineEvents: [
+                {
+                    id: "calanais",
+                    year: "3200 BCE",
+                    title: "Calanais Stones Align with the Stars",
+                    era: "Neolithic Dawn",
+                    summary: "On the Isle of Lewis, visionaries erect a ring of standing stones that tracks the moon's long dance and anchors a spiritual crossroads between sky and sea.",
+                    story: "Long before clans held tartans, the people of the Hebrides gathered by torchlight to map the heavens upon the earth. The Calanais stones still capture the lunar standstill every 18.6 years, drawing pilgrims who seek the roots of Scottish mysticism.",
+                    location: "Isle of Lewis, Outer Hebrides",
+                    accentColor: "#f5d67b",
+                    background: "linear-gradient(125deg, rgba(14, 28, 44, 0.95), rgba(45, 80, 22, 0.85)), url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1600&q=80')",
+                    highlights: [
+                        { icon: "fa-moon", text: "Ceremonial calendar aligning lunar standstills and equinox light." },
+                        { icon: "fa-sun", text: "Legends say the stones blaze alive each midsummer dawn." },
+                        { icon: "fa-water", text: "Ancestral seafarers navigated by the same constellations traced here." }
+                    ],
+                    media: {
+                        type: "image",
+                        src: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1400&q=80",
+                        alt: "Standing stones of Calanais at dusk"
+                    },
+                    relatedClans: ["macleod", "mackenzie"],
+                    timelineLinks: ["ogham-reading"],
+                    itineraryHook: { label: "Chart an Outer Hebrides Pilgrimage", target: "trip-builder" }
+                },
+                {
+                    id: "dalriada",
+                    year: "503 CE",
+                    title: "Kingdom of Dál Riata Crosses the Sea",
+                    era: "Age of Saints & Sails",
+                    summary: "Gaelic settlers from Antrim land on Scotland's western shores, weaving Irish and Pictish traditions into the first Gaelic-speaking kingdom of Alba.",
+                    story: "Fergus Mòr mac Eirc lands with warriors, monks, and storytellers, founding a maritime kingdom bound by coracles and hymn. From Iona, St. Columba spreads the illuminated manuscripts and lore that ignite the Gaelic language across the Highlands.",
+                    location: "Argyll & the Inner Hebrides",
+                    accentColor: "#7dd3fc",
+                    background: "linear-gradient(125deg, rgba(8, 47, 73, 0.92), rgba(125, 67, 45, 0.75)), url('https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=1600&q=80')",
+                    highlights: [
+                        { icon: "fa-ship", text: "Currach fleets knit together Argyll, Kintyre, and the islands." },
+                        { icon: "fa-cross", text: "Iona Abbey becomes a beacon for illuminated gospels and scholarship." },
+                        { icon: "fa-language", text: "Gaelic language and Brehon laws take root on Scottish soil." }
+                    ],
+                    media: {
+                        type: "image",
+                        src: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=1400&q=80",
+                        alt: "Sunset over the Isle of Iona"
+                    },
+                    relatedClans: ["campbell", "macdonald", "macleod"],
+                    timelineLinks: ["clans"],
+                    itineraryHook: { label: "Sail to Iona's Sacred Shores", target: "trip-builder" }
+                },
+                {
+                    id: "bannockburn",
+                    year: "1314",
+                    title: "Triumph at Bannockburn",
+                    era: "Wars of Independence",
+                    summary: "Robert the Bruce's outnumbered host breaks Edward II's grip, proving that cunning, terrain, and clan unity can topple an empire.",
+                    story: "Misty marshes, hidden pits, and Highland schiltrons become the crucible of freedom. Bruce's victory resonates from Stirling to Rome, cementing alliances and binding clans to the dream of an independent Alba.",
+                    location: "Stirling, Central Scotland",
+                    accentColor: "#fbbf24",
+                    background: "linear-gradient(125deg, rgba(64, 20, 7, 0.9), rgba(125, 45, 45, 0.8)), url('https://images.unsplash.com/photo-1470859624578-4bb5789028b5?auto=format&fit=crop&w=1600&q=80')",
+                    highlights: [
+                        { icon: "fa-chess-knight", text: "Tactical use of boggy carseland shattered English cavalry lines." },
+                        { icon: "fa-crown", text: "Bruce's oath at the Bannock Burn inspired clans to pledge fealty anew." },
+                        { icon: "fa-map", text: "Treaty ripples redefined Scottish borders and pilgrim routes." }
+                    ],
+                    media: {
+                        type: "image",
+                        src: "https://images.unsplash.com/photo-1470859624578-4bb5789028b5?auto=format&fit=crop&w=1400&q=80",
+                        alt: "Statue of Robert the Bruce overlooking Bannockburn"
+                    },
+                    relatedClans: ["bruce", "douglas", "stewart"],
+                    timelineLinks: ["legends"],
+                    itineraryHook: { label: "Walk the Bannockburn Battlefield", target: "trip-builder" }
+                },
+                {
+                    id: "jacobite",
+                    year: "1745",
+                    title: "The Jacobite Rising Ignites",
+                    era: "Songs of Rebellion",
+                    summary: "Prince Charles Edward Stuart lands in the Highlands, rallying tartan-clad regiments whose march south electrifies Europe.",
+                    story: "From Glenfinnan's proclamation to the thunder of pipes in Edinburgh, the '45 is a blaze of hope and heartbreak. The uprising forges enduring music, fashion, and diaspora memories—even as Culloden's winds mark a brutal turning point.",
+                    location: "Glenfinnan to Culloden",
+                    accentColor: "#f472b6",
+                    background: "linear-gradient(125deg, rgba(63, 12, 34, 0.92), rgba(8, 47, 73, 0.78)), url('https://images.unsplash.com/photo-1527281400683-3b3bd79d04de?auto=format&fit=crop&w=1600&q=80')",
+                    highlights: [
+                        { icon: "fa-drum", text: "Pibroch laments and fiery marches echo across glens and courts." },
+                        { icon: "fa-tasks", text: "Clan councils debate loyalty, survival, and the price of faith." },
+                        { icon: "fa-globe", text: "After Culloden, Highland families scatter to Nova Scotia, Appalachia, and beyond." }
+                    ],
+                    media: {
+                        type: "image",
+                        src: "https://images.unsplash.com/photo-1527281400683-3b3bd79d04de?auto=format&fit=crop&w=1400&q=80",
+                        alt: "Mist-covered Highlands at sunrise"
+                    },
+                    relatedClans: ["fraser", "mackenzie", "macdonald", "cameron"],
+                    timelineLinks: ["clan-finder", "legends"],
+                    itineraryHook: { label: "Trace the Jacobite Trail", target: "trip-builder" }
+                },
+                {
+                    id: "diaspora",
+                    year: "1880",
+                    title: "Global Diaspora Reweaves the Tartan",
+                    era: "Industrial Echoes",
+                    summary: "From Glasgow shipyards to Canadian shores, Scots export engineering genius, ceilidh halls, and Caledonian societies that keep kinship alive overseas.",
+                    story: "Steamships carry Highland reels, Presbyterian psalms, and Gaelic newspapers to Nova Scotia, Otago, and Cape Town. New settlements chart diaspora maps still explored in The Clan Hearth's global explorer.",
+                    location: "Glasgow · Cape Breton · Otago",
+                    accentColor: "#34d399",
+                    background: "linear-gradient(125deg, rgba(6, 54, 52, 0.92), rgba(8, 47, 73, 0.8)), url('https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=1600&q=80')",
+                    highlights: [
+                        { icon: "fa-train", text: "Clydeside shipbuilders and rail engineers transform the empire." },
+                        { icon: "fa-people-carry", text: "Caledonian societies knit together diaspora ceilidhs and benevolent funds." },
+                        { icon: "fa-map-marked-alt", text: "Global clan gatherings mirror homeland territories on new continents." }
+                    ],
+                    media: {
+                        type: "image",
+                        src: "https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=1400&q=80",
+                        alt: "Vintage map and traveler's trunk"
+                    },
+                    relatedClans: ["campbell", "murray", "armstrong", "fraser"],
+                    timelineLinks: ["clans", "trip-builder"],
+                    itineraryHook: { label: "Explore the Global Diaspora Map", target: "clans" }
+                },
+                {
+                    id: "renaissance",
+                    year: "2025",
+                    title: "Heritage Tech Renaissance",
+                    era: "Digital Highlands",
+                    summary: "Immersive storytelling, AI-guided genealogy, and artisan marketplaces reconnect a scattered clan family in real-time.",
+                    story: "The Clan Hearth emerges as a living hearthfire—merging Gaelic, VR, AI, and craft to invite anyone, anywhere, into Scotland's story. Subscriptions power preservation projects and direct-to-maker commerce supports Highland livelihoods.",
+                    location: "Global · Virtual",
+                    accentColor: "#60a5fa",
+                    background: "linear-gradient(125deg, rgba(9, 24, 48, 0.95), rgba(96, 165, 250, 0.55)), url('https://images.unsplash.com/photo-1526481280695-3c4693f6a31f?auto=format&fit=crop&w=1600&q=80')",
+                    highlights: [
+                        { icon: "fa-vr-cardboard", text: "Virtual Highland tours weave 360° vistas with ghostly oral history." },
+                        { icon: "fa-robot", text: "Och-I assistant learns each family tree to surface bespoke lore." },
+                        { icon: "fa-store", text: "Heritage Plus funds conservation and artisan collaborations." }
+                    ],
+                    media: {
+                        type: "image",
+                        src: "https://images.unsplash.com/photo-1526481280695-3c4693f6a31f?auto=format&fit=crop&w=1400&q=80",
+                        alt: "Futuristic projection of Scottish landscape"
+                    },
+                    relatedClans: ["all"],
+                    timelineLinks: ["ai-assistant", "tartan-designer"],
+                    itineraryHook: { label: "Preview Virtual Highlands", target: "trip-builder" }
+                }
+            ],
             oghamData: [
                 { name: "Beith", letter: "B", tree: "Birch", meaning: "New beginnings, renewal, and purification.", svgPath: "M50 10 L50 90 M50 50 L70 50" },
                 { name: "Luis", letter: "L", tree: "Rowan", meaning: "Protection, intuition, and connection to the magical.", svgPath: "M50 10 L50 90 M50 50 L70 50 M50 55 L70 55" },
@@ -840,38 +1374,70 @@
         }
         
         function setupNavigation() {
-            const navLinks = document.querySelectorAll('.nav-link');
             const pageSections = document.querySelectorAll('.page-section');
+            const navTriggers = document.querySelectorAll('.nav-link[data-target]');
+            const headerNavLinks = document.querySelectorAll('#main-nav .nav-link[data-target]');
             const mobileMenu = document.getElementById('mobile-menu');
-            
-            navLinks.forEach(link => {
-                link.addEventListener('click', () => {
-                    const targetId = link.dataset.target;
-                    
-                    pageSections.forEach(s => s.classList.remove('active'));
-                    navLinks.forEach(l => l.classList.remove('active'));
-                    
-                    const targetSection = document.getElementById(`${targetId}-section`);
-                    if(targetSection) targetSection.classList.add('active');
-                    
-                    document.querySelectorAll(`.nav-link[data-target="${targetId}"]`).forEach(l => l.classList.add('active'));
-                    mobileMenu.classList.add('hidden');
-                    window.scrollTo(0, 0);
 
-                    // Re-initialize maps when navigating to the map sections
-                    if (targetId === 'trip-builder' && !maps.planner) { initializeTripBuilderMap(); }
-                    if (targetId === 'clans' && !maps.clans) { initializeClanMap(); }
+            const activateSection = (targetId) => {
+                if (!targetId) return;
+
+                pageSections.forEach(section => {
+                    section.classList.remove('active');
+                    section.classList.add('hidden');
+                });
+
+                const targetSection = document.getElementById(`${targetId}-section`);
+                if (targetSection) {
+                    targetSection.classList.add('active');
+                    targetSection.classList.remove('hidden');
+                }
+
+                headerNavLinks.forEach(link => {
+                    const isActive = link.dataset.target === targetId;
+                    link.classList.toggle('active', isActive);
+                    link.setAttribute('aria-current', isActive ? 'page' : 'false');
+                });
+
+                if (targetId === 'trip-builder' && !maps.planner) { initializeTripBuilderMap(); }
+                if (targetId === 'clans' && !maps.clans) { initializeClanMap(); }
+            };
+
+            navTriggers.forEach(link => {
+                link.addEventListener('click', event => {
+                    event.preventDefault();
+                    const targetId = link.dataset.target;
+                    activateSection(targetId);
+                    mobileMenu?.classList.add('hidden');
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
                 });
             });
-            document.querySelector('.nav-link[data-target="home"]').click();
 
-            // Populate mobile menu
-            mobileMenu.innerHTML = Array.from(navLinks).map(link => {
-                const target = link.dataset.target;
-                const icon = link.querySelector('i')?.outerHTML || '';
-                const text = link.textContent.trim();
-                return `<button class="block w-full text-left nav-link font-semibold text-gray-600 hover:text-yellow-800 p-4 border-t" data-target="${target}">${icon} ${text}</button>`;
-            }).join('');
+            if (mobileMenu && headerNavLinks.length) {
+                mobileMenu.innerHTML = Array.from(headerNavLinks).map(link => {
+                    const target = link.dataset.target;
+                    const icon = link.querySelector('i')?.outerHTML || '';
+                    const text = link.textContent.trim();
+                    return `<button class="block w-full text-left nav-link font-semibold text-gray-600 hover:text-yellow-800 p-4 border-t" data-target="${target}">${icon} ${text}</button>`;
+                }).join('');
+
+                mobileMenu.querySelectorAll('.nav-link').forEach(link => {
+                    link.addEventListener('click', event => {
+                        event.preventDefault();
+                        activateSection(link.dataset.target);
+                        mobileMenu.classList.add('hidden');
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                    });
+                });
+            }
+
+            pageSections.forEach(section => {
+                if (!section.classList.contains('active')) {
+                    section.classList.add('hidden');
+                }
+            });
+
+            activateSection('home');
         }
 
         function setupMobileMenu() {
@@ -887,6 +1453,239 @@
             document.getElementById('gaelic-pronunciation').textContent = `(${phrase.pronunciation})`;
             document.getElementById('gaelic-translation').textContent = phrase.translation;
         }
+
+        function initializeThreadOfAges() {
+            const section = document.getElementById('thread-of-ages');
+            const track = document.getElementById('thread-track');
+            const storyContainer = document.getElementById('thread-story');
+            const backdrop = document.getElementById('thread-backdrop');
+            const scrollNextButton = document.getElementById('thread-scroll-next');
+
+            if (!section || !track || !storyContainer || !backdrop) return;
+
+            const events = APP_DATA.timelineEvents || [];
+            if (!events.length) return;
+
+            const relatedMap = {
+                'clans': 'Clan & Map Explorer',
+                'trip-builder': 'Heritage Trip Builder',
+                'ogham-reading': 'Ogham Casting',
+                'clan-finder': 'Spirit Clan Finder',
+                'finder-creator': 'Spirit Clan Finder',
+                'legends': 'Whispers from the Glens',
+                'ai-assistant': 'Och-I AI Companion',
+                'tartan-designer': 'Tartan Forge'
+            };
+
+            const getClanName = (id) => {
+                if (id === 'all') return 'Every Clan Under the Hearth';
+                const match = APP_DATA.clanData?.find(c => c.id === id || c.id === id.replace('clan-', ''));
+                if (match) return match.name;
+                return id
+                    .split('-')
+                    .map(part => part.charAt(0).toUpperCase() + part.slice(1))
+                    .join(' ');
+            };
+
+            track.innerHTML = events.map(event => `
+                <button class="timeline-node" data-event="${event.id}" role="listitem" aria-label="${event.year}: ${event.title}" aria-pressed="false">
+                    <span class="node-year">${event.year}</span>
+                    <span class="node-title">${event.title}</span>
+                    <span class="node-era">${event.era}</span>
+                </button>
+            `).join('');
+
+            const nodes = Array.from(track.querySelectorAll('.timeline-node'));
+            const wrapper = section.querySelector('.thread-track-wrapper');
+
+            const buildHighlights = (event) => {
+                if (!event.highlights || !event.highlights.length) return '';
+                return `
+                    <div class="thread-highlights">
+                        ${event.highlights.map(item => `
+                            <div class="thread-highlight">
+                                <i class="fas ${item.icon} text-lg" aria-hidden="true"></i>
+                                <p>${item.text}</p>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            };
+
+            const buildRelated = (event) => {
+                const clusters = [];
+                if (event.relatedClans?.length) {
+                    clusters.push(`<div>Connected clans: ${event.relatedClans.map(clan => `<span>${getClanName(clan)}</span>`).join(' ')}</div>`);
+                }
+                if (event.timelineLinks?.length) {
+                    clusters.push(`<div>Continue your journey: ${event.timelineLinks.map(link => `<span>${relatedMap[link] || link}</span>`).join(' ')}</div>`);
+                }
+                if (!clusters.length) return '';
+                return `<div class="thread-related">${clusters.join('')}</div>`;
+            };
+
+            const renderStory = (event) => {
+                return `
+                    <article class="space-y-4">
+                        <div>
+                            <p class="thread-era" style="color: ${event.accentColor || '#d4af37'};">${event.era}</p>
+                            <h4 class="thread-title font-title">${event.year} · ${event.title}</h4>
+                            <p class="thread-summary">${event.summary}</p>
+                            <p class="text-base md:text-lg text-yellow-50/80">${event.story}</p>
+                            <p class="text-sm uppercase tracking-[0.35em] text-yellow-100/70 mt-3">${event.location || ''}</p>
+                        </div>
+                        ${buildHighlights(event)}
+                        ${event.media?.type === 'image' ? `
+                            <figure class="thread-media">
+                                <img src="${event.media.src}" alt="${event.media.alt || ''}">
+                            </figure>
+                        ` : ''}
+                        ${buildRelated(event)}
+                        ${event.itineraryHook ? `
+                            <div class="thread-cta">
+                                <button class="timeline-cta-btn" data-target="${event.itineraryHook.target}">
+                                    <i class="fas fa-compass"></i>
+                                    <span>${event.itineraryHook.label}</span>
+                                </button>
+                            </div>
+                        ` : ''}
+                    </article>
+                `;
+            };
+
+            const selectEvent = (eventId, { immediate = false } = {}) => {
+                const event = events.find(item => item.id === eventId);
+                if (!event) return;
+
+                nodes.forEach(node => {
+                    const isActive = node.dataset.event === eventId;
+                    node.classList.toggle('active', isActive);
+                    node.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+                    if (isActive && !immediate) {
+                        node.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+                    }
+                });
+
+                const updateStory = () => {
+                    storyContainer.innerHTML = renderStory(event);
+                    storyContainer.querySelectorAll('.timeline-cta-btn').forEach(btn => {
+                        btn.addEventListener('click', () => {
+                            const target = btn.dataset.target;
+                            if (!target) return;
+                            document.querySelectorAll(`.nav-link[data-target="${target}"]`).forEach(link => link.click());
+                        });
+                    });
+                };
+
+                if (window.gsap && !immediate) {
+                    gsap.to(storyContainer, {
+                        opacity: 0,
+                        y: 24,
+                        duration: 0.28,
+                        ease: 'power1.out',
+                        onComplete: () => {
+                            updateStory();
+                            gsap.fromTo(storyContainer, { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.55, ease: 'power2.out' });
+                        }
+                    });
+                } else {
+                    updateStory();
+                }
+
+                const applyBackdrop = () => {
+                    backdrop.style.backgroundImage = event.background;
+                };
+
+                if (window.gsap) {
+                    gsap.to(backdrop, {
+                        duration: immediate ? 0 : 1.1,
+                        backgroundImage: event.background,
+                        ease: 'power2.out',
+                        onStart: () => backdrop.classList.add('transitioning'),
+                        onComplete: () => backdrop.classList.remove('transitioning')
+                    });
+                } else {
+                    applyBackdrop();
+                }
+            };
+
+            nodes.forEach(node => {
+                node.addEventListener('click', () => selectEvent(node.dataset.event));
+                node.addEventListener('keydown', (event) => {
+                    if (event.key === 'Enter' || event.key === ' ') {
+                        event.preventDefault();
+                        selectEvent(node.dataset.event);
+                    }
+                });
+            });
+
+            scrollNextButton?.addEventListener('click', () => {
+                const last = nodes[nodes.length - 1];
+                if (last) {
+                    selectEvent(last.dataset.event);
+                }
+            });
+
+            if (window.gsap && window.ScrollTrigger) {
+                gsap.registerPlugin(ScrollTrigger);
+                gsap.fromTo(nodes, {
+                    opacity: 0,
+                    y: 40
+                }, {
+                    opacity: 1,
+                    y: 0,
+                    duration: 0.65,
+                    stagger: 0.15,
+                    ease: 'power2.out',
+                    scrollTrigger: {
+                        trigger: section,
+                        start: 'top 80%',
+                        once: true
+                    }
+                });
+
+                gsap.fromTo(section.querySelector('.thread-overlay'), {
+                    opacity: 0,
+                    y: 60
+                }, {
+                    opacity: 1,
+                    y: 0,
+                    duration: 0.8,
+                    ease: 'power2.out',
+                    scrollTrigger: {
+                        trigger: section,
+                        start: 'top 90%',
+                        once: true
+                    }
+                });
+            }
+
+            selectEvent(events[0].id, { immediate: true });
+
+            if (wrapper) {
+                wrapper.addEventListener('wheel', (event) => {
+                    if (Math.abs(event.deltaY) > Math.abs(event.deltaX)) {
+                        event.preventDefault();
+                        wrapper.scrollLeft += event.deltaY;
+                    }
+                }, { passive: false });
+            }
+        }
+
+        function bootstrapExperience() {
+            setupNavigation();
+            setupMobileMenu();
+            initializeThreadOfAges();
+            displayGaelicPhrase();
+            populateClanList();
+            initFinderCreator();
+            setupOghamCaster();
+            populateRecipesList();
+            populateLegendsList();
+            initTartanDesigner();
+        }
+
+        bootstrapExperience();
 
         // --- MAP FUNCTIONS ---
         function initializeClanMap() {
