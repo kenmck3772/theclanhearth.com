@@ -7,6 +7,10 @@
     <meta name="description" content="Discover your authentic Scottish heritage: Clan Histories, Spiritual Finder, Ogham Readings, Heritage Tours, Tartan Designer, and the Och-I AI Assistant.">
     
     <!-- External Libraries & Fonts -->
+    <!-- Tailwind CDN removed for production safety. Use compiled local CSS instead. -->
+    <link rel="stylesheet" href="/css/style.min.css">
+    <!-- Fallback for local dev if style.min.css isn't present (optional) -->
+    <link rel="stylesheet" href="/css/style.css" media="print">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
@@ -22,127 +26,6 @@
             --clan-stone: #8b7355; /* Brown/Stone */
             --parchment: #f4f1e8;
             --aged-paper: #f0ead6;
-        }
-        
-        body { 
-            font-family: 'Inter', sans-serif; 
-            background: linear-gradient(135deg, var(--parchment) 0%, var(--aged-paper) 100%);
-        }
-        .font-title { font-family: 'Cinzel', serif; }
-        
-        /* Navigation & Sections */
-        .nav-link.active { 
-            color: var(--clan-gold); 
-            border-bottom: 2px solid var(--clan-gold); 
-            background: rgba(212, 175, 55, 0.1);
-        }
-        .page-section { display: none; }
-        .page-section.active { display: block; animation: fadeIn 0.6s ease-in-out; }
-        
-        /* Components */
-        .clan-emblem {
-            background: linear-gradient(45deg, var(--clan-burgundy), var(--clan-forest));
-            border: 3px solid var(--clan-gold);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-        }
-        .content-card { 
-            transition: all 0.3s ease-in-out; 
-            background: rgba(255,255,255,0.95);
-            backdrop-filter: blur(10px);
-        }
-        .content-card:hover { 
-            transform: translateY(-4px); 
-            box-shadow: 0 15px 30px rgba(0,0,0,0.1); 
-        }
-        .btn-primary {
-            background: linear-gradient(45deg, var(--clan-burgundy), var(--clan-forest));
-            color: white;
-            border: 2px solid var(--clan-gold);
-            transition: all 0.3s ease;
-        }
-        .btn-primary:hover {
-            background: linear-gradient(45deg, var(--clan-forest), var(--clan-burgundy));
-            transform: translateY(-1px);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        }
-        .active-item { 
-            background: linear-gradient(90deg, var(--clan-gold), #f4d03f);
-            color: var(--clan-burgundy); 
-            font-weight: 600; 
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
-        }
-        .map-emoji-icon { 
-            font-size: 24px; 
-            text-align: center; 
-            line-height: 24px; 
-            filter: drop-shadow(0 2px 2px rgba(0,0,0,0.3));
-        }
-        
-        /* Map Styles */
-        #clanMap, #tripBuilderMap {
-            height: 100%;
-            min-height: 60vh;
-            width: 100%;
-            border-radius: 12px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
-        }
-        
-        /* Animations */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .pulse-gold {
-            animation: pulseGold 2s infinite;
-        }
-        @keyframes pulseGold {
-            0%, 100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.7); }
-            50% { box-shadow: 0 0 0 20px rgba(212, 175, 55, 0); }
-        }
-        
-        /* Ogham */
-        .ogham-stave:hover {
-            transform: translateY(-5px) rotate(2deg);
-            box-shadow: 0 8px 25px rgba(212, 175, 55, 0.5);
-            border-color: var(--clan-gold);
-        }
-        .ogham-symbol-svg {
-            stroke: var(--parchment);
-            stroke-width: 4;
-            height: 100px;
-            width: 100%;
-        }
-        
-        /* Tartan Designer */
-        .color-box { 
-            transition: all 0.2s ease-in-out; 
-            border: 3px solid transparent;
-        }
-        .color-box.selected { 
-            border-color: var(--clan-gold); 
-            transform: scale(1.15); 
-            box-shadow: 0 0 20px rgba(212, 175, 55, 0.6);
-        }
-
-        /* Trip Itinerary Panel (from index.html) */
-        #itinerary-panel {
-            position: absolute; 
-            bottom: 0; 
-            left: 0; 
-            right: 0; 
-            z-index: 1000; 
-            background-color: white;
-            box-shadow: 0 -4px 12px rgba(0,0,0,0.1); 
-            transition: transform 0.3s ease-in-out;
-            transform: translateY(calc(100% - 50px)); /* Initial state: mostly hidden */
-        }
-        #itinerary-panel.open { transform: translateY(0); }
-        .itinerary-handle {
-            width: 60px;
-            height: 5px;
-            background-color: #d1d5db;
-            border-radius: 5px;
-            margin: 10px auto;
         }
     </style>
 </head>
@@ -849,6 +732,28 @@
             ],
             colors: { 'red': '#B22222', 'dark-red': '#8B0000', 'green': '#006400', 'dark-green': '#003300', 'blue': '#000080', 'dark-blue': '#00004C', 'yellow': '#FFD700', 'dark-yellow': '#DAA520', 'white': '#F8F8F8', 'black': '#1a1a1a', 'purple': '#800080', 'brown': '#A52A2A', 'grey': '#808080', 'light-blue': '#ADD8E6' }
         };
+<script>
+(async function () {
+  try {
+    const res = await fetch('assets/clan_image_manifest.json');
+    const manifest = await res.json();
+    const byId = Object.fromEntries(manifest.map(m => [m.clan_id, m]));
+    if (window.APP_DATA && Array.isArray(APP_DATA.clanData)) {
+      APP_DATA.clanData = APP_DATA.clanData.map(c => {
+        const key = (c.id || c.name || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+        const m = byId[key];
+        return m ? { ...c, emblemImage: m.emblem_path || c.emblemImage, tartanImage: m.tartan_path || c.tartanImage } : c;
+      });
+    }
+    if (typeof populateClanList === 'function') {
+      populateClanList(document.getElementById('clan-search-input')?.value || '');
+    }
+  } catch (e) {
+    console.error('Could not load clan image manifest:', e);
+  }
+})();
+</script>
+
 
         // --- UTILITY FUNCTIONS ---
         function getImagePath(fileName) {
@@ -1677,5 +1582,6 @@
         });
     });
     </script>
+    <script type="module" src="/js/app.js"></script>
 </body>
 </html>

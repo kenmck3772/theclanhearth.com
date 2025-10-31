@@ -460,33 +460,33 @@ function showClanDetails(clanId) {
                     <div id="emblems-tab" class="tab-content">
                         <div class="grid grid-cols-3 gap-2">
                             <div>
-                                <img src="${clan.emblems.traditional}" 
-                                     alt="Traditional Emblem" 
-                                     class="w-full rounded-md"
-                                     onerror="this.src='https://raw.githubusercontent.com/kenmck3772/theclanhearth.com/main/assets/images/embelms/fallback-emblem.jpg'; this.alt='Image not available';">
+                          <img src="${clan.emblems.traditional}" 
+                              alt="Traditional Emblem" 
+                              class="w-full rounded-md img-fallback"
+                              data-fallback="https://raw.githubusercontent.com/kenmck3772/theclanhearth.com/main/assets/images/embelms/fallback-emblem.jpg">
                                 <p class="text-xs text-center mt-1">Traditional</p>
                             </div>
                             <div>
-                                <img src="${clan.emblems.modern}" 
-                                     alt="Modern Emblem" 
-                                     class="w-full rounded-md"
-                                     onerror="this.src='https://raw.githubusercontent.com/kenmck3772/theclanhearth.com/main/assets/images/embelms/fallback-emblem.jpg'; this.alt='Image not available';">
+                          <img src="${clan.emblems.modern}" 
+                              alt="Modern Emblem" 
+                              class="w-full rounded-md img-fallback"
+                              data-fallback="https://raw.githubusercontent.com/kenmck3772/theclanhearth.com/main/assets/images/embelms/fallback-emblem.jpg">
                                 <p class="text-xs text-center mt-1">Modern</p>
                             </div>
                             <div>
-                                <img src="${clan.emblems.celtic}" 
-                                     alt="Celtic Emblem" 
-                                     class="w-full rounded-md"
-                                     onerror="this.src='https://raw.githubusercontent.com/kenmck3772/theclanhearth.com/main/assets/images/embelms/fallback-emblem.jpg'; this.alt='Image not available';">
+                          <img src="${clan.emblems.celtic}" 
+                              alt="Celtic Emblem" 
+                              class="w-full rounded-md img-fallback"
+                              data-fallback="https://raw.githubusercontent.com/kenmck3772/theclanhearth.com/main/assets/images/embelms/fallback-emblem.jpg">
                                 <p class="text-xs text-center mt-1">Celtic</p>
                             </div>
                         </div>
                     </div>
                     <div id="tartan-tab" class="tab-content">
-                        <img src="${clan.tartan.image}" 
-                             alt="${clan.name} Tartan" 
-                             class="w-full rounded-md mb-2"
-                             onerror="this.src='https://raw.githubusercontent.com/kenmck3772/theclanhearth.com/main/assets/images/tartans/fallback-tartan.jpg'; this.alt='Image not available';">
+                    <img src="${clan.tartan.image}" 
+                        alt="${clan.name} Tartan" 
+                        class="w-full rounded-md mb-2 img-fallback"
+                        data-fallback="https://raw.githubusercontent.com/kenmck3772/theclanhearth.com/main/assets/images/tartans/fallback-tartan.jpg">
                         <p class="text-sm">${clan.tartan.description || ''}</p>
                     </div>
                 </div>
