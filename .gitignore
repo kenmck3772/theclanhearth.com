@@ -4,6 +4,9 @@ node_modules/
 # Compiled CSS
 css/*.css
 
+# Built site output
+dist/
+
 # Editor and OS files
 .vscode/
 .DS_Store
