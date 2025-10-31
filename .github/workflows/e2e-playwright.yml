@@ -1,0 +1,27 @@
+name: E2E Tests (Playwright)
+
+on:
+  pull_request:
+    branches: [ main, 'ci/**', 'feature/**', 'ci/pr-build-and-app-extract' ]
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      - name: Install dependencies
+        run: npm ci
+      - name: Build site
+        run: npm run build
+      - name: Start static server
+        run: npx serve -s dist -l 5173 &
+      - name: Wait for server
+        run: npx wait-on http://localhost:5173/
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+      - name: Run Playwright tests
+        run: npx playwright test --reporter=list

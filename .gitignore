@@ -4,6 +4,9 @@ node_modules/
 # Compiled CSS
 css/*.css
 
+# Built site output
+dist/
+
 # Editor and OS files
 .vscode/
 .DS_Store
@@ -11,3 +14,4 @@ css/*.css
 
 # Backup directory created during setup
 package_json_dir_backup/
+dist
