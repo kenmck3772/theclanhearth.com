@@ -514,6 +514,28 @@
             </p>
         </div>
     </div>
+
+<script>
+(async function () {
+  try {
+    const res = await fetch('assets/clan_image_manifest.json');
+    const manifest = await res.json();
+    const byId = Object.fromEntries(manifest.map(m => [m.clan_id, m]));
+    if (window.APP_DATA && Array.isArray(APP_DATA.clanData)) {
+      APP_DATA.clanData = APP_DATA.clanData.map(c => {
+        const key = (c.id || c.name || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+        const m = byId[key];
+        return m ? { ...c, emblemImage: m.emblem_path || c.emblemImage, tartanImage: m.tartan_path || c.tartanImage } : c;
+      });
+    }
+    if (typeof populateClanList === 'function') {
+      populateClanList(document.getElementById('clan-search-input')?.value || '');
+    }
+  } catch (e) {
+    console.error('Could not load clan image manifest:', e);
+  }
+})();
+</script>
 </body>
 </html>
     <script id="html_badge_script1">
