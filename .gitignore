@@ -3,6 +3,8 @@ node_modules/
 
 # Compiled CSS
 css/*.css
+!css/style.css
+!css/style.min.css
 
 # Built site output
 dist/
