@@ -196,6 +196,8 @@ export const APP_DATA = {
             clanData: [
                 { 
                     id: "armstrong", name: "Clan Armstrong", gaelicName: "MacGhillielàidir", motto: "Invictus Maneo (I remain unvanquished)", territories: "Liddesdale, Border Reiver lands", historicSeats: "Gilnockie Tower", 
+                    emblemImage: "/images/emblem/armstrong-emblem.jpg", 
+                    tartanImage: "/images/tartan/armstrong-tartan.jpg", 
                     emblemImage: "armstrong-emblem.jpg-3a5a42ef-ecdd-41a9-8862-0caa0e693610", 
                     tartanImage: "armstrong-tartan.jpg-1c2fb1e9-a387-4828-acc5-87f7937656a6", 
                     monumentImage: `${IMAGE_BASE_URL}300x120/8B0000/f4f1e8?text=Gilnockie+Tower`, 
@@ -204,6 +206,8 @@ export const APP_DATA = {
                 },
                 { 
                     id: "campbell", name: "Clan Campbell", gaelicName: "Na Caimbeulaich", motto: "Ne Obliviscaris (Forget Not)", territories: "Argyll, Breadalbane", historicSeats: "Inveraray Castle", 
+                    emblemImage: "/images/emblem/campbell-emblem.jpg", 
+                    tartanImage: "/images/tartan/campbell-tartan.jpg", 
                     emblemImage: "campbell-emblem.jpg-07cad8b2-94e9-4fe1-adfd-e6af235a9ed7", 
                     tartanImage: "campbell-tartan.jpg-9c776973-102b-4574-883d-311a36463710", 
                     monumentImage: `${IMAGE_BASE_URL}300x120/006400/f4f1e8?text=Inveraray+Castle`, 
@@ -212,6 +216,8 @@ export const APP_DATA = {
                 },
                 { 
                     id: "cameron", name: "Clan Cameron", gaelicName: "Camshron", motto: "Aonaibh ri chéile (Unite)", territories: "Lochaber", historicSeats: "Achnacarry Castle", 
+                    emblemImage: "/images/emblem/cameron-emblem.jpg", 
+                    tartanImage: "/images/tartan/cameron-tartan.jpg", 
                     emblemImage: "cameron-emblem.jpg-92122649-9408-44bd-a215-15aab0eb172e", 
                     tartanImage: "cameron-tartan.jpg-0f1e2510-9bcb-4463-81c2-30cb7b0e7235", 
                     monumentImage: `${IMAGE_BASE_URL}300x120/d4af37/2d5016?text=Achnacarry+Castle`, 
@@ -220,6 +226,8 @@ export const APP_DATA = {
                 },
                 { 
                     id: "chattan", name: "Clan Chattan (Confederation)", gaelicName: "Clann Chatain", motto: "Touch not the cat bot a glove", territories: "Badenoch, Strathnairn", historicSeats: "Moy Hall", 
+                    emblemImage: "/images/emblem/chattan-emblem.jpg", 
+                    tartanImage: "/images/tartan/chattan-tartan.jpg", 
                     emblemImage: "chattan-emblem.jpg-fafd758d-1cb5-46dc-92af-cce10eefd925", 
                     tartanImage: "chattan-tartan.jpg-83bba47f-f298-4bc7-80e1-f837b575b0d2", 
                     monumentImage: `${IMAGE_BASE_URL}300x120/d4af37/800020?text=Moy+Hall`, 
@@ -228,6 +236,8 @@ export const APP_DATA = {
                 },
                 { 
                     id: "carnegie", name: "Clan Carnegie", gaelicName: "Carn-an-eige", motto: "Dred God", territories: "Angus, Kincardineshire", historicSeats: "Kinnaird Castle", 
+                    emblemImage: "/images/emblem/carnegie-emblem.jpg", 
+                    tartanImage: "/images/tartan/carnegie-tartan.jpg", 
                     emblemImage: "carnegie-emblem.jpg-90564bfd-b3be-49ff-b388-146ad4a7874e", 
                     tartanImage: "carnegie-tartan.jpg-2b8b4627-097a-4998-9583-fdcdcdb67196", 
                     monumentImage: `${IMAGE_BASE_URL}300x120/000080/ffffff?text=Kinnaird+Castle`, 
@@ -236,6 +246,8 @@ export const APP_DATA = {
                 },
                 { 
                     id: "macdonald", name: "Clan MacDonald (Donald)", gaelicName: "Clann Dòmhnaill", motto: "Per Mare Per Terras (By sea and by land)", territories: "The Hebrides, Western Highlands", historicSeats: "Armadale Castle", 
+                    emblemImage: "/images/emblem/macdonald-emblem.jpg", 
+                    tartanImage: "/images/tartan/donald-tartan.jpg", 
                     emblemImage: "donald-emblem.jpg-b9acfe72-be61-45e4-a40d-56ac276d1b0c", 
                     tartanImage: "donald-tartan.jpg-4b18f731-45ea-44a0-9503-be17ad980b15", 
                     monumentImage: `${IMAGE_BASE_URL}300x120/8B0000/f4f1e8?text=Armadale+Castle`, 
@@ -244,6 +256,8 @@ export const APP_DATA = {
                 },
                 { 
                     id: "macleod", name: "Clan MacLeod", gaelicName: "Clann Mhic Leòid", motto: "Hold Fast", territories: "Isle of Skye, Lewis and Harris", historicSeats: "Dunvegan Castle", 
+                    emblemImage: "/images/emblem/macleod-emblem.jpg", 
+                    tartanImage: "/images/tartan/macleod-tartan.jpg", 
                     emblemImage: "macleod-emblem.jpg-95c73ca0-6dfe-4a1f-9169-6377d8d9f791", 
                     tartanImage: "macleod-tartan.jpg-20e1af1a-1928-466d-8eb0-cb2600faced7", 
                     monumentImage: `${IMAGE_BASE_URL}300x120/FFD700/000080?text=Dunvegan+Castle`, 
@@ -252,6 +266,8 @@ export const APP_DATA = {
                 },
                 { 
                     id: "fraser", name: "Clan Fraser", gaelicName: "Friseal", motto: "Je Suis Prêt (I am ready)", territories: "Inverness-shire, Aberdeenshire", historicSeats: "Beaufort Castle", 
+                    emblemImage: "/images/emblem/fraser-emblem.jpg", 
+                    tartanImage: "/images/tartan/fraser-tartan.jpg", 
                     emblemImage: `Fraser-emblem.jpg`, 
                     tartanImage: `Fraser-tartan.jpg`, 
                     monumentImage: `${IMAGE_BASE_URL}300x120/A52A2A/f4f1e8?text=Beaufort+Castle`, 
@@ -260,6 +276,8 @@ export const APP_DATA = {
                 },
                 { 
                     id: "douglas", name: "Clan Douglas", gaelicName: "Dùbhghlas", motto: "Jamais Arrière (Never behind)", territories: "The Scottish Lowlands, Lanarkshire", historicSeats: "Tantallon Castle", 
+                    emblemImage: "/images/emblem/douglas-emblem.jpg", 
+                    tartanImage: "/images/tartan/douglas-tartan.jpg", 
                     emblemImage: "douglas-emblem.jpg-325443c0-e76c-4fed-9ad4-6e67af4cb501", 
                     tartanImage: "douglas-tartan.jpg-06e1ceb9-dcb2-4f47-a5a7-5e25c6c674f6", 
                     monumentImage: `${IMAGE_BASE_URL}300x120/1a1a1a/f4f1e8?text=Tantallon+Castle`, 
@@ -268,6 +286,8 @@ export const APP_DATA = {
                 },
                 { 
                     id: "mackenzie", name: "Clan MacKenzie", gaelicName: "MacCoinnich", motto: "Luceo non uro (I shine, not burn)", territories: "Ross-shire, Kintail", historicSeats: "Eilean Donan Castle", 
+                    emblemImage: "/images/emblem/mackenzie-emblem.jpg", 
+                    tartanImage: "/images/tartan/mackenzie-tartan.jpg", 
                     emblemImage: `MacKenzie-emblem.jpg`, 
                     tartanImage: "mackenzie-tartan1.jpg-52c356b2-54e6-4eb9-b09f-5d75be11e1bd", 
                     monumentImage: `${IMAGE_BASE_URL}300x120/000080/f4f1e8?text=Eilean+Donan+Castle`, 
@@ -276,6 +296,8 @@ export const APP_DATA = {
                 },
                  { 
                     id: "cunningham", name: "Clan Cunningham", gaelicName: "Conineam", motto: "Over Fork Over", territories: "Ayrshire, Renfrewshire", historicSeats: "Finlaystone House", 
+                    emblemImage: "/images/emblem/cunningham-emblem.jpg", 
+                    tartanImage: "/images/tartan/cunningham-tartan.jpg", 
                     emblemImage: "cunningham-emblem.jpg-e47e4ec4-f947-43e9-b521-4982cf376e9f", 
                     tartanImage: "cunningham-tartan.jpg-1471a72e-d755-42e6-85fd-a8b35be7eefa", 
                     monumentImage: `${IMAGE_BASE_URL}300x120/800020/f4f1e8?text=Finlaystone+House`, 
@@ -284,6 +306,8 @@ export const APP_DATA = {
                 },
                 { 
                     id: "eliott", name: "Clan Eliott", gaelicName: "MacEliot", motto: "Fortiter et Recte (Strongly and rightly)", territories: "Liddesdale, Borderlands", historicSeats: "Stobs Castle", 
+                    emblemImage: "/images/emblem/eliott-emblem.jpg", 
+                    tartanImage: "/images/tartan/elliot-tartan.jpg", 
                     emblemImage: "eliott-emblem.jpg-395e2140-5929-4779-90f7-93abf89e238a", 
                     tartanImage: "elliot-tartan.jpg-e055ada5-e832-4e6d-a47d-c181fc6cbea0", 
                     monumentImage: `${IMAGE_BASE_URL}300x120/000080/ADD8E6?text=Eliott+Border+Keep`, 
@@ -292,6 +316,8 @@ export const APP_DATA = {
                 },
                 { 
                     id: "erskine", name: "Clan Erskine", gaelicName: "Eirisgean", motto: "Je Pense Plus (I think more)", territories: "Stirlingshire, Clackmannanshire", historicSeats: "Alloa Tower", 
+                    emblemImage: "/images/emblem/erskine-emblem.jpg", 
+                    tartanImage: "/images/tartan/erskine-tartan.jpg", 
                     emblemImage: "erskine-emblem.jpg-6ee4cf28-5369-4b82-a062-ee392fa616e5", 
                     tartanImage: `Erskine-tartan-placeholder.jpg`, 
                     monumentImage: `${IMAGE_BASE_URL}300x120/A52A2A/ffffff?text=Alloa+Tower`, 
@@ -300,6 +326,8 @@ export const APP_DATA = {
                 },
                 { 
                     id: "leslie", name: "Clan Leslie", gaelicName: "Mac an Leaslaich", motto: "Grip Fast", territories: "Aberdeenshire, Fife, the Garioch", historicSeats: "Leslie Castle, Castle Leslie", 
+                    emblemImage: "/images/emblem/leslie-emblem.jpg",
+                    tartanImage: "/images/tartan/leslie-tartan.jpg", 
                     emblemImage: `${IMAGE_BASE_URL}64x64/B22222/FFD700?text=LES`, /* Placeholder as no file was provided for Leslie */
                     tartanImage: `${IMAGE_BASE_URL}200x80/B22222/FFD700?text=Leslie+Tartan`, 
                     monumentImage: `${IMAGE_BASE_URL}300x120/B22222/FFD700?text=Leslie+Castle`, 
@@ -308,6 +336,8 @@ export const APP_DATA = {
                 },
                 { 
                     id: "lindsay", name: "Clan Lindsay", gaelicName: "Mac Gilleain", motto: "Endure Fort (Endure with strength)", territories: "Lowlands, Fife, Angus", historicSeats: "Edzell Castle, Crawford Castle", 
+                    emblemImage: "/images/emblem/lindsay-emblem.jpg",
+                    tartanImage: "/images/tartan/lindsay-tartan.jpg", 
                     emblemImage: `${IMAGE_BASE_URL}64x64/800020/f4f1e8?text=LIN`, /* Placeholder as no file was provided for Lindsay */
                     tartanImage: `${IMAGE_BASE_URL}200x80/800020/f4f1e8?text=Lindsay+Tartan`, 
                     monumentImage: `${IMAGE_BASE_URL}300x120/800020/f4f1e8?text=Edzell+Castle`, 
@@ -316,6 +346,8 @@ export const APP_DATA = {
                 },
                 { 
                     id: "mackintosh", name: "Clan Mackintosh", gaelicName: "Clann an Taoisich", motto: "Touch not the cat bot a glove", territories: "Inverness, Strathnairn", historicSeats: "Moy Hall", 
+                    emblemImage: "/images/emblem/mackintosh-emblem.jpg", 
+                    tartanImage: "/images/tartan/mackintosh-tartan.jpg", 
                     emblemImage: "mackintosh-emblem.jpg-1b30ded5-28ac-4bad-8177-12bd0af77db2", 
                     tartanImage: "mackintosh-tartan.jpg-4f750e50-fc0a-480d-ba67-427ea0499c4f", 
                     monumentImage: `${IMAGE_BASE_URL}300x120/B22222/006400?text=Moy+Hall`, 
@@ -324,6 +356,8 @@ export const APP_DATA = {
                 },
                 { 
                     id: "macpherson", name: "Clan Macpherson", gaelicName: "Mac a' Phearsain", motto: "Touch not the cat but a glove", territories: "Badenoch", historicSeats: "Cluny Castle", 
+                    emblemImage: "/images/emblem/macpherson-emblem.jpg", 
+                    tartanImage: "/images/tartan/macpherson-tartan.jpg", 
                     emblemImage: "macpherson-emblem.jpg-f866bcfc-1ad4-46f9-a832-8892c0eabf68", 
                     tartanImage: "macpherson-tartan.jpg-2730fadd-5313-4623-a382-d60856170b10", 
                     monumentImage: `${IMAGE_BASE_URL}300x120/FFD700/800020?text=Cluny+Castle`, 
@@ -332,6 +366,8 @@ export const APP_DATA = {
                 },
                  { 
                     id: "murray", name: "Clan Murray", gaelicName: "Clann Mhuirich", motto: "Tout Prêt (Quite Ready)", territories: "Perthshire, Tullibardine, Atholl", historicSeats: "Blair Castle", 
+                    emblemImage: "/images/emblem/murray-emblem.jpg", 
+                    tartanImage: "/images/tartan/murray-tartan.jpg", 
                     emblemImage: "murray-emblem.jpg-e9c977c6-c6f3-4887-8d2b-b46fc724c812", 
                     tartanImage: "murray-tartan.jpg-e091a478-5780-423a-b251-7c7136eab837", 
                     monumentImage: `${IMAGE_BASE_URL}300x120/006400/ffffff?text=Blair+Castle`, 
@@ -340,6 +376,8 @@ export const APP_DATA = {
                 },
                 { 
                     id: "ramsay", name: "Clan Ramsay", gaelicName: "Ramasaigh", motto: "Ora et Labora (Pray and work)", territories: "East Lothian, Midlothian", historicSeats: "Dalhousie Castle", 
+                    emblemImage: "/images/emblem/ramsay-emblem.jpg", 
+                    tartanImage: "https://placehold.co/200x80/B22222/000080?text=Ramsay+Tartan", 
                     emblemImage: "ramsay-emblem.jpg-3e5e3fa6-ac17-4bc3-924c-a01b09a5db14", 
                     tartanImage: `Ramsay-tartan.jpg`, 
                     monumentImage: `${IMAGE_BASE_URL}300x120/B22222/000080?text=Dalhousie+Castle`, 
@@ -348,6 +386,8 @@ export const APP_DATA = {
                 },
                 { 
                     id: "scott", name: "Clan Scott", gaelicName: "Sgodach", motto: "Amo (I love)", territories: "The Scottish Borders, Selkirkshire", historicSeats: "Bowhill House, Branxholme Castle", 
+                    emblemImage: "/images/emblem/scott-emblem.jpg", 
+                    tartanImage: "/images/tartan/scott-tartan.jpg", 
                     emblemImage: "scott-emblem.jpg-2f4b60e4-0956-4d4e-89f3-7a4af4a79071", 
                     tartanImage: "scott-tartan.jpg-e6142a03-4a82-44ae-8535-9f18a31e2ad6", 
                     monumentImage: `${IMAGE_BASE_URL}300x120/1a1a1a/f4f1e8?text=Bowhill+House`, 
@@ -356,6 +396,8 @@ export const APP_DATA = {
                 },
                 { 
                     id: "sinclair", name: "Clan Sinclair", gaelicName: "Clann na Ceàrda", motto: "Commit Thy Work To God", territories: "Caithness, Orkney", historicSeats: "Rosslyn Chapel, Castle Sinclair Girnigoe", 
+                    emblemImage: "/images/emblem/sinclair-emblem.jpg", 
+                    tartanImage: "/images/tartan/sinclair-tartan.jpg", 
                     emblemImage: "sinclair-emblem.jpg-815a1c5e-a3f4-43ee-aa08-06270e56e01f", 
                     tartanImage: "sinclair-tartan.jpg-da46b46f-ecbd-4cc3-88cb-c49ca327c18b", 
                     monumentImage: `${IMAGE_BASE_URL}300x120/B22222/ADD8E6?text=Rosslyn+Chapel`, 
@@ -364,12 +406,69 @@ export const APP_DATA = {
                 },
                 { 
                     id: "stewart", name: "Clan Stewart (Royal)", gaelicName: "Stiùbhart", motto: "Virescit Vulnere Virtus (Courage grows strong at a wound)", territories: "Nationwide (Royal connections)", historicSeats: "Stirling Castle, Holyrood Palace", 
+                    emblemImage: "/images/emblem/stewart-emblem.jpg", 
+                    tartanImage: "/images/tartan/stewart-tartan.jpg", 
                     emblemImage: "stewart-emblem.jpg-26022985-2d93-44ee-90e0-f0b0ebe3711f", 
                     tartanImage: "stewart-tartan.jpg-38815f7f-ba71-439f-9893-7017b19086bc", 
                     monumentImage: `${IMAGE_BASE_URL}300x120/B22222/000080?text=Stirling+Castle`, 
                     lore: "The **Royal House of Stewart** (later Stuart) ruled Scotland for over 300 years, producing figures like Mary Queen of Scots. They are one of the most historically important families in all of Europe.", 
                     recipe: { id: "cranachan", name: "Cranachan" } 
                 },
+                {
+                    id: "wallace", name: "Clan Wallace", gaelicName: "Uallais", motto: "Pro Libertate (For Liberty)", territories: "Ayrshire, Renfrewshire, Lowlands", historicSeats: "Elderslie",
+                    emblemImage: "/images/emblem/wallace-emblem.jpg",
+                    tartanImage: "/images/tartan/wallace-tartan.jpg",
+                    monumentImage: `${IMAGE_BASE_URL}300x120/B22222/FFD700?text=Wallace+Monument`,
+                    lore: "Though a smaller clan, the **Wallaces hold a place in history far exceeding their numbers**, thanks to one man: Sir William Wallace. His leadership during the Wars of Scottish Independence and his victory at Stirling Bridge made him an enduring symbol of freedom.",
+                    recipe: { id: "haggis", name: "Highland Haggis" }
+                },
+                {
+                    id: "gordon", name: "Clan Gordon", gaelicName: "Gòrdan", motto: "Bydand (Remain)", territories: "Aberdeenshire, Banffshire", historicSeats: "Huntly Castle",
+                    emblemImage: "/images/emblem/gordon-emblem.jpg",
+                    tartanImage: "/images/tartan/gordon-tartan.jpg",
+                    monumentImage: `${IMAGE_BASE_URL}300x120/2d5016/f4f1e8?text=Huntly+Castle`,
+                    lore: "The Gordons were fiery royalist champions in the north-east, fielding regiments of Highlanders and Gordon cavalry in the Wars of the Three Kingdoms. Their cry of **'Bydand'**—to stand fast—still echoes at Highland gatherings.",
+                    recipe: { id: "venison_pie", name: "Venison Pie with Puff Pastry" }
+                },
+                {
+                    id: "grant", name: "Clan Grant", gaelicName: "Grannd", motto: "Stand Fast", territories: "Strathspey, Glen Urquhart", historicSeats: "Castle Grant",
+                    emblemImage: "/images/emblem/grant-emblem.jpg",
+                    tartanImage: "/images/tartan/grant-tartan.jpg",
+                    monumentImage: `${IMAGE_BASE_URL}300x120/1a1a1a/f4f1e8?text=Castle+Grant`,
+                    lore: "Guardians of Strathspey, the Grants marched beneath scarlet tartan and supplied famed pipers to the Jacobite rebellions while protecting whisky smugglers across the Cairngorm passes.",
+                    recipe: { id: "scotch_broth", name: "Scotch Broth" }
+                },
+                {
+                    id: "macgregor", name: "Clan MacGregor", gaelicName: "Clann Ghriogair", motto: "S Rioghal Mo Dhream (Royal is my race)", territories: "Breadalbane, Perthshire", historicSeats: "Balquhidder",
+                    emblemImage: "/images/emblem/macgregor-emblem.jpg",
+                    tartanImage: "/images/tartan/macgregor-tartan.jpg",
+                    monumentImage: `${IMAGE_BASE_URL}300x120/800020/f4f1e8?text=Balquhidder+Glen`,
+                    lore: "Outlawed for centuries, the MacGregors survived proscription by taking other clan names. Their most legendary son, Rob Roy, became the folk hero of Highland resilience and daring cattle raids.",
+                    recipe: { id: "skirlie", name: "Skirlie (Oatmeal Stuffing)" }
+                },
+                {
+                    id: "macdougall", name: "Clan MacDougall", gaelicName: "MacDhùghaill", motto: "Buaidh no bas (Victory or death)", territories: "Lorne, Argyll", historicSeats: "Dunollie Castle",
+                    emblemImage: "/images/emblem/macdougall-emblem.jpg",
+                    tartanImage: "/images/tartan/macdougall-tartan.jpg",
+                    monumentImage: `${IMAGE_BASE_URL}300x120/003300/f4f1e8?text=Dunollie+Castle`,
+                    lore: "Descended from Norse-Gaelic kings of the Isles, the MacDougalls battled the Bruces for control of western sea lanes and carried the Brooch of Lorne as a symbol of their seafaring prowess.",
+                    recipe: { id: "cullen_skink", name: "Cullen Skink" }
+                },
+                {
+                    id: "guthrie", name: "Clan Guthrie", gaelicName: "Guthraidh", motto: "Sto Pro Veritate (I stand for the truth)", territories: "Angus Coast", historicSeats: "Guthrie Castle",
+                    emblemImage: "/images/emblem/guthrie-emblem.jpg",
+                    tartanImage: "/images/tartan/guthrie-tartan.jpg",
+                    monumentImage: `${IMAGE_BASE_URL}300x120/8b7355/f4f1e8?text=Guthrie+Castle`,
+                    lore: "A seafaring Lowland clan, the Guthries ferried kings across the North Sea and became keepers of coastal kirks, blending maritime trade with reformed faith leadership.",
+                    recipe: { id: "cranachan", name: "Cranachan" }
+                },
+                {
+                    id: "stuart", name: "Clan Stuart of Bute", gaelicName: "Stiùbhart Bhòid", motto: "Nobilis Ira (Noble anger)", territories: "Isle of Bute, Cowal", historicSeats: "Mount Stuart",
+                    emblemImage: "/images/emblem/stuart-emblem.jpg",
+                    tartanImage: "/images/tartan/stuart-tartan.jpg",
+                    monumentImage: `${IMAGE_BASE_URL}300x120/000080/f4f1e8?text=Mount+Stuart`,
+                    lore: "As royal stewards of the Isles, the Stuarts of Bute forged a bridge between Gaelic Argyll and the Crown, later designing Mount Stuart as a neo-Gothic homage to Celtic astronomy.",
+                    recipe: { id: "haggis", name: "Highland Haggis" }
                  { 
                     id: "wallace", name: "Clan Wallace", gaelicName: "Uallais", motto: "Pro Libertate (For Liberty)", territories: "Ayrshire, Renfrewshire, Lowlands", historicSeats: "Elderslie", 
                     emblemImage: "wallace-emblem.jpg-49bd8c52-0edf-45cf-91e0-48f6881691b7", 
