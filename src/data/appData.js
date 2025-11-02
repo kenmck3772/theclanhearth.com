@@ -7,6 +7,26 @@ export const APP_DATA = {
                 { gaelic: "Slàinte mhath!", pronunciation: "Slan-je vah", translation: "Good health! (Cheers!)" },
                 { gaelic: "Tìoraidh an-dràsta!", pronunciation: "Chee-ree an-drasta", translation: "Bye for now!" },
             ],
+            heroBackdrops: [
+                {
+                    id: 'hebrides-dawn',
+                    title: 'Callanish Stones at Dawn',
+                    location: 'Isle of Lewis, Outer Hebrides',
+                    image: 'images/hero-hebrides.svg',
+                    overlay: 'linear-gradient(140deg, rgba(7, 24, 48, 0.92), rgba(140, 63, 93, 0.75))',
+                    creditLabel: 'Illustration by Clan Hearth Studio',
+                    creditUrl: null
+                },
+                {
+                    id: 'highlands-twilight',
+                    title: 'Lochside Keep in the Highlands',
+                    location: 'Loch Awe, Argyll',
+                    image: 'images/hero-highlands.svg',
+                    overlay: 'linear-gradient(135deg, rgba(7, 20, 38, 0.9), rgba(56, 27, 62, 0.78))',
+                    creditLabel: 'Illustration by Clan Hearth Studio',
+                    creditUrl: null
+                }
+            ],
             timelineEvents: [
                 {
                     id: "calanais",
@@ -363,6 +383,12 @@ export const APP_DATA = {
                     recipe: { id: "cullen_skink", name: "Cullen Skink" }
                 },
                 {
+                    id: "stewart", name: "Clan Stewart (Royal)", gaelicName: "Stiùbhart", motto: "Virescit Vulnere Virtus (Courage grows strong at a wound)", territories: "Nationwide (Royal connections)", historicSeats: "Stirling Castle, Holyrood Palace",
+                    emblemImage: "/images/emblem/stewart-emblem.jpg",
+                    tartanImage: "/images/tartan/stewart-tartan.jpg",
+                    monumentImage: `${IMAGE_BASE_URL}300x120/B22222/000080?text=Stirling+Castle`,
+                    lore: "The **Royal House of Stewart** (later Stuart) ruled Scotland for over 300 years, producing figures like Mary Queen of Scots. They are one of the most historically important families in all of Europe.",
+                    recipe: { id: "cranachan", name: "Cranachan" }
                     id: "mackintosh", name: "Clan Mackintosh", gaelicName: "Clann an Taoisich", motto: "Touch not the cat bot a glove", territories: "Inverness, Strathnairn", historicSeats: "Moy Hall",
                     emblemImage: "/images/emblem/mackintosh-emblem.jpg",
                     tartanImage: "/images/tartan/mackintosh-tartan.jpg",

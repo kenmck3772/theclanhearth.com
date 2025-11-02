@@ -277,10 +277,19 @@
         
         /* Components */
         .home-hero {
+            --hero-backdrop-image: url('images/hero-highlands.svg');
+            --hero-backdrop-position: center center;
+            --hero-backdrop-overlay: linear-gradient(135deg, rgba(7, 20, 38, 0.9), rgba(56, 27, 62, 0.78));
+            --hero-backdrop-glow: radial-gradient(circle at 18% 18%, rgba(212, 175, 55, 0.22), transparent 60%);
+            --hero-backdrop-mist: radial-gradient(circle at 82% 12%, rgba(71, 109, 58, 0.2), transparent 55%);
             position: relative;
             overflow: hidden;
             border-radius: 40px;
             padding: clamp(2.5rem, 6vw, 4.5rem);
+            background: var(--hero-backdrop-glow), var(--hero-backdrop-mist), linear-gradient(135deg, rgba(7, 24, 48, 0.92), rgba(15, 23, 42, 0.88));
+            color: rgba(253, 250, 244, 0.96);
+            border: 1px solid rgba(212, 175, 55, 0.18);
+            box-shadow: 0 35px 65px -30px rgba(8, 24, 43, 0.85);
             background: radial-gradient(circle at 20% 20%, rgba(212, 175, 55, 0.24), transparent 55%),
                         radial-gradient(circle at 80% 10%, rgba(45, 80, 22, 0.26), transparent 50%),
                         linear-gradient(135deg, rgba(7, 24, 48, 0.95), rgba(15, 23, 42, 0.9));
@@ -297,6 +306,15 @@
             content: '';
             position: absolute;
             inset: 0;
+            background-image: var(--hero-backdrop-image);
+            background-size: cover;
+            background-position: var(--hero-backdrop-position, center);
+            background-repeat: no-repeat;
+            filter: saturate(1.08) contrast(1.05);
+            opacity: 0.58;
+            transform: scale(1.06);
+            transition: transform 18s ease-in-out;
+            will-change: transform;
             background-image: url('images/castlehome.jpg');
             background-size: cover;
             background-position: center;
@@ -314,6 +332,23 @@
             content: '';
             position: absolute;
             inset: 0;
+            background-image: var(--hero-backdrop-overlay), radial-gradient(circle at 30% 80%, rgba(216, 171, 94, 0.12), transparent 65%), radial-gradient(circle at 88% 30%, rgba(114, 159, 98, 0.18), transparent 55%);
+            background-blend-mode: multiply, screen, screen;
+            opacity: 0.98;
+        }
+        @keyframes heroDrift {
+            0% { transform: scale(1.06) translate3d(0, 0, 0); }
+            50% { transform: scale(1.08) translate3d(1.5%, -1.5%, 0); }
+            100% { transform: scale(1.06) translate3d(0, 0, 0); }
+        }
+        .home-hero:hover::before {
+            animation: heroDrift 36s ease-in-out infinite;
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .home-hero::before {
+                transition: none;
+                animation: none !important;
+            }
             background: linear-gradient(135deg, rgba(7, 20, 38, 0.88), rgba(21, 39, 70, 0.78));
         }
         .home-hero > * {
@@ -541,6 +576,54 @@
             text-transform: uppercase;
             margin-top: 0.75rem;
             color: rgba(212, 175, 55, 0.78);
+        }
+        .home-hero-credit {
+            margin-top: clamp(1.75rem, 4vw, 2.75rem);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.85rem;
+            padding: 0.85rem 1.15rem;
+            background: rgba(10, 23, 41, 0.72);
+            border: 1px solid rgba(212, 175, 55, 0.18);
+            border-radius: 18px;
+            box-shadow: 0 18px 32px -24px rgba(4, 12, 24, 0.9);
+            font-size: 0.85rem;
+            color: rgba(253, 250, 244, 0.78);
+            max-width: 420px;
+        }
+        .home-hero-credit i {
+            color: rgba(212, 175, 55, 0.68);
+            font-size: 1rem;
+        }
+        .home-hero-credit strong {
+            font-weight: 600;
+            color: rgba(253, 250, 244, 0.92);
+        }
+        .home-hero-credit a {
+            color: rgba(212, 221, 255, 0.88);
+            text-decoration: none;
+        }
+        .home-hero-credit a:hover,
+        .home-hero-credit a:focus {
+            text-decoration: underline;
+        }
+        .home-hero-credit a[aria-disabled="true"] {
+            pointer-events: none;
+            opacity: 0.78;
+            text-decoration: none;
+        }
+        .home-hero-credit-body {
+            display: grid;
+            gap: 0.25rem;
+        }
+        .home-hero-credit-meta {
+            display: inline-flex;
+            flex-wrap: wrap;
+            align-items: baseline;
+            gap: 0.35rem;
+        }
+        .home-hero-credit-meta span[aria-hidden="true"] {
+            color: rgba(212, 175, 55, 0.45);
             background: radial-gradient(circle at top right, rgba(212, 175, 55, 0.3), transparent 55%),
                         radial-gradient(circle at bottom left, rgba(45, 80, 22, 0.25), transparent 60%);
             mix-blend-mode: screen;
@@ -959,6 +1042,19 @@
                                     <strong>Gaelic & Rituals</strong>
                                     <p class="home-hero-highlight-detail" data-highlight="gaelic-detail">Fàilte — Welcome</p>
                                 </div>
+                            </li>
+                        </ul>
+                        <div class="home-hero-credit" data-hero-credit role="note">
+                            <i class="fas fa-mountain-sun" aria-hidden="true"></i>
+                            <div class="home-hero-credit-body">
+                                <strong data-hero-credit-title>Highland twilight over Loch Awe</strong>
+                                <div class="home-hero-credit-meta">
+                                    <span data-hero-credit-location>Argyll, Western Highlands</span>
+                                    <span aria-hidden="true" data-hero-credit-separator hidden>·</span>
+                                    <a data-hero-credit-link aria-disabled="true" tabindex="-1">Artwork by Clan Hearth Studio</a>
+                                </div>
+                            </div>
+                        </div>
                             <li>
                                 <i class="fas fa-scroll"></i>
                                 <span><strong>Clan Dossiers:</strong> Tartans, lineages, and legends restored from museum archives and family keepers.</span>

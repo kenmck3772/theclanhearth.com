@@ -124,6 +124,59 @@ function hydrateHomeHero(phraseOfDay) {
   const events = APP_DATA.timelineEvents ?? [];
   const mapPoints = APP_DATA.mapPoints ?? [];
   const recipes = APP_DATA.recipesData ?? [];
+  const heroBackdrops = APP_DATA.heroBackdrops ?? [];
+  const heroElement = document.querySelector('.home-hero');
+  const heroCredit = document.querySelector('[data-hero-credit]');
+  const heroCreditTitle = document.querySelector('[data-hero-credit-title]');
+  const heroCreditLocation = document.querySelector('[data-hero-credit-location]');
+  const heroCreditLink = document.querySelector('[data-hero-credit-link]');
+  const heroCreditSeparator = document.querySelector('[data-hero-credit-separator]');
+
+  const now = new Date();
+  const startOfYear = new Date(now.getFullYear(), 0, 0);
+  const dayIndex = Math.floor((now - startOfYear) / (1000 * 60 * 60 * 24));
+
+  if (heroElement && heroBackdrops.length) {
+    const selectedBackdrop = heroBackdrops[dayIndex % heroBackdrops.length];
+    const resolvedImage = getImagePath(selectedBackdrop.image);
+    heroElement.style.setProperty('--hero-backdrop-image', `url('${resolvedImage}')`);
+    if (selectedBackdrop.overlay) {
+      heroElement.style.setProperty('--hero-backdrop-overlay', selectedBackdrop.overlay);
+    } else {
+      heroElement.style.removeProperty('--hero-backdrop-overlay');
+    }
+    if (selectedBackdrop.position) {
+      heroElement.style.setProperty('--hero-backdrop-position', selectedBackdrop.position);
+    } else {
+      heroElement.style.removeProperty('--hero-backdrop-position');
+    }
+    heroElement.dataset.heroBackdrop = selectedBackdrop.id ?? 'scottish-backdrop';
+
+    setText(heroCreditTitle, selectedBackdrop.title, 'Highland twilight over Loch Awe');
+    setText(heroCreditLocation, selectedBackdrop.location, 'Scotland');
+    if (heroCredit) {
+      heroCredit.setAttribute('aria-label', `Backdrop: ${selectedBackdrop.title} — ${selectedBackdrop.location}`);
+    }
+    if (heroCreditLink) {
+      const creditLabel = selectedBackdrop.creditLabel ?? 'Illustration by Clan Hearth Studio';
+      heroCreditLink.textContent = creditLabel;
+      if (selectedBackdrop.creditUrl) {
+        heroCreditLink.href = selectedBackdrop.creditUrl;
+        heroCreditLink.target = '_blank';
+        heroCreditLink.rel = 'noopener';
+        heroCreditLink.removeAttribute('aria-disabled');
+        heroCreditLink.removeAttribute('tabindex');
+        heroCreditSeparator?.removeAttribute('hidden');
+      } else {
+        heroCreditLink.removeAttribute('href');
+        heroCreditLink.removeAttribute('target');
+        heroCreditLink.removeAttribute('rel');
+        heroCreditLink.setAttribute('aria-disabled', 'true');
+        heroCreditLink.setAttribute('tabindex', '-1');
+        heroCreditSeparator?.setAttribute('hidden', 'true');
+      }
+    }
+  }
 
   const formatNumber = (value) => {
     if (typeof value === 'number' && Number.isFinite(value)) {
