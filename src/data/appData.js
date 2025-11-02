@@ -363,6 +363,62 @@ export const APP_DATA = {
                     recipe: { id: "cullen_skink", name: "Cullen Skink" }
                 },
                 {
+                    id: "mackintosh", name: "Clan Mackintosh", gaelicName: "Clann an Taoisich", motto: "Touch not the cat bot a glove", territories: "Inverness, Strathnairn", historicSeats: "Moy Hall",
+                    emblemImage: "/images/emblem/mackintosh-emblem.jpg",
+                    tartanImage: "/images/tartan/mackintosh-tartan.jpg",
+                    monumentImage: `${IMAGE_BASE_URL}300x120/B22222/006400?text=Moy+Hall`,
+                    lore: "One of the chief clans in the powerful Clan Chattan confederation, tracing their ancestry back to the ancient MacDuff, Earl of Fife.",
+                    recipe: { id: "haggis", name: "Highland Haggis" }
+                },
+                {
+                    id: "macpherson", name: "Clan Macpherson", gaelicName: "Mac a' Phearsain", motto: "Touch not the cat but a glove", territories: "Badenoch", historicSeats: "Cluny Castle",
+                    emblemImage: "/images/emblem/macpherson-emblem.jpg",
+                    tartanImage: "/images/tartan/macpherson-tartan.jpg",
+                    monumentImage: `${IMAGE_BASE_URL}300x120/FFD700/800020?text=Cluny+Castle`,
+                    lore: "A major member of the Clan Chattan confederation, renowned for their loyalty and their association with the famous Jacobite leader, 'Cluny' Macpherson.",
+                    recipe: { id: "skirlie", name: "Skirlie (Oatmeal Stuffing)" }
+                },
+                {
+                    id: "murray", name: "Clan Murray", gaelicName: "Clann Mhuirich", motto: "Tout Prêt (Quite Ready)", territories: "Perthshire, Tullibardine, Atholl", historicSeats: "Blair Castle",
+                    emblemImage: "/images/emblem/murray-emblem.jpg",
+                    tartanImage: "/images/tartan/murray-tartan.jpg",
+                    monumentImage: `${IMAGE_BASE_URL}300x120/006400/ffffff?text=Blair+Castle`,
+                    lore: "One of the most politically powerful clans in Scotland, dominating the central Highlands. They held the Dukedom of Atholl and their ancestral seat is **Blair Castle**.",
+                    recipe: { id: "venison_pie", name: "Venison Pie with Puff Pastry" }
+                },
+                {
+                    id: "ramsay", name: "Clan Ramsay", gaelicName: "Ramasaigh", motto: "Ora et Labora (Pray and work)", territories: "East Lothian, Midlothian", historicSeats: "Dalhousie Castle",
+                    emblemImage: "/images/emblem/ramsay-emblem.jpg",
+                    tartanImage: "ramsay-tartan.jpg",
+                    monumentImage: `${IMAGE_BASE_URL}300x120/B22222/000080?text=Dalhousie+Castle`,
+                    lore: "A Lowland clan influential in the Lothians. The Ramsays are known for their service to the Scottish Crown and hold the Earldom of Dalhousie.",
+                    recipe: { id: "scotch_broth", name: "Scotch Broth" }
+                },
+                {
+                    id: "scott", name: "Clan Scott", gaelicName: "Sgodach", motto: "Amo (I love)", territories: "The Scottish Borders, Selkirkshire", historicSeats: "Bowhill House, Branxholme Castle",
+                    emblemImage: "/images/emblem/scott-emblem.jpg",
+                    tartanImage: "/images/tartan/scott-tartan.jpg",
+                    monumentImage: `${IMAGE_BASE_URL}300x120/1a1a1a/f4f1e8?text=Bowhill+House`,
+                    lore: "One of the most numerous and powerful **Border clans**, famous for their role as Wardens of the Middle Marches. The clan produced the famous writer, Sir Walter Scott.",
+                    recipe: { id: "scotch_broth", name: "Scotch Broth" }
+                },
+                {
+                    id: "sinclair", name: "Clan Sinclair", gaelicName: "Clann na Ceàrda", motto: "Commit Thy Work To God", territories: "Caithness, Orkney", historicSeats: "Rosslyn Chapel, Castle Sinclair Girnigoe",
+                    emblemImage: "/images/emblem/sinclair-emblem.jpg",
+                    tartanImage: "/images/tartan/sinclair-tartan.jpg",
+                    monumentImage: `${IMAGE_BASE_URL}300x120/B22222/ADD8E6?text=Rosslyn+Chapel`,
+                    lore: "With Norse origins, the Sinclairs are famous for their **link to the Knights Templar** and the mysterious Rosslyn Chapel. They held the Earldom of Caithness.",
+                    recipe: { id: "cullen_skink", name: "Cullen Skink" }
+                },
+                {
+                    id: "stewart", name: "Clan Stewart (Royal)", gaelicName: "Stiùbhart", motto: "Virescit Vulnere Virtus (Courage grows strong at a wound)", territories: "Nationwide (Royal connections)", historicSeats: "Stirling Castle, Holyrood Palace",
+                    emblemImage: "/images/emblem/stewart-emblem.jpg",
+                    tartanImage: "/images/tartan/stewart-tartan.jpg",
+                    monumentImage: `${IMAGE_BASE_URL}300x120/B22222/000080?text=Stirling+Castle`,
+                    lore: "The **Royal House of Stewart** (later Stuart) ruled Scotland for over 300 years, producing figures like Mary Queen of Scots. They are one of the most historically important families in all of Europe.",
+                    recipe: { id: "cranachan", name: "Cranachan" }
+                },
+                {
                     id: "stewart", name: "Clan Stewart (Royal)", gaelicName: "Stiùbhart", motto: "Virescit Vulnere Virtus (Courage grows strong at a wound)", territories: "Nationwide (Royal connections)", historicSeats: "Stirling Castle, Holyrood Palace",
                     emblemImage: "/images/emblem/stewart-emblem.jpg",
                     tartanImage: "/images/tartan/stewart-tartan.jpg",
