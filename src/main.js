@@ -18,7 +18,8 @@ window.APP_DATA = APP_DATA;
 
 document.addEventListener('DOMContentLoaded', () => {
   setupNavigation();
-  displayGaelicPhrase();
+  const phraseOfDay = displayGaelicPhrase();
+  hydrateHomeHero(phraseOfDay);
   initializeThreadOfAges();
   populateClanList();
   setupClanSearch();
@@ -104,17 +105,146 @@ function displayGaelicPhrase() {
   const phraseEl = document.getElementById('gaelic-phrase');
   const pronunciationEl = document.getElementById('gaelic-pronunciation');
   const translationEl = document.getElementById('gaelic-translation');
-  if (!phraseEl || !pronunciationEl || !translationEl) return;
+  if (!phraseEl || !pronunciationEl || !translationEl) return null;
 
   const now = new Date();
   const startOfYear = new Date(now.getFullYear(), 0, 0);
   const dayIndex = Math.floor((now - startOfYear) / (1000 * 60 * 60 * 24));
   const phrases = APP_DATA.gaelicPhrases ?? [];
-  if (!phrases.length) return;
+  if (!phrases.length) return null;
   const phrase = phrases[dayIndex % phrases.length];
   phraseEl.textContent = phrase.gaelic;
   pronunciationEl.textContent = `(${phrase.pronunciation})`;
   translationEl.textContent = phrase.translation;
+  return phrase;
+}
+
+function hydrateHomeHero(phraseOfDay) {
+  const clans = APP_DATA.clanData ?? [];
+  const events = APP_DATA.timelineEvents ?? [];
+  const mapPoints = APP_DATA.mapPoints ?? [];
+  const recipes = APP_DATA.recipesData ?? [];
+  const heroBackdrops = APP_DATA.heroBackdrops ?? [];
+  const heroElement = document.querySelector('.home-hero');
+  const heroCredit = document.querySelector('[data-hero-credit]');
+  const heroCreditTitle = document.querySelector('[data-hero-credit-title]');
+  const heroCreditLocation = document.querySelector('[data-hero-credit-location]');
+  const heroCreditLink = document.querySelector('[data-hero-credit-link]');
+  const heroCreditSeparator = document.querySelector('[data-hero-credit-separator]');
+
+  const now = new Date();
+  const startOfYear = new Date(now.getFullYear(), 0, 0);
+  const dayIndex = Math.floor((now - startOfYear) / (1000 * 60 * 60 * 24));
+
+  if (heroElement && heroBackdrops.length) {
+    const selectedBackdrop = heroBackdrops[dayIndex % heroBackdrops.length];
+    const resolvedImage = getImagePath(selectedBackdrop.image);
+    heroElement.style.setProperty('--hero-backdrop-image', `url('${resolvedImage}')`);
+    if (selectedBackdrop.overlay) {
+      heroElement.style.setProperty('--hero-backdrop-overlay', selectedBackdrop.overlay);
+    } else {
+      heroElement.style.removeProperty('--hero-backdrop-overlay');
+    }
+    if (selectedBackdrop.position) {
+      heroElement.style.setProperty('--hero-backdrop-position', selectedBackdrop.position);
+    } else {
+      heroElement.style.removeProperty('--hero-backdrop-position');
+    }
+    heroElement.dataset.heroBackdrop = selectedBackdrop.id ?? 'scottish-backdrop';
+
+    setText(heroCreditTitle, selectedBackdrop.title, 'Highland twilight over Loch Awe');
+    setText(heroCreditLocation, selectedBackdrop.location, 'Scotland');
+    if (heroCredit) {
+      heroCredit.setAttribute('aria-label', `Backdrop: ${selectedBackdrop.title} — ${selectedBackdrop.location}`);
+    }
+    if (heroCreditLink) {
+      const creditLabel = selectedBackdrop.creditLabel ?? 'Illustration by Clan Hearth Studio';
+      heroCreditLink.textContent = creditLabel;
+      if (selectedBackdrop.creditUrl) {
+        heroCreditLink.href = selectedBackdrop.creditUrl;
+        heroCreditLink.target = '_blank';
+        heroCreditLink.rel = 'noopener';
+        heroCreditLink.removeAttribute('aria-disabled');
+        heroCreditLink.removeAttribute('tabindex');
+        heroCreditSeparator?.removeAttribute('hidden');
+      } else {
+        heroCreditLink.removeAttribute('href');
+        heroCreditLink.removeAttribute('target');
+        heroCreditLink.removeAttribute('rel');
+        heroCreditLink.setAttribute('aria-disabled', 'true');
+        heroCreditLink.setAttribute('tabindex', '-1');
+        heroCreditSeparator?.setAttribute('hidden', 'true');
+      }
+    }
+  }
+
+  const formatNumber = (value) => {
+    if (typeof value === 'number' && Number.isFinite(value)) {
+      return value.toLocaleString('en-GB');
+    }
+    return '0';
+  };
+
+  const setText = (selector, value, fallback = '—') => {
+    const element = typeof selector === 'string' ? document.querySelector(selector) : selector;
+    if (!element) return;
+    const resolved = value ?? fallback;
+    element.textContent = typeof resolved === 'number' ? resolved.toString() : String(resolved);
+  };
+
+  const uniqueTerritories = new Set();
+  clans.forEach((clan) => {
+    (clan.territories ?? '')
+      .split(/[,/]|·/g)
+      .map((segment) => segment.replace(/\(.*?\)/g, '').trim())
+      .filter(Boolean)
+      .forEach((territory) => uniqueTerritories.add(territory));
+  });
+
+  setText('[data-stat="clans"]', formatNumber(clans.length), '0');
+  setText('[data-stat="territories"]', formatNumber(uniqueTerritories.size), '0');
+  setText('[data-stat="timeline"]', formatNumber(events.length), '0');
+  setText('[data-stat="recipes"]', formatNumber(recipes.length), '0');
+
+  setText('[data-highlight="timeline-count"]', formatNumber(events.length), '0');
+  const firstEvent = events[0];
+  const lastEvent = events[events.length - 1];
+  setText('[data-highlight="timeline-first"]', firstEvent?.year ?? '—');
+  setText('[data-highlight="timeline-last"]', lastEvent?.year ?? '—');
+  setText('[data-highlight="timeline-detail"]', lastEvent?.title ?? '—');
+
+  const clanSample = clans
+    .slice(0, 3)
+    .map((clan) => clan.name?.replace(/^Clan\s+/i, '').trim())
+    .filter(Boolean);
+  setText('[data-highlight="clan-sample"]', clanSample.length ? clanSample.join(' · ') : '—');
+
+  const surnameSet = new Map();
+  Object.values(APP_DATA.surnameVariants ?? {}).forEach((variants = []) => {
+    if (!Array.isArray(variants)) return;
+    variants.forEach((variant) => {
+      const value = String(variant ?? '').trim();
+      if (!value) return;
+      const key = value.toLowerCase();
+      if (!surnameSet.has(key)) {
+        surnameSet.set(key, value);
+      }
+    });
+  });
+  const surnameSample = Array.from(surnameSet.values()).slice(0, 3);
+  setText('[data-highlight="surname-count"]', formatNumber(surnameSet.size), '0');
+  setText('[data-highlight="surname-sample"]', surnameSample.length ? surnameSample.join(' · ') : '—');
+
+  const mapCategories = new Set(mapPoints.map((point) => point.category).filter(Boolean));
+  setText('[data-highlight="map-count"]', formatNumber(mapPoints.length), '0');
+  setText('[data-highlight="map-categories"]', formatNumber(mapCategories.size), '0');
+
+  const featuredRecipe = recipes[0];
+  setText('[data-highlight="recipe-name"]', featuredRecipe?.name ?? 'Cullen Skink');
+
+  if (phraseOfDay) {
+    setText('[data-highlight="gaelic-detail"]', `${phraseOfDay.gaelic} — ${phraseOfDay.translation}`);
+  }
 }
 
 function initializeThreadOfAges() {
@@ -259,13 +389,40 @@ function formatSectionName(id) {
   return names[id] ?? id.replace(/-/g, ' ');
 }
 
+function getClanSurnames(clanId) {
+  return (APP_DATA.surnameVariants?.[clanId] ?? []).slice();
+}
+
 function populateClanList(searchTerm = '') {
   const listContainer = document.getElementById('clan-list-container');
   if (!listContainer) return;
   const normalized = searchTerm.trim().toLowerCase();
+  const surnameMap = APP_DATA.surnameVariants ?? {};
+  const formatVariantPreview = (variants) => {
+    if (!variants.length) return '';
+    if (variants.length <= 3) {
+      return variants.join(', ');
+    }
+    return `${variants.slice(0, 3).join(', ')}…`;
+  };
+
   const clans = (APP_DATA.clanData ?? [])
-    .filter((clan) => clan.name.toLowerCase().includes(normalized) || clan.gaelicName.toLowerCase().includes(normalized))
-    .sort((a, b) => a.name.localeCompare(b.name));
+    .map((clan) => {
+      const variants = Array.isArray(surnameMap[clan.id]) ? surnameMap[clan.id] : [];
+      const match = normalized
+        ? {
+            name: clan.name.toLowerCase().includes(normalized),
+            gaelic: clan.gaelicName?.toLowerCase().includes(normalized) ?? false,
+            surname: variants.find((variant) => variant.toLowerCase().includes(normalized)) ?? null,
+          }
+        : { name: false, gaelic: false, surname: null };
+      return { clan, variants, match };
+    })
+    .filter(({ clan, match }) => {
+      if (!normalized) return true;
+      return match.name || match.gaelic || Boolean(match.surname);
+    })
+    .sort((a, b) => a.clan.name.localeCompare(b.clan.name));
 
   if (!clans.length) {
     listContainer.innerHTML = '<p class="text-sm text-gray-600">No clans match your search.</p>';
@@ -274,13 +431,15 @@ function populateClanList(searchTerm = '') {
 
   listContainer.innerHTML = clans
     .map(
-      (clan) => `
+      ({ clan, variants, match }) => `
         <button class="item-card w-full text-left p-4 rounded-lg bg-white/80 shadow hover:shadow-md transition border-2 border-transparent hover:border-clan-gold" data-clan-id="${clan.id}">
           <div class="flex items-center gap-4">
             <img src="${getImagePath(clan.emblemImage)}" alt="${clan.name} crest" class="w-14 h-14 rounded-full border-4 border-yellow-700 object-cover" onerror="this.onerror=null;this.src='${APP_DATA.imageFallback ?? 'https://placehold.co/80x80/2d5016/d4af37?text=Crest'}';">
             <div>
               <h3 class="font-title text-lg font-semibold text-gray-800">${clan.name}</h3>
               <p class="text-xs text-gray-500 italic">${clan.gaelicName}</p>
+              ${normalized && match.surname ? `<p class="text-xs text-yellow-700 font-medium mt-1">Matches surname variant “${match.surname}”</p>` : ''}
+              ${variants.length ? `<p class="text-xs text-gray-500 mt-1">Linked surnames: ${formatVariantPreview(variants)}</p>` : ''}
             </div>
           </div>
         </button>
@@ -318,6 +477,14 @@ function showClanDetails(clanId) {
     return;
   }
 
+  const surnames = getClanSurnames(clan.id);
+  const surnameSection = surnames.length
+    ? `<div class="bg-white/80 p-4 rounded-lg shadow-inner">
+        <h4 class="font-semibold text-yellow-800 mb-1">Associated Surnames</h4>
+        <p>${surnames.join(', ')}</p>
+      </div>`
+    : '';
+
   detailContainer.innerHTML = `
     <div class="space-y-6 animate-fade-in">
       <div class="text-center">
@@ -338,6 +505,7 @@ function showClanDetails(clanId) {
           <h4 class="font-semibold text-yellow-800 mb-1">Historic Seats</h4>
           <p>${clan.historicSeats}</p>
         </div>
+        ${surnameSection}
       </div>
       <div class="space-y-3">
         <img src="${getImagePath(clan.tartanImage)}" alt="${clan.name} tartan" class="w-full h-32 object-cover rounded-lg border-2 border-clan-gold" onerror="this.onerror=null;this.src='https://placehold.co/200x80/1a1a1a/f4f1e8?text=Tartan';">
