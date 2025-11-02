@@ -363,6 +363,54 @@ export const APP_DATA = {
                     recipe: { id: "cullen_skink", name: "Cullen Skink" }
                 },
                 {
+                    id: "mackintosh", name: "Clan Mackintosh", gaelicName: "Clann an Taoisich", motto: "Touch not the cat bot a glove", territories: "Inverness, Strathnairn", historicSeats: "Moy Hall",
+                    emblemImage: "/images/emblem/mackintosh-emblem.jpg",
+                    tartanImage: "/images/tartan/mackintosh-tartan.jpg",
+                    monumentImage: `${IMAGE_BASE_URL}300x120/B22222/006400?text=Moy+Hall`,
+                    lore: "One of the chief clans in the powerful Clan Chattan confederation, tracing their ancestry back to the ancient MacDuff, Earl of Fife.",
+                    recipe: { id: "haggis", name: "Highland Haggis" }
+                },
+                {
+                    id: "macpherson", name: "Clan Macpherson", gaelicName: "Mac a' Phearsain", motto: "Touch not the cat but a glove", territories: "Badenoch", historicSeats: "Cluny Castle",
+                    emblemImage: "/images/emblem/macpherson-emblem.jpg",
+                    tartanImage: "/images/tartan/macpherson-tartan.jpg",
+                    monumentImage: `${IMAGE_BASE_URL}300x120/FFD700/800020?text=Cluny+Castle`,
+                    lore: "A major member of the Clan Chattan confederation, renowned for their loyalty and their association with the famous Jacobite leader, 'Cluny' Macpherson.",
+                    recipe: { id: "skirlie", name: "Skirlie (Oatmeal Stuffing)" }
+                },
+                {
+                    id: "murray", name: "Clan Murray", gaelicName: "Clann Mhuirich", motto: "Tout Prêt (Quite Ready)", territories: "Perthshire, Tullibardine, Atholl", historicSeats: "Blair Castle",
+                    emblemImage: "/images/emblem/murray-emblem.jpg",
+                    tartanImage: "/images/tartan/murray-tartan.jpg",
+                    monumentImage: `${IMAGE_BASE_URL}300x120/006400/ffffff?text=Blair+Castle`,
+                    lore: "One of the most politically powerful clans in Scotland, dominating the central Highlands. They held the Dukedom of Atholl and their ancestral seat is **Blair Castle**.",
+                    recipe: { id: "venison_pie", name: "Venison Pie with Puff Pastry" }
+                },
+                {
+                    id: "ramsay", name: "Clan Ramsay", gaelicName: "Ramasaigh", motto: "Ora et Labora (Pray and work)", territories: "East Lothian, Midlothian", historicSeats: "Dalhousie Castle",
+                    emblemImage: "/images/emblem/ramsay-emblem.jpg",
+                    tartanImage: "ramsay-tartan.jpg",
+                    monumentImage: `${IMAGE_BASE_URL}300x120/B22222/000080?text=Dalhousie+Castle`,
+                    lore: "A Lowland clan influential in the Lothians. The Ramsays are known for their service to the Scottish Crown and hold the Earldom of Dalhousie.",
+                    recipe: { id: "scotch_broth", name: "Scotch Broth" }
+                },
+                {
+                    id: "scott", name: "Clan Scott", gaelicName: "Sgodach", motto: "Amo (I love)", territories: "The Scottish Borders, Selkirkshire", historicSeats: "Bowhill House, Branxholme Castle",
+                    emblemImage: "/images/emblem/scott-emblem.jpg",
+                    tartanImage: "/images/tartan/scott-tartan.jpg",
+                    monumentImage: `${IMAGE_BASE_URL}300x120/1a1a1a/f4f1e8?text=Bowhill+House`,
+                    lore: "One of the most numerous and powerful **Border clans**, famous for their role as Wardens of the Middle Marches. The clan produced the famous writer, Sir Walter Scott.",
+                    recipe: { id: "scotch_broth", name: "Scotch Broth" }
+                },
+                {
+                    id: "sinclair", name: "Clan Sinclair", gaelicName: "Clann na Ceàrda", motto: "Commit Thy Work To God", territories: "Caithness, Orkney", historicSeats: "Rosslyn Chapel, Castle Sinclair Girnigoe",
+                    emblemImage: "/images/emblem/sinclair-emblem.jpg",
+                    tartanImage: "/images/tartan/sinclair-tartan.jpg",
+                    monumentImage: `${IMAGE_BASE_URL}300x120/B22222/ADD8E6?text=Rosslyn+Chapel`,
+                    lore: "With Norse origins, the Sinclairs are famous for their **link to the Knights Templar** and the mysterious Rosslyn Chapel. They held the Earldom of Caithness.",
+                    recipe: { id: "cullen_skink", name: "Cullen Skink" }
+                },
+                {
                     id: "stewart", name: "Clan Stewart (Royal)", gaelicName: "Stiùbhart", motto: "Virescit Vulnere Virtus (Courage grows strong at a wound)", territories: "Nationwide (Royal connections)", historicSeats: "Stirling Castle, Holyrood Palace",
                     emblemImage: "/images/emblem/stewart-emblem.jpg",
                     tartanImage: "/images/tartan/stewart-tartan.jpg",
@@ -371,12 +419,12 @@ export const APP_DATA = {
                     recipe: { id: "cranachan", name: "Cranachan" }
                 },
                 {
-                    id: "wallace", name: "Clan Wallace", gaelicName: "Uallais", motto: "Pro Libertate (For Liberty)", territories: "Ayrshire, Renfrewshire, Lowlands", historicSeats: "Elderslie",
-                    emblemImage: "/images/emblem/wallace-emblem.jpg",
-                    tartanImage: "/images/tartan/wallace-tartan.jpg",
-                    monumentImage: `${IMAGE_BASE_URL}300x120/B22222/FFD700?text=Wallace+Monument`,
-                    lore: "Though a smaller clan, the **Wallaces hold a place in history far exceeding their numbers**, thanks to one man: Sir William Wallace. His leadership during the Wars of Scottish Independence and his victory at Stirling Bridge made him an enduring symbol of freedom.",
-                    recipe: { id: "haggis", name: "Highland Haggis" }
+                    id: "stewart", name: "Clan Stewart (Royal)", gaelicName: "Stiùbhart", motto: "Virescit Vulnere Virtus (Courage grows strong at a wound)", territories: "Nationwide (Royal connections)", historicSeats: "Stirling Castle, Holyrood Palace",
+                    emblemImage: "/images/emblem/stewart-emblem.jpg",
+                    tartanImage: "/images/tartan/stewart-tartan.jpg",
+                    monumentImage: `${IMAGE_BASE_URL}300x120/B22222/000080?text=Stirling+Castle`,
+                    lore: "The **Royal House of Stewart** (later Stuart) ruled Scotland for over 300 years, producing figures like Mary Queen of Scots. They are one of the most historically important families in all of Europe.",
+                    recipe: { id: "cranachan", name: "Cranachan" }
                 },
                 {
                     id: "gordon", name: "Clan Gordon", gaelicName: "Gòrdan", motto: "Bydand (Remain)", territories: "Aberdeenshire, Banffshire", historicSeats: "Huntly Castle",
@@ -451,5 +499,36 @@ export const APP_DATA = {
                 { question: "What quality do you value most in a community?", options: [ { text: "Unwavering loyalty and kinship", value: "loyalty" }, { text: "Resilience and adaptability", value: "resilience" }, { text: "Innovation and progress", value: "innovation" }, { text: "Respect for tradition and history", value: "tradition" } ] },
                 { question: "If you could possess a mythical Scottish creature's trait, what would it be?", options: [ { text: "The strength of the Kelpie", value: "strength" }, { text: "The wisdom of the Great Stag", value: "wisdom" }, { text: "The freedom of the Golden Eagle", value: "freedom" }, { text: "The magic of the Faerie folk", value: "magic" } ] }
             ],
-            colors: { 'red': '#B22222', 'dark-red': '#8B0000', 'green': '#006400', 'dark-green': '#003300', 'blue': '#000080', 'dark-blue': '#00004C', 'yellow': '#FFD700', 'dark-yellow': '#DAA520', 'white': '#F8F8F8', 'black': '#1a1a1a', 'purple': '#800080', 'brown': '#A52A2A', 'grey': '#808080', 'light-blue': '#ADD8E6' }
+            colors: { 'red': '#B22222', 'dark-red': '#8B0000', 'green': '#006400', 'dark-green': '#003300', 'blue': '#000080', 'dark-blue': '#00004C', 'yellow': '#FFD700', 'dark-yellow': '#DAA520', 'white': '#F8F8F8', 'black': '#1a1a1a', 'purple': '#800080', 'brown': '#A52A2A', 'grey': '#808080', 'light-blue': '#ADD8E6' },
+            surnameVariants: {
+                armstrong: ['Armstrong', 'Armstrang', 'Armystrong'],
+                campbell: ['Campbell', 'Caimbeul', 'Cambell', 'MacCampbell'],
+                cameron: ['Cameron', 'Camshron', 'Cammeron'],
+                chattan: ['Chattan', 'Catton', 'MacIntosh'],
+                carnegie: ['Carnegie', 'Carnagy', 'Carnie'],
+                macdonald: ['MacDonald', 'Donaldson', 'MacDonnell', 'McDonald', 'McDonnell'],
+                macleod: ['MacLeod', 'McLeod', 'Leod', 'MacCloud'],
+                fraser: ['Fraser', 'Frazer', 'Frasier', 'Frazier'],
+                douglas: ['Douglas', 'Douglass', 'Dowglas'],
+                mackenzie: ['MacKenzie', 'McKenzie', 'Kenzie', 'MacKinzie'],
+                cunningham: ['Cunningham', 'Cuningham', 'Conyngham'],
+                eliott: ['Eliott', 'Elliot', 'Elliott', 'Elyot'],
+                erskine: ['Erskine', 'Areskine', 'Arskine'],
+                leslie: ['Leslie', 'Lesley', 'Lesslie'],
+                lindsay: ['Lindsay', 'Lindsey', 'Lyndsay'],
+                mackintosh: ['MacIntosh', 'McIntosh', 'Mackintosh'],
+                macpherson: ['MacPherson', 'McPherson', 'MacPhersone'],
+                murray: ['Murray', 'Moray', 'Murrie'],
+                ramsay: ['Ramsay', 'Ramsey', 'Ramsaie'],
+                scott: ['Scott', 'Scot', 'Scotte'],
+                sinclair: ['Sinclair', 'Sinkler', 'St Clair'],
+                stewart: ['Stewart', 'Stuart', 'Steward'],
+                stuart: ['Stuart', 'Stewart', 'Steward'],
+                gordon: ['Gordon', 'Gourdon', 'Gordoun'],
+                grant: ['Grant', 'Graunt', 'Grandi'],
+                macgregor: ['MacGregor', 'McGregor', 'Gregor', 'Grewar'],
+                macdougall: ['MacDougall', 'McDougall', 'Dougal', 'Macdugal'],
+                guthrie: ['Guthrie', 'Guthry', 'Guthery'],
+                wallace: ['Wallace', 'Wallis', 'Wallice']
+            }
         };

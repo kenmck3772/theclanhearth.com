@@ -406,6 +406,22 @@
         .home-hero-highlights li strong {
             color: rgba(253, 250, 244, 0.98);
         }
+        .home-hero-highlight-text {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+        .home-hero-highlight-detail {
+            margin: 0;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            color: rgba(248, 250, 252, 0.72);
+        }
+        .home-hero-highlight-detail small {
+            display: block;
+            font-size: 0.75rem;
+            color: rgba(253, 250, 244, 0.6);
+        }
         .home-hero-highlights i {
             font-size: 1.2rem;
             color: rgba(212, 175, 55, 0.9);
@@ -493,6 +509,12 @@
             gap: 0.35rem;
             text-align: left;
         }
+        .home-hero-metric .stat-number {
+            font-size: 2.15rem;
+            font-weight: 700;
+            font-family: 'Cinzel', serif;
+            color: rgba(253, 250, 244, 0.98);
+            letter-spacing: 0.04em;
         .home-hero-metric span:first-child {
             font-size: 1.9rem;
             font-weight: 700;
@@ -683,6 +705,15 @@
             border: 3px solid rgba(212, 175, 55, 0.8);
             box-shadow: 0 25px 45px -30px rgba(0, 0, 0, 0.65);
             isolation: isolate;
+        }
+        .clan-emblem::after {
+            content: '';
+            position: absolute;
+            inset: 12px;
+            border-radius: 9999px;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            opacity: 0.7;
+        }
         }
         .clan-emblem::after {
             content: '';
@@ -891,6 +922,43 @@
                             </button>
                         </div>
                         <ul class="home-hero-highlights" role="list">
+                            <li data-highlight="timeline">
+                                <i class="fas fa-scroll" aria-hidden="true"></i>
+                                <div class="home-hero-highlight-text">
+                                    <strong>Thread of Ages</strong>
+                                    <p class="home-hero-highlight-detail">
+                                        <span data-highlight="timeline-count">0</span> chapters from
+                                        <span data-highlight="timeline-first">—</span> to
+                                        <span data-highlight="timeline-last">—</span>.
+                                    </p>
+                                </div>
+                            </li>
+                            <li data-highlight="clans">
+                                <i class="fas fa-shield-halved" aria-hidden="true"></i>
+                                <div class="home-hero-highlight-text">
+                                    <strong>Clan Dossiers</strong>
+                                    <p class="home-hero-highlight-detail">
+                                        Featuring <span data-highlight="clan-sample">—</span> kindreds.
+                                        <small>Linked surnames like <span data-highlight="surname-sample">—</span> (<span data-highlight="surname-count">0</span> recorded)</small>
+                                    </p>
+                                </div>
+                            </li>
+                            <li data-highlight="maps">
+                                <i class="fas fa-compass" aria-hidden="true"></i>
+                                <div class="home-hero-highlight-text">
+                                    <strong>Immersive Maps</strong>
+                                    <p class="home-hero-highlight-detail">
+                                        <span data-highlight="map-count">0</span> storied places across
+                                        <span data-highlight="map-categories">0</span> journeys.
+                                    </p>
+                                </div>
+                            </li>
+                            <li data-highlight="gaelic">
+                                <i class="fas fa-fire" aria-hidden="true"></i>
+                                <div class="home-hero-highlight-text">
+                                    <strong>Gaelic & Rituals</strong>
+                                    <p class="home-hero-highlight-detail" data-highlight="gaelic-detail">Fàilte — Welcome</p>
+                                </div>
                             <li>
                                 <i class="fas fa-scroll"></i>
                                 <span><strong>Clan Dossiers:</strong> Tartans, lineages, and legends restored from museum archives and family keepers.</span>
@@ -938,6 +1006,24 @@
                             <h3>Signals from the Fire</h3>
                             <div class="home-hero-metrics" role="list" aria-label="Clan Hearth in numbers">
                                 <div class="home-hero-metric" role="listitem">
+                                    <span class="stat-number" data-stat="clans">0</span>
+                                    <div>
+                                        <strong>Clan lineages curated</strong>
+                                        <small>Across <span data-stat="territories">0</span> historic heartlands</small>
+                                    </div>
+                                </div>
+                                <div class="home-hero-metric" role="listitem">
+                                    <span class="stat-number" data-stat="timeline">0</span>
+                                    <div>
+                                        <strong>Moments in the Thread of Ages</strong>
+                                        <small>Latest chapter: <span data-highlight="timeline-detail">—</span></small>
+                                    </div>
+                                </div>
+                                <div class="home-hero-metric" role="listitem">
+                                    <span class="stat-number" data-stat="recipes">0</span>
+                                    <div>
+                                        <strong>Heritage recipes preserved</strong>
+                                        <small>Try <span data-highlight="recipe-name">—</span> tonight</small>
                                     <span>650+</span>
                                     <div>
                                         <strong>Living clans welcomed</strong>
