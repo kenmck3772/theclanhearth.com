@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-labelledby="title desc">
+  <title id="title">Clan crest placeholder</title>
+  <desc id="desc">Illustrated shield motif used when a clan crest image is unavailable.</desc>
+  <defs>
+    <radialGradient id="crestGradient" cx="50%" cy="45%" r="75%">
+      <stop offset="0%" stop-color="#fdf6e3" />
+      <stop offset="70%" stop-color="#d9b66d" />
+      <stop offset="100%" stop-color="#8a5a1f" />
+    </radialGradient>
+  </defs>
+  <rect width="200" height="200" fill="#1f2933" />
+  <circle cx="100" cy="96" r="82" fill="url(#crestGradient)" stroke="#fdf6e3" stroke-width="6" />
+  <path d="M100 38 L144 62 L144 112 C144 144 124 170 100 182 C76 170 56 144 56 112 L56 62 Z" fill="#2d3748" stroke="#fdf6e3" stroke-width="6" />
+  <path d="M100 56 C88 56 78 66 78 78 C78 90 88 100 100 100 C112 100 122 90 122 78 C122 66 112 56 100 56 Z" fill="#c0852a" stroke="#fdf6e3" stroke-width="4" />
+  <path d="M74 122 H126" stroke="#fdf6e3" stroke-width="6" stroke-linecap="round" />
+  <path d="M82 140 H118" stroke="#c0852a" stroke-width="6" stroke-linecap="round" />
+  <text x="100" y="190" text-anchor="middle" font-family="'Cinzel', 'Times New Roman', serif" font-size="20" fill="#fdf6e3">Clan Crest</text>
+</svg>
