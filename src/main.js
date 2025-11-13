@@ -14,9 +14,81 @@ const appState = {
   quizStep: 0,
 };
 
+const FALLBACK_SELECTORS = {
+  fallbackClass: 'img-fallback',
+  fallbackAttr: 'fallback',
+  firstAvailableClass: 'first-available',
+  firstAvailableImageClass: 'first-available-img',
+};
+
+let fallbackObserver = null;
+
+function initFirstAvailableImages(root = document) {
+  const scope = root ?? document;
+  const containers = scope.querySelectorAll(`.${FALLBACK_SELECTORS.firstAvailableClass}`);
+  containers.forEach((container) => {
+    if (container.dataset.initialized === '1') return;
+    const images = Array.from(
+      container.querySelectorAll(`img.${FALLBACK_SELECTORS.firstAvailableImageClass}`),
+    );
+    if (!images.length) return;
+    images.forEach((img, index) => {
+      img.style.display = index === 0 ? '' : 'none';
+      img.addEventListener('error', function handleError() {
+        img.removeEventListener('error', handleError);
+        const next = images[index + 1];
+        if (next) {
+          img.remove();
+          next.style.display = '';
+        } else {
+          img.style.display = 'none';
+        }
+      });
+    });
+    container.dataset.initialized = '1';
+  });
+}
+
+function initFallbackImages(root = document) {
+  const scope = root ?? document;
+  const images = scope.querySelectorAll(`img.${FALLBACK_SELECTORS.fallbackClass}`);
+  images.forEach((img) => {
+    if (img.dataset.fallbackInit === '1') return;
+    const fallback = img.dataset.fallback;
+    const handleError = () => {
+      if (!fallback || img.dataset.fallbackApplied === '1') return;
+      img.dataset.fallbackApplied = '1';
+      img.src = fallback;
+      if (!img.alt) {
+        img.alt = 'Image not available';
+      }
+    };
+    img.addEventListener('error', handleError, { once: true });
+    img.dataset.fallbackInit = '1';
+  });
+}
+
+function watchImageFallbacks() {
+  if (fallbackObserver || typeof MutationObserver === 'undefined') return;
+  if (!document.body) return;
+  fallbackObserver = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+      mutation.addedNodes.forEach((node) => {
+        if (!(node instanceof HTMLElement)) return;
+        initFallbackImages(node);
+        initFirstAvailableImages(node);
+      });
+    });
+  });
+  fallbackObserver.observe(document.body, { childList: true, subtree: true });
+}
+
 window.APP_DATA = APP_DATA;
 
 document.addEventListener('DOMContentLoaded', () => {
+  initFallbackImages(document);
+  initFirstAvailableImages(document);
+  watchImageFallbacks();
   setupNavigation();
   const phraseOfDay = displayGaelicPhrase();
   hydrateHomeHero(phraseOfDay);
@@ -132,6 +204,13 @@ function hydrateHomeHero(phraseOfDay) {
   const heroCreditLink = document.querySelector('[data-hero-credit-link]');
   const heroCreditSeparator = document.querySelector('[data-hero-credit-separator]');
 
+  const setText = (selector, value, fallback = '—') => {
+    const element = typeof selector === 'string' ? document.querySelector(selector) : selector;
+    if (!element) return;
+    const resolved = value ?? fallback;
+    element.textContent = typeof resolved === 'number' ? resolved.toString() : String(resolved);
+  };
+
   const now = new Date();
   const startOfYear = new Date(now.getFullYear(), 0, 0);
   const dayIndex = Math.floor((now - startOfYear) / (1000 * 60 * 60 * 24));
@@ -183,13 +262,6 @@ function hydrateHomeHero(phraseOfDay) {
       return value.toLocaleString('en-GB');
     }
     return '0';
-  };
-
-  const setText = (selector, value, fallback = '—') => {
-    const element = typeof selector === 'string' ? document.querySelector(selector) : selector;
-    if (!element) return;
-    const resolved = value ?? fallback;
-    element.textContent = typeof resolved === 'number' ? resolved.toString() : String(resolved);
   };
 
   const uniqueTerritories = new Set();
@@ -398,6 +470,8 @@ function populateClanList(searchTerm = '') {
   if (!listContainer) return;
   const normalized = searchTerm.trim().toLowerCase();
   const surnameMap = APP_DATA.surnameVariants ?? {};
+  const fallbackMap = APP_DATA.imageFallbacks ?? {};
+  const crestFallback = getImagePath(fallbackMap.crest);
   const formatVariantPreview = (variants) => {
     if (!variants.length) return '';
     if (variants.length <= 3) {
@@ -434,7 +508,7 @@ function populateClanList(searchTerm = '') {
       ({ clan, variants, match }) => `
         <button class="item-card w-full text-left p-4 rounded-lg bg-white/80 shadow hover:shadow-md transition border-2 border-transparent hover:border-clan-gold" data-clan-id="${clan.id}">
           <div class="flex items-center gap-4">
-            <img src="${getImagePath(clan.emblemImage)}" alt="${clan.name} crest" class="w-14 h-14 rounded-full border-4 border-yellow-700 object-cover" onerror="this.onerror=null;this.src='${APP_DATA.imageFallback ?? 'https://placehold.co/80x80/2d5016/d4af37?text=Crest'}';">
+            <img src="${getImagePath(clan.emblemImage, fallbackMap.crest)}" alt="${clan.name} crest" class="w-14 h-14 rounded-full border-4 border-yellow-700 object-cover img-fallback" data-fallback="${crestFallback}">
             <div>
               <h3 class="font-title text-lg font-semibold text-gray-800">${clan.name}</h3>
               <p class="text-xs text-gray-500 italic">${clan.gaelicName}</p>
@@ -446,6 +520,8 @@ function populateClanList(searchTerm = '') {
       `,
     )
     .join('');
+
+  initFallbackImages(listContainer);
 
   Array.from(listContainer.querySelectorAll('.item-card')).forEach((button, index) => {
     button.addEventListener('click', () => {
@@ -477,6 +553,11 @@ function showClanDetails(clanId) {
     return;
   }
 
+  const fallbackMap = APP_DATA.imageFallbacks ?? {};
+  const crestFallback = getImagePath(fallbackMap.crest);
+  const tartanFallback = getImagePath(fallbackMap.tartan);
+  const monumentFallback = getImagePath(fallbackMap.monument);
+
   const surnames = getClanSurnames(clan.id);
   const surnameSection = surnames.length
     ? `<div class="bg-white/80 p-4 rounded-lg shadow-inner">
@@ -488,7 +569,7 @@ function showClanDetails(clanId) {
   detailContainer.innerHTML = `
     <div class="space-y-6 animate-fade-in">
       <div class="text-center">
-        <img src="${getImagePath(clan.emblemImage)}" alt="${clan.name} crest" class="h-24 w-24 rounded-full mx-auto mb-4 border-4 border-yellow-800 p-1 bg-white" onerror="this.onerror=null;this.src='https://placehold.co/96x96/800020/f4f1e8?text=Crest';">
+        <img src="${getImagePath(clan.emblemImage, fallbackMap.crest)}" alt="${clan.name} crest" class="h-24 w-24 rounded-full mx-auto mb-4 border-4 border-yellow-800 p-1 bg-white img-fallback" data-fallback="${crestFallback}">
         <h3 class="font-title text-2xl font-bold text-gray-900">${clan.name}</h3>
         <p class="text-sm italic text-gray-500">${clan.gaelicName}</p>
       </div>
@@ -508,13 +589,15 @@ function showClanDetails(clanId) {
         ${surnameSection}
       </div>
       <div class="space-y-3">
-        <img src="${getImagePath(clan.tartanImage)}" alt="${clan.name} tartan" class="w-full h-32 object-cover rounded-lg border-2 border-clan-gold" onerror="this.onerror=null;this.src='https://placehold.co/200x80/1a1a1a/f4f1e8?text=Tartan';">
-        <img src="${clan.monumentImage}" alt="${clan.name} monument" class="w-full h-32 object-cover rounded-lg border-2 border-clan-gold" onerror="this.onerror=null;this.src='https://placehold.co/300x120/8b7355/f4f1e8?text=Monument';">
+        <img src="${getImagePath(clan.tartanImage, fallbackMap.tartan)}" alt="${clan.name} tartan" class="w-full h-32 object-cover rounded-lg border-2 border-clan-gold img-fallback" data-fallback="${tartanFallback}">
+        <img src="${getImagePath(clan.monumentImage, fallbackMap.monument)}" alt="${clan.name} monument" class="w-full h-32 object-cover rounded-lg border-2 border-clan-gold img-fallback" data-fallback="${monumentFallback}">
       </div>
       <p class="text-gray-700 leading-relaxed">${clan.lore}</p>
       ${clan.recipe ? `<button class="btn-primary px-4 py-2 rounded-lg font-semibold" data-recipe-link="${clan.recipe.id}"><i class="fas fa-utensils mr-2"></i> Taste ${clan.recipe.name}</button>` : ''}
     </div>
   `;
+
+  initFallbackImages(detailContainer);
 
   detailContainer.querySelector('[data-recipe-link]')?.addEventListener('click', (event) => {
     document.querySelector('.nav-link[data-target="recipes"]').dispatchEvent(new Event('click'));
@@ -804,12 +887,15 @@ function initFinderCreator() {
       return;
     }
 
+    const fallbackMap = APP_DATA.imageFallbacks ?? {};
+    const crestFallback = getImagePath(fallbackMap.crest);
+
     quizContainer.innerHTML = '';
     quizResult.classList.remove('hidden');
     quizResult.querySelector('#result-content').innerHTML = `
       <div class="space-y-6">
         <div class="text-center">
-          <img src="${getImagePath(clan.emblemImage)}" alt="${clan.name} crest" class="h-24 w-24 mx-auto rounded-full border-4 border-yellow-800 p-1 bg-white" onerror="this.onerror=null;this.src='https://placehold.co/96x96/800020/f4f1e8?text=Crest';">
+          <img src="${getImagePath(clan.emblemImage, fallbackMap.crest)}" alt="${clan.name} crest" class="h-24 w-24 mx-auto rounded-full border-4 border-yellow-800 p-1 bg-white img-fallback" data-fallback="${crestFallback}">
           <h3 class="font-title text-3xl font-bold text-gray-900">${clan.name}</h3>
           <p class="text-sm italic text-gray-500">${clan.gaelicName}</p>
         </div>
@@ -817,6 +903,8 @@ function initFinderCreator() {
         <button class="btn-primary px-4 py-2 rounded-lg font-semibold" data-view-clan="${clan.id}">Explore Clan Profile</button>
       </div>
     `;
+
+    initFallbackImages(quizResult);
 
     quizResult.querySelector('[data-view-clan]')?.addEventListener('click', (event) => {
       document.querySelector('.nav-link[data-target="clans"]').dispatchEvent(new Event('click'));
@@ -1017,10 +1105,13 @@ function displayRecipeDetails(recipeId) {
     return;
   }
 
+  const fallbackMap = APP_DATA.imageFallbacks ?? {};
+  const recipeFallback = getImagePath(fallbackMap.recipe);
+
   detailContainer.innerHTML = `
     <div class="space-y-6 animate-fade-in">
       <div class="flex flex-col md:flex-row gap-6">
-        <img src="${recipe.image}" alt="${recipe.name}" class="w-full md:w-1/3 h-48 object-cover rounded-lg border-4 border-clan-gold" onerror="this.onerror=null;this.src='https://placehold.co/600x400/c7a98b/ffffff?text=Recipe';">
+        <img src="${getImagePath(recipe.image, fallbackMap.recipe)}" alt="${recipe.name}" class="w-full md:w-1/3 h-48 object-cover rounded-lg border-4 border-clan-gold img-fallback" data-fallback="${recipeFallback}">
         <div class="space-y-3">
           <h2 class="font-title text-3xl font-bold text-gray-900">${recipe.name}</h2>
           <p class="text-gray-700">${recipe.description}</p>
@@ -1047,6 +1138,8 @@ function displayRecipeDetails(recipeId) {
       </div>
     </div>
   `;
+
+  initFallbackImages(detailContainer);
 }
 
 function populateLegendsList() {
@@ -1058,12 +1151,15 @@ function populateLegendsList() {
     return;
   }
 
+  const fallbackMap = APP_DATA.imageFallbacks ?? {};
+  const legendFallback = getImagePath(fallbackMap.legend);
+
   listContainer.innerHTML = legends
     .map(
       (legend) => `
         <button class="item-card w-full text-left p-4 bg-white/80 rounded-lg shadow hover:shadow-md transition border-2 border-transparent hover:border-clan-gold" data-legend-id="${legend.id}">
           <div class="flex items-center gap-4">
-            <img src="${legend.image}" alt="${legend.name}" class="w-16 h-16 rounded-full object-cover border border-amber-500 p-[2px]" onerror="this.onerror=null;this.src='https://placehold.co/64x64/8b7355/f4f1e8?text=L';">
+            <img src="${getImagePath(legend.image, fallbackMap.legend)}" alt="${legend.name}" class="w-16 h-16 rounded-full object-cover border border-amber-500 p-[2px] img-fallback" data-fallback="${legendFallback}">
             <div>
               <h3 class="font-title text-lg font-semibold text-gray-800">${legend.name}</h3>
               <p class="text-sm text-gray-500">${legend.shortDesc}</p>
@@ -1073,6 +1169,8 @@ function populateLegendsList() {
       `,
     )
     .join('');
+
+  initFallbackImages(listContainer);
 
   listContainer.querySelectorAll('[data-legend-id]').forEach((button, index) => {
     button.addEventListener('click', () => {
@@ -1096,19 +1194,43 @@ function displayLegendDetails(legendId) {
     return;
   }
 
+  const fallbackMap = APP_DATA.imageFallbacks ?? {};
+  const legendFallback = getImagePath(fallbackMap.legend);
+
   detailContainer.innerHTML = `
     <div class="space-y-6 text-center animate-fade-in">
-      <img src="${legend.image}" alt="${legend.name}" class="w-40 h-40 mx-auto rounded-full border-4 border-yellow-800 p-1 bg-white object-cover" onerror="this.onerror=null;this.src='https://placehold.co/160x160/8b7355/f4f1e8?text=Legend';">
+      <img src="${getImagePath(legend.image, fallbackMap.legend)}" alt="${legend.name}" class="w-40 h-40 mx-auto rounded-full border-4 border-yellow-800 p-1 bg-white object-cover img-fallback" data-fallback="${legendFallback}">
       <h2 class="font-title text-4xl font-bold text-gray-900">${legend.name}</h2>
       <p class="text-xl text-gray-600 italic">${legend.shortDesc}</p>
       <div class="text-left bg-white/80 p-6 rounded-lg shadow-inner">
         <p class="text-gray-700 leading-relaxed">${legend.details}</p>
       </div>
-      <button class="btn-primary px-4 py-2 rounded-lg font-semibold" onclick="navigator.share ? navigator.share({ title: '${legend.name}', text: '${legend.shortDesc}' }).catch(() => {}) : showToast('Sharing is supported on mobile browsers.', 'info')">
+      <button class="btn-primary px-4 py-2 rounded-lg font-semibold" data-share-legend="${legend.id}">
         <i class="fas fa-share-alt mr-2"></i> Share Legend
       </button>
     </div>
   `;
+
+  initFallbackImages(detailContainer);
+
+  detailContainer.querySelector('[data-share-legend]')?.addEventListener('click', async () => {
+    const shareData = {
+      title: legend.name,
+      text: legend.shortDesc,
+      url: `${window.location.origin}${window.location.pathname}#legends`,
+    };
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData);
+      } catch (error) {
+        if (error?.name !== 'AbortError') {
+          showToast('Sharing was not completed.', 'info');
+        }
+      }
+    } else {
+      showToast('Sharing is supported on modern mobile browsers.', 'info');
+    }
+  });
 }
 
 function initTartanDesigner() {
