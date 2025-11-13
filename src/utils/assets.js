@@ -1,5 +1,3 @@
-import { IMAGE_BASE_URL } from '../data/appData.js';
-
 const LOCAL_DIR_HINTS = [
   { token: 'emblem', prefix: '/images/emblem/' },
   { token: 'tartan', prefix: '/images/tartan/' },
@@ -7,10 +5,10 @@ const LOCAL_DIR_HINTS = [
 ];
 
 export const IMAGE_MAP = {
-  'ramsay-tartan.jpg': `${IMAGE_BASE_URL}200x80/B22222/000080?text=Ramsay+Tartan`,
+  'ramsay-tartan.jpg': '/images/placeholders/clan-tartan-placeholder.svg',
 };
 
-const DEFAULT_PLACEHOLDER = `${IMAGE_BASE_URL}128x128/2d5016/f4f1e8?text=Clan`;
+const DEFAULT_PLACEHOLDER = '/images/placeholders/generic-image-placeholder.svg';
 
 function normaliseAssetPath(rawValue) {
   if (!rawValue) {
@@ -63,6 +61,6 @@ export function getImagePath(fileName, fallback = DEFAULT_PLACEHOLDER) {
 }
 
 export function getFallbackImage(label = 'Clan') {
-  const safeLabel = encodeURIComponent(label);
-  return `${IMAGE_BASE_URL}128x128/2d5016/f4f1e8?text=${safeLabel}`;
+  void label; // descriptive labels are captured via alt text; placeholder is decorative
+  return DEFAULT_PLACEHOLDER;
 }

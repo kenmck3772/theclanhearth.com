@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 200" role="img" aria-labelledby="title desc">
+  <title id="title">Recipe illustration placeholder</title>
+  <desc id="desc">Abstract still life depicting traditional Scottish ingredients.</desc>
+  <defs>
+    <linearGradient id="linen" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f5f0e6" />
+      <stop offset="100%" stop-color="#e4d5bf" />
+    </linearGradient>
+  </defs>
+  <rect width="320" height="200" fill="url(#linen)" />
+  <rect x="30" y="38" width="260" height="140" rx="16" fill="#fff7ed" stroke="#b45309" stroke-width="4" />
+  <circle cx="110" cy="100" r="48" fill="#f97316" opacity="0.55" />
+  <circle cx="200" cy="108" r="42" fill="#92400e" opacity="0.5" />
+  <path d="M72 156 Q110 120 160 148 T248 144" stroke="#166534" stroke-width="8" fill="none" stroke-linecap="round" />
+  <path d="M110 58 L110 30" stroke="#92400e" stroke-width="6" stroke-linecap="round" />
+  <path d="M200 66 L200 32" stroke="#166534" stroke-width="6" stroke-linecap="round" />
+  <text x="160" y="188" text-anchor="middle" font-family="'Montserrat', 'Arial', sans-serif" font-size="20" fill="#7c2d12" font-weight="600">Recipe Coming Soon</text>
+</svg>
