@@ -1,236 +1,65 @@
-document.addEventListener('DOMContentLoaded', function() {
-    'use strict';
-    
-    // App state
-    const appState = {
-        currentView: 'home',
-        maps: {},
-        tripItinerary: [],
-        favorites: JSON.parse(localStorage.getItem('favorites')) || []
-    };
-    
-    // Initialize the application
-    function initApp() {
-        initNavigation();
-        initEventListeners();
-        showView('home');
-    }
-    
-    // Navigation initialization
-    function initNavigation() {
-        // Handle navigation clicks
-        document.querySelectorAll('.nav-link').forEach(link => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                const target = link.dataset.target;
-                showView(target);
-            });
-        });
-        
-        // Mobile menu toggle
-        document.getElementById('mobile-menu-btn').addEventListener('click', () => {
-            const menu = document.getElementById('mobile-menu');
-            const isOpen = menu.classList.toggle('menu-open');
-            document.getElementById('mobile-menu-btn').setAttribute('aria-expanded', isOpen);
-        });
-        
-        // Search toggle
-        document.getElementById('search-toggle').addEventListener('click', () => {
-            document.getElementById('search-bar').classList.toggle('hidden');
-        });
-    }
-    
-    // Show a specific view
-    function showView(viewName) {
-        // Hide all sections
-        document.querySelectorAll('.page-section').forEach(section => {
-            section.classList.add('hidden');
-        });
-        
-        // Show the requested section
-        const targetSection = document.getElementById(`${viewName}-section`);
-        if (targetSection) {
-            targetSection.classList.remove('hidden');
-            appState.currentView = viewName;
-            updateBreadcrumb(viewName);
-        }
-        
-        // Update active nav link
-        document.querySelectorAll('.nav-link').forEach(link => {
-            link.classList.remove('active');
-        });
-        document.querySelectorAll(`.nav-link[data-target="${viewName}"]`).forEach(link => {
-            link.classList.add('active');
-        });
-        
-// Initialize view-specific functionality
-function initializeView(viewName) {
-    switch(viewName) {
-        case 'planner':
-            if (typeof window.initPlanner === 'function') {
-                window.initPlanner();
-            }
-            break;
-        case 'clans':
-            if (typeof window.initClans === 'function') {
-                window.initClans();
-            }
-            break;
-        case 'finder':
-            if (typeof window.initFinder === 'function') {
-                window.initFinder();
-            }
-            break;
-        case 'tartan-designer':
-            if (typeof window.initTartanDesigner === 'function') {
-                window.initTartanDesigner();
-            }
-            break;
-        case 'recipes':
-            if (typeof window.initRecipes === 'function') {
-                window.initRecipes();
-            }
-            break;
-        case 'legends':
-            if (typeof window.initLegends === 'function') {
-                window.initLegends();
-            }
-            break;
-    }
-}
-    
-    // Initialize view-specific functionality
-    function initializeView(viewName) {
-        switch(viewName) {
-            case 'planner':
-                if (typeof initPlanner === 'function') initPlanner();
-                break;
-            case 'clans':
-                if (typeof initClans === 'function') initClans();
-                break;
-            case 'finder':
-                if (typeof initFinder === 'function') initFinder();
-                break;
-            case 'tartan-designer':
-                if (typeof initTartanDesigner === 'function') initTartanDesigner();
-                break;
-            case 'recipes':
-                if (typeof initRecipes === 'function') initRecipes();
-                break;
-            case 'legends':
-                if (typeof initLegends === 'function') initLegends();
-                break;
-        }
-    }
-    
-    // Update breadcrumb navigation
-    function updateBreadcrumb(viewName) {
-        const breadcrumbNames = {
-            'home': 'Home',
-            'clans': 'Clans',
-            'planner': 'Trip Planner',
-            'finder': 'Clan Finder & Creator',
-            'legends': 'Legends',
-            'recipes': 'Recipes',
-            'tartan-designer': 'Tartan Designer'
-        };
-        
-        const breadcrumb = document.getElementById('breadcrumb');
-        const breadcrumbCurrent = document.getElementById('breadcrumb-current');
-        
-        if (viewName === 'home') {
-            breadcrumb.classList.add('hidden');
-        } else {
-            breadcrumbCurrent.textContent = breadcrumbNames[viewName] || viewName;
-            breadcrumb.classList.remove('hidden');
-        }
-    }
-    
-    // Initialize event listeners
-    function initEventListeners() {
-        // Back to top button
-        const backToTopButton = document.getElementById('back-to-top');
-        window.addEventListener('scroll', () => {
-            if (window.pageYOffset > 300) {
-                backToTopButton.classList.add('visible');
-            } else {
-                backToTopButton.classList.remove('visible');
-            }
-        });
-        
-        backToTopButton.addEventListener('click', () => {
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
-        });
-        
-        // Modal close functionality
-        document.getElementById('generic-modal').addEventListener('click', (e) => {
-            if (e.target.id === 'generic-modal') {
-                closeModal();
-            }
-        });
-        
-        // Region buttons
-        document.getElementById('region-buttons').addEventListener('click', (e) => {
-            const button = e.target.closest('.region-card');
-            if (button) {
-                const region = button.dataset.region;
-                showView('planner');
-                // Here you would center the map on the selected region
-            }
-        });
-    }
-    
-    // Modal functions
-    function showModal(content) {
-        const modalContent = document.getElementById('modal-content');
-        modalContent.innerHTML = `
-            <div class="relative p-6 sm:p-8">
-                <button class="modal-close absolute top-4 right-4 text-stone-600 hover:text-stone-900 text-3xl font-bold" aria-label="Close modal">&times;</button>
-                ${content}
-            </div>
-        `;
-        document.getElementById('generic-modal').classList.remove('hidden');
-        document.getElementById('generic-modal').classList.add('flex');
-        document.body.style.overflow = 'hidden';
-        
-        // Close button event
-        document.querySelector('.modal-close').addEventListener('click', closeModal);
-    }
-    
-    function closeModal() {
-        document.getElementById('generic-modal').classList.add('hidden');
-        document.getElementById('generic-modal').classList.remove('flex');
-        document.body.style.overflow = 'auto';
-    }
-    
-    // Toast notification
-    function showToast(message, type = 'success') {
-        const toast = document.getElementById('toast');
-        const toastMessage = document.getElementById('toast-message');
-        const toastIcon = document.getElementById('toast-icon');
-        
-        toastMessage.textContent = message;
-        toast.className = 'toast';
-        toast.classList.add(type);
-        
-        if (type === 'success') {
-            toastIcon.className = 'fas fa-check-circle';
-        } else if (type === 'error') {
-            toastIcon.className = 'fas fa-exclamation-circle';
-        } else {
-            toastIcon.className = 'fas fa-info-circle';
-        }
-        
-        toast.classList.add('show');
-        
-        setTimeout(() => {
-            toast.classList.remove('show');
-        }, 3000);
-    }
-    
-    // Initialize the app
-    initApp();
+// main.js
+
+// =========================
+// 1. Pure helpers
+// =========================
+
+/**
+ * Set the textContent of an element if it exists.
+ * @param {Element|null} el
+ * @param {string} text
+ */
+const setText = (el, text) => {
+  if (!el) return;
+  el.textContent = text;
+};
+
+/**
+ * Add / remove a class safely.
+ */
+const toggleClass = (el, className, shouldHave) => {
+  if (!el) return;
+  el.classList.toggle(className, !!shouldHave);
+};
+
+// =========================
+// 2. Feature: Home Hero
+// =========================
+
+/**
+ * Finds the hero DOM nodes and wires up the behaviour.
+ * This is where your previous hydrateHomeHero logic goes.
+ */
+const hydrateHomeHero = () => {
+  // Grab your elements
+  const hero = document.querySelector("[data-hero]");
+  const titleEl = hero?.querySelector("[data-hero-title]");
+  const subtitleEl = hero?.querySelector("[data-hero-subtitle]");
+  const ctaBtn = hero?.querySelector("[data-hero-cta]");
+
+  // Example usage of setText (no error now, setText is already initialized)
+  setText(titleEl, "Welcome to the Clan Hearth");
+  setText(subtitleEl, "Through the fire we are united.");
+  setText(ctaBtn, "Begin Your Journey");
+
+  // Example: toggle a 'is-ready' class
+  toggleClass(hero, "is-ready", true);
+
+  // Add any listeners you need:
+  if (ctaBtn) {
+    ctaBtn.addEventListener("click", () => {
+      console.log("CTA clicked – start journey logic here.");
+      // your existing click logic…
+    });
+  }
+};
+
+// =========================
+// 3. App bootstrap
+// =========================
+
+// Make sure we only run after the DOM is parsed.
+// hydrateHomeHero will only be called AFTER setText is defined.
+document.addEventListener("DOMContentLoaded", () => {
+  hydrateHomeHero();
 });
