@@ -9,6 +9,9 @@ css/*.css
 # Built site output
 dist/
 
+# Built site output
+dist/
+
 # Editor and OS files
 .vscode/
 .DS_Store

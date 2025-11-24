@@ -1,5 +1,6 @@
 // Extracted application script from index.html
 // Keep the DOMContentLoaded wrapper so behavior remains unchanged.
+document.addEventListener('DOMContentLoaded', async function() {
 document.addEventListener('DOMContentLoaded', function() {
     'use strict';
 
@@ -113,6 +114,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 document.addEventListener('DOMContentLoaded', async () => {
   const mount=document.getElementById('app');
+  if(!mount) return;
   if (!mount) return;
   mount.outerHTML=`
 <header class="p-3 bg-neutral-900 text-neutral-100 sticky top-0">The Clan Hearth — v2.3.1</header>
