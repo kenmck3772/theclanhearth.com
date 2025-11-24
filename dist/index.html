@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Clan Hearth - Ultimate Scottish Heritage & Tourism Platform</title>
+    <meta name="description" content="Discover your authentic Scottish heritage: Clan Histories, Spiritual Finder, Ogham Readings, Heritage Tours, Tartan Designer, and the Och-I AI Assistant.">
+    
+    <!-- External Libraries & Fonts -->
+    <!-- Tailwind CDN removed for production safety. Use compiled local CSS instead. -->
+    <noscript></noscript>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>:root{--clan-gold:#d4af37;--clan-burgundy:#800020;--clan-forest:#2d5016;--clan-stone:#8b7355;--parchment:#f4f1e8;--aged-paper:#f0ead6}body{background:linear-gradient(135deg,var(--parchment) 0,var(--aged-paper) 100%);font-family:Inter,sans-serif}.font-title{font-family:Cinzel,serif}.nav-link.active{background:rgba(212,175,55,.1);border-bottom:2px solid var(--clan-gold);color:var(--clan-gold)}.page-section{display:none}.page-section.active{animation:fadeIn .6s ease-in-out;display:block}.thread-of-ages{background:rgba(15,23,42,.78);border:1px solid rgba(212,175,55,.3);border-radius:28px;box-shadow:0 20px 45px -20px rgba(15,23,42,.8);color:#f8fafc;overflow:hidden;position:relative}.thread-backdrop{background-position:50%;background-repeat:no-repeat;background-size:cover;filter:brightness(.85) saturate(1.15);inset:0;position:absolute;transform:scale(1.05);transition:background-image .8s ease,filter .6s ease}.thread-overlay{backdrop-filter:blur(6px);background:linear-gradient(135deg,rgba(15,23,42,.92),rgba(45,80,22,.65));position:relative}.thread-track-wrapper{overflow-x:auto;scrollbar-color:rgba(212,175,55,.6) rgba(15,23,42,.4);scrollbar-width:thin}.thread-track-wrapper::-webkit-scrollbar{height:10px}.thread-track-wrapper::-webkit-scrollbar-track{background:rgba(15,23,42,.4);border-radius:9999px}.thread-track-wrapper::-webkit-scrollbar-thumb{background:linear-gradient(90deg,rgba(212,175,55,.9),rgba(125,45,45,.9));border-radius:9999px}.thread-track{align-items:stretch;display:flex;gap:1.5rem;min-width:-moz-max-content;min-width:max-content;padding:1rem 0}.timeline-node{background:rgba(15,23,42,.65);border:1px solid transparent;border-radius:18px;box-shadow:inset 0 0 0 1px hsla(0,0%,100%,.08);color:inherit;min-width:220px;padding:1.25rem 1rem;position:relative;transition:transform .35s ease,box-shadow .35s ease,border-color .35s ease}.timeline-node:before{background:linear-gradient(145deg,rgba(212,175,55,.18),rgba(128,0,32,.15));border-radius:14px;content:"";inset:8px;opacity:0;position:absolute;transition:opacity .35s ease;z-index:-1}.timeline-node span{display:block}.timeline-node .node-year{color:rgba(248,250,252,.75);font-family:Cinzel,serif;font-size:1.15rem;letter-spacing:.08em;text-transform:uppercase}.timeline-node .node-title{font-size:1.25rem;font-weight:600;margin-top:.5rem}.timeline-node .node-era{color:rgba(248,250,252,.6);font-size:.85rem;letter-spacing:.12em;margin-top:.25rem;text-transform:uppercase}.timeline-node:focus,.timeline-node:hover{border-color:rgba(212,175,55,.7);box-shadow:0 18px 35px -18px rgba(15,23,42,.85);transform:translateY(-6px)}.timeline-node:focus:before,.timeline-node:hover:before{opacity:1}.timeline-node.active{border-color:rgba(212,175,55,.95);box-shadow:0 22px 40px -18px rgba(212,175,55,.45)}.timeline-node.active:before{opacity:1}.thread-story-card{background:rgba(248,250,252,.08);border:1px solid rgba(212,175,55,.25);border-radius:24px;color:#f8fafc;margin-top:2rem;padding:2rem;position:relative}.thread-story-card:before{background:linear-gradient(135deg,rgba(212,175,55,.12),rgba(125,45,45,.18));border-radius:24px;content:"";inset:0;opacity:.9;pointer-events:none;position:absolute}.thread-story-card>*{position:relative;z-index:1}.thread-era{color:rgba(248,250,252,.72);font-family:Cinzel,serif;font-size:.85rem;letter-spacing:.38em;text-transform:uppercase}.thread-title{font-size:2.2rem;line-height:1.15;margin:.75rem 0 1rem}.thread-summary{color:rgba(248,250,252,.88);font-size:1.125rem;line-height:1.7}.thread-highlights{display:grid;gap:.75rem;margin-top:1.5rem}.thread-highlight{align-items:flex-start;background:rgba(15,23,42,.45);border:1px solid rgba(248,250,252,.12);border-radius:14px;display:flex;gap:.75rem;padding:.85rem 1rem}.thread-highlight i{color:rgba(212,175,55,.9);margin-top:.2rem}.thread-media{border:1px solid rgba(212,175,55,.3);border-radius:20px;margin-top:1.5rem;overflow:hidden}.thread-media img{height:260px;-o-object-fit:cover;object-fit:cover;width:100%}.thread-cta{display:flex;flex-wrap:wrap;gap:.75rem;margin-top:1.5rem}.thread-cta button,.timeline-cta-btn{align-items:center;background:linear-gradient(135deg,rgba(212,175,55,.95),rgba(125,45,45,.95));border-radius:9999px;color:#111827;display:inline-flex;font-weight:600;gap:.5rem;padding:.75rem 1.25rem;transition:transform .3s ease,box-shadow .3s ease}.thread-cta button:hover,.timeline-cta-btn:hover{box-shadow:0 15px 30px -20px rgba(212,175,55,.8);transform:translateY(-2px)}.thread-related{color:rgba(248,250,252,.78);display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1.5rem}.thread-related span{background:rgba(15,23,42,.45);border:1px solid rgba(248,250,252,.12);border-radius:9999px;font-size:.85rem;letter-spacing:.04em;padding:.4rem .9rem}@media (max-width:768px){.timeline-node{min-width:180px}.thread-story-card{padding:1.5rem}.thread-title{font-size:1.8rem}.thread-media img{height:200px}}.home-hero{--hero-backdrop-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' aria-labelledby='title desc' viewBox='0 0 1600 1000'%3E%3Ctitle%3ETwilight over the Scottish Highlands%3C/title%3E%3Cdesc%3EStylised illustration of a Highland loch at twilight with mountains, heather, and a silhouetted castle keep.%3C/desc%3E%3Cdefs%3E%3ClinearGradient id='a' x1='0' x2='1' y1='0' y2='1'%3E%3Cstop offset='0%25' stop-color='%23091530'/%3E%3Cstop offset='45%25' stop-color='%23172a50'/%3E%3Cstop offset='100%25' stop-color='%233a2158'/%3E%3C/linearGradient%3E%3ClinearGradient id='d' x1='0' x2='0' y1='0' y2='1'%3E%3Cstop offset='0%25' stop-color='%231f3b53'/%3E%3Cstop offset='100%25' stop-color='%230e1f33'/%3E%3C/linearGradient%3E%3ClinearGradient id='c' x1='0' x2='0' y1='0' y2='1'%3E%3Cstop offset='0%25' stop-color='%232c4b6d'/%3E%3Cstop offset='100%25' stop-color='%23182b46'/%3E%3C/linearGradient%3E%3ClinearGradient id='g' x1='0' x2='0' y1='0' y2='1'%3E%3Cstop offset='0%25' stop-color='%235f2b6d'/%3E%3Cstop offset='100%25' stop-color='%2336123f'/%3E%3C/linearGradient%3E%3ClinearGradient id='e' x1='0' x2='1' y1='0' y2='1'%3E%3Cstop offset='0%25' stop-color='%230d2747'/%3E%3Cstop offset='40%25' stop-color='%23123c5f'/%3E%3Cstop offset='100%25' stop-color='%23246c7a'/%3E%3C/linearGradient%3E%3CradialGradient id='b' cx='70%25' cy='18%25' r='60%25'%3E%3Cstop offset='0%25' stop-color='rgba(120, 195, 255, 0.5)'/%3E%3Cstop offset='35%25' stop-color='rgba(78, 170, 237, 0.28)'/%3E%3Cstop offset='100%25' stop-color='rgba(32, 64, 128, 0)'/%3E%3C/radialGradient%3E%3Cfilter id='f' width='120%25' height='120%25' x='-10%25' y='-10%25'%3E%3CfeTurbulence baseFrequency='.8' numOctaves='3' seed='7' type='fractalNoise'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA slope='.15' type='linear'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3C/defs%3E%3Cpath fill='url(%23a)' d='M0 0h1600v1000H0z'/%3E%3Cpath fill='url(%23b)' d='M0 0h1600v1000H0z'/%3E%3Cpath fill='url(%23c)' d='M0 520c220-60 320-160 520-180s360 80 580 60 340-80 500-40v280H0Z' opacity='.85'/%3E%3Cpath fill='url(%23d)' d='M0 610c190-50 310-90 520-70 260 30 470-70 680-40 180 25 280 60 400 30v240H0Z' opacity='.9'/%3E%3Cpath fill='url(%23e)' d='M0 720c220-60 460-30 640-60s420 0 640-40c140-24 240-20 320-10v290H0Z' opacity='.92'/%3E%3Cg filter='url(%23f)'%3E%3Cpath fill='%231b0f25' d='M0 700h1600v300H0z' opacity='.32'/%3E%3C/g%3E%3Cpath fill='url(%23g)' d='M0 820c150-40 260 20 420-10 140-26 240 20 400-10s300 20 460-20c140-34 240 0 320-20v240H0Z' opacity='.88'/%3E%3Cg fill='%230b1728' opacity='.8'%3E%3Cpath d='M1080 620h70l18 80h-128ZM1040 700h138v60h-138Z'/%3E%3Cpath d='M1115 580h20v70h-20zM1088 650h18v35h-18zM1145 650h18v35h-18z'/%3E%3C/g%3E%3Cg fill='%23a86bc7' opacity='.6'%3E%3Ccircle cx='320' cy='840' r='28'/%3E%3Ccircle cx='360' cy='860' r='22'/%3E%3Ccircle cx='420' cy='832' r='24'/%3E%3Ccircle cx='460' cy='852' r='18'/%3E%3Ccircle cx='510' cy='838' r='26'/%3E%3Ccircle cx='560' cy='864' r='20'/%3E%3Ccircle cx='620' cy='842' r='24'/%3E%3Ccircle cx='700' cy='860' r='22'/%3E%3Ccircle cx='760' cy='840' r='20'/%3E%3C/g%3E%3Ccircle cx='1280' cy='240' r='120' fill='%23d4af37' opacity='.25'/%3E%3C/svg%3E");--hero-backdrop-position:center center;--hero-backdrop-overlay:linear-gradient(135deg,rgba(7,20,38,.9),rgba(56,27,62,.78));--hero-backdrop-glow:radial-gradient(circle at 18% 18%,rgba(212,175,55,.22),transparent 60%);--hero-backdrop-mist:radial-gradient(circle at 82% 12%,rgba(71,109,58,.2),transparent 55%);background:var(--hero-backdrop-glow),var(--hero-backdrop-mist),linear-gradient(135deg,rgba(7,24,48,.92),rgba(15,23,42,.88));border:1px solid rgba(212,175,55,.18);border-radius:40px;box-shadow:0 35px 65px -30px rgba(8,24,43,.85);color:hsla(40,69%,97%,.96);isolation:isolate;overflow:hidden;padding:clamp(2.5rem,6vw,4.5rem);position:relative}.home-hero:before{background-image:var(--hero-backdrop-image);background-position:var(--hero-backdrop-position,center);background-repeat:no-repeat;background-size:cover;filter:saturate(1.08) contrast(1.05);opacity:.58;transform:scale(1.06);transition:transform 18s ease-in-out;will-change:transform}.home-hero:after,.home-hero:before{content:"";inset:0;position:absolute}.home-hero:after{background-blend-mode:multiply,screen,screen;background-image:var(--hero-backdrop-overlay),radial-gradient(circle at 30% 80%,rgba(216,171,94,.12),transparent 65%),radial-gradient(circle at 88% 30%,rgba(114,159,98,.18),transparent 55%);opacity:.98}@keyframes heroDrift{0%{transform:scale(1.06) translateZ(0)}50%{transform:scale(1.08) translate3d(1.5%,-1.5%,0)}to{transform:scale(1.06) translateZ(0)}}.home-hero:hover:before{animation:heroDrift 36s ease-in-out infinite}@media (prefers-reduced-motion:reduce){.home-hero:before{animation:none!important;transition:none}}.home-hero>*{position:relative;z-index:1}.home-hero-grid{align-items:start;display:grid;gap:clamp(2rem,5vw,3.5rem);grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}.home-hero-main{display:flex;flex-direction:column;gap:1.25rem;max-width:48ch}.home-hero-kicker{align-items:center;color:hsla(40,69%,97%,.7);display:inline-flex;font-family:Cinzel,serif;font-size:.85rem;gap:.6rem;letter-spacing:.38em;padding-left:.35rem;text-transform:uppercase}.home-hero-kicker:before{background:rgba(212,175,55,.65);content:"";display:inline-block;height:1px;width:38px}.home-hero-motto{color:hsla(40,69%,97%,.62);font-family:Cinzel,serif;font-size:.78rem;letter-spacing:.32em;text-transform:uppercase}.home-hero-title{font-family:Cinzel,serif;font-size:clamp(2.75rem,6vw,4.5rem);letter-spacing:-.015em;line-height:1.08;text-wrap:balance}.home-hero-description{color:hsla(40,69%,97%,.78);font-size:1.1rem;line-height:1.8}.home-hero-actions{display:flex;flex-wrap:wrap;gap:1rem;margin-top:1.25rem}.home-hero-actions .btn-primary,.home-hero-actions .btn-secondary{align-items:center;border-radius:9999px;display:inline-flex;font-size:1rem;font-weight:600;gap:.65rem;padding:.95rem 1.65rem}.home-hero-highlights{display:grid;gap:1rem;list-style:none;margin-top:2.5rem;padding:0}.home-hero-highlights li{align-items:flex-start;background:rgba(7,22,40,.72);border:1px solid hsla(40,69%,97%,.14);border-radius:22px;box-shadow:inset 0 0 0 1px hsla(40,69%,97%,.04);color:hsla(40,69%,97%,.86);display:flex;gap:.9rem;padding:1.1rem 1.25rem}.home-hero-highlights li strong{color:hsla(40,69%,97%,.98)}.home-hero-highlight-text{display:flex;flex-direction:column;gap:.25rem}.home-hero-highlight-detail{color:rgba(248,250,252,.72);font-size:.9rem;line-height:1.5;margin:0}.home-hero-highlight-detail small{color:hsla(40,69%,97%,.6);display:block;font-size:.75rem}.home-hero-highlights i{color:rgba(212,175,55,.9);font-size:1.2rem;margin-top:.15rem}.home-hero-side{display:grid;gap:1.15rem}.home-hero-card{background:rgba(10,28,48,.75);border:1px solid hsla(40,69%,97%,.12);border-radius:26px;box-shadow:0 25px 40px -35px rgba(8,24,43,.85);padding:clamp(1.4rem,3vw,2rem);position:relative}.home-hero-card:before{background:linear-gradient(135deg,rgba(212,175,55,.08),rgba(128,0,32,.12));border-radius:inherit;content:"";inset:0;mix-blend-mode:screen;opacity:.9;pointer-events:none;position:absolute}.home-hero-card>*{position:relative;z-index:1}.home-hero-seal{align-items:center;aspect-ratio:1;background:linear-gradient(135deg,rgba(128,0,32,.95),rgba(45,80,22,.92));border:3px solid rgba(212,175,55,.8);border-radius:9999px;box-shadow:0 25px 45px -35px rgba(0,0,0,.65);display:flex;justify-content:center;margin-bottom:1.5rem;width:clamp(120px,18vw,160px)}.home-hero-seal i{color:hsla(40,69%,97%,.92);font-size:clamp(2.4rem,5vw,3.2rem)}.home-hero-card h3{font-family:Cinzel,serif;font-size:1.35rem;margin-bottom:.75rem}.home-hero-card p{color:hsla(40,69%,97%,.74);line-height:1.7}.home-hero-card ul{display:grid;gap:.85rem;margin-top:1.25rem}.home-hero-card li{align-items:flex-start;color:hsla(40,69%,97%,.78);display:flex;font-size:.95rem;gap:.6rem}.home-hero-card li i{color:rgba(212,175,55,.9);margin-top:.2rem}.home-hero-metrics{display:grid;gap:.85rem;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));margin-top:1.5rem}.home-hero-metric{background:rgba(7,25,45,.78);border:1px solid rgba(212,175,55,.25);border-radius:18px;display:grid;gap:.35rem;padding:1rem 1.1rem;text-align:left}.home-hero-metric .stat-number{color:hsla(40,69%,97%,.98);font-family:Cinzel,serif;font-size:2.15rem;font-weight:700;letter-spacing:.04em}.home-hero-metric small{color:hsla(40,69%,97%,.65);font-size:.72rem;letter-spacing:.22em;text-transform:uppercase}.home-hero-quote{border-top:1px solid hsla(40,69%,97%,.12);color:hsla(40,69%,97%,.72);font-style:italic;margin-top:1.75rem;padding-top:1.1rem}.home-hero-quote span{color:rgba(212,175,55,.78);display:block;font-size:.8rem;letter-spacing:.18em;margin-top:.75rem;text-transform:uppercase}.home-hero-credit{align-items:center;background:rgba(10,23,41,.72);border:1px solid rgba(212,175,55,.18);border-radius:18px;box-shadow:0 18px 32px -24px rgba(4,12,24,.9);color:hsla(40,69%,97%,.78);display:inline-flex;font-size:.85rem;gap:.85rem;margin-top:clamp(1.75rem,4vw,2.75rem);max-width:420px;padding:.85rem 1.15rem}.home-hero-credit i{color:rgba(212,175,55,.68);font-size:1rem}.home-hero-credit strong{color:hsla(40,69%,97%,.92);font-weight:600}.home-hero-credit a{color:rgba(212,221,255,.88);text-decoration:none}.home-hero-credit a:focus,.home-hero-credit a:hover{text-decoration:underline}.home-hero-credit a[aria-disabled=true]{opacity:.78;pointer-events:none;text-decoration:none}.home-hero-credit-body{display:grid;gap:.25rem}.home-hero-credit-meta{align-items:baseline;display:inline-flex;flex-wrap:wrap;gap:.35rem}.home-hero-credit-meta span[aria-hidden=true]{color:rgba(212,175,55,.45)}@media (min-width:768px){.home-hero-highlights{grid-template-columns:repeat(2,minmax(0,1fr))}}@media (min-width:1024px){.home-hero-grid{grid-template-columns:minmax(0,1.25fr) minmax(0,1fr)}}.clan-emblem{background:linear-gradient(135deg,rgba(128,0,32,.92),rgba(45,80,22,.95));border:3px solid rgba(212,175,55,.8);box-shadow:0 25px 45px -30px rgba(0,0,0,.65);isolation:isolate;position:relative}.clan-emblem:after{border:1px solid hsla(0,0%,100%,.25);border-radius:9999px;content:"";inset:12px;opacity:.7;position:absolute}.home-hero .clan-emblem{height:clamp(160px,22vw,200px);width:clamp(160px,22vw,200px)}.content-card{backdrop-filter:blur(10px);background:hsla(0,0%,100%,.95);transition:all .3s ease-in-out}.content-card:hover{box-shadow:0 15px 30px rgba(0,0,0,.1);transform:translateY(-4px)}.btn-primary{background:linear-gradient(45deg,var(--clan-burgundy),var(--clan-forest));border:2px solid var(--clan-gold);color:#fff;transition:all .3s ease}.btn-primary:hover{background:linear-gradient(45deg,var(--clan-forest),var(--clan-burgundy));box-shadow:0 4px 15px rgba(0,0,0,.2);transform:translateY(-1px)}.btn-secondary{background:rgba(15,23,42,.35);border:2px solid hsla(40,69%,97%,.35);color:hsla(40,69%,97%,.95);transition:all .3s ease}.btn-secondary:hover{background:hsla(40,69%,97%,.16);border-color:hsla(40,69%,97%,.55);box-shadow:0 10px 22px -18px rgba(0,0,0,.65);transform:translateY(-1px)}.active-item{background:linear-gradient(90deg,var(--clan-gold),#f4d03f);box-shadow:inset 0 2px 4px rgba(0,0,0,.1);color:var(--clan-burgundy);font-weight:600}.map-emoji-icon{filter:drop-shadow(0 2px 2px rgba(0,0,0,.3));font-size:24px;line-height:24px;text-align:center}#clanMap,#tripBuilderMap{border-radius:12px;box-shadow:0 8px 25px rgba(0,0,0,.2);height:100%;min-height:60vh;width:100%}@keyframes fadeIn{0%{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}.pulse-gold{animation:pulseGold 2s infinite}@keyframes pulseGold{0%,to{box-shadow:0 0 0 0 rgba(212,175,55,.7)}50%{box-shadow:0 0 0 20px rgba(212,175,55,0)}}.ogham-stave:hover{border-color:var(--clan-gold);box-shadow:0 8px 25px rgba(212,175,55,.5);transform:translateY(-5px) rotate(2deg)}.ogham-symbol-svg{height:100px;stroke:var(--parchment);stroke-width:4;width:100%}.color-box{border:3px solid transparent;transition:all .2s ease-in-out}.color-box.selected{border-color:var(--clan-gold);box-shadow:0 0 20px rgba(212,175,55,.6);transform:scale(1.15)}#itinerary-panel{background-color:#fff;bottom:0;box-shadow:0 -4px 12px rgba(0,0,0,.1);left:0;position:absolute;right:0;transform:translateY(calc(100% - 50px));transition:transform .3s ease-in-out;z-index:1000}#itinerary-panel.open{transform:translateY(0)}.itinerary-handle{background-color:#d1d5db;border-radius:5px;height:5px;margin:10px auto;width:60px}</style>
+  <script type="module" crossorigin src="/assets/index-Cy32itpi.js"></script>
+    <style>:root{--clan-gold:#d4af37;--clan-burgundy:#800020;--clan-forest:#2d5016;--clan-stone:#8b7355;--parchment:#f4f1e8;--aged-paper:#f0ead6}body{background:linear-gradient(135deg,var(--parchment) 0,var(--aged-paper) 100%);font-family:Inter,sans-serif}.font-title{font-family:Cinzel,serif}.nav-link.active{background:rgba(212,175,55,.1);border-bottom:2px solid var(--clan-gold);color:var(--clan-gold)}.page-section{display:none}.page-section.active{animation:fadeIn .6s ease-in-out;display:block}.thread-of-ages{background:rgba(15,23,42,.78);border:1px solid rgba(212,175,55,.3);border-radius:28px;box-shadow:0 20px 45px -20px rgba(15,23,42,.8);color:#f8fafc;overflow:hidden;position:relative}.thread-backdrop{background-position:50%;background-repeat:no-repeat;background-size:cover;filter:brightness(.85) saturate(1.15);inset:0;position:absolute;transform:scale(1.05);transition:background-image .8s ease,filter .6s ease}.thread-overlay{backdrop-filter:blur(6px);background:linear-gradient(135deg,rgba(15,23,42,.92),rgba(45,80,22,.65));position:relative}.thread-track-wrapper{overflow-x:auto;scrollbar-color:rgba(212,175,55,.6) rgba(15,23,42,.4);scrollbar-width:thin}.thread-track-wrapper::-webkit-scrollbar{height:10px}.thread-track-wrapper::-webkit-scrollbar-track{background:rgba(15,23,42,.4);border-radius:9999px}.thread-track-wrapper::-webkit-scrollbar-thumb{background:linear-gradient(90deg,rgba(212,175,55,.9),rgba(125,45,45,.9));border-radius:9999px}.thread-track{align-items:stretch;display:flex;gap:1.5rem;min-width:-moz-max-content;min-width:max-content;padding:1rem 0}.timeline-node{background:rgba(15,23,42,.65);border:1px solid transparent;border-radius:18px;box-shadow:inset 0 0 0 1px hsla(0,0%,100%,.08);color:inherit;min-width:220px;padding:1.25rem 1rem;position:relative;transition:transform .35s ease,box-shadow .35s ease,border-color .35s ease}.timeline-node:before{background:linear-gradient(145deg,rgba(212,175,55,.18),rgba(128,0,32,.15));border-radius:14px;content:"";inset:8px;opacity:0;position:absolute;transition:opacity .35s ease;z-index:-1}.timeline-node span{display:block}.timeline-node .node-year{color:rgba(248,250,252,.75);font-family:Cinzel,serif;font-size:1.15rem;letter-spacing:.08em;text-transform:uppercase}.timeline-node .node-title{font-size:1.25rem;font-weight:600;margin-top:.5rem}.timeline-node .node-era{color:rgba(248,250,252,.6);font-size:.85rem;letter-spacing:.12em;margin-top:.25rem;text-transform:uppercase}.timeline-node:focus,.timeline-node:hover{border-color:rgba(212,175,55,.7);box-shadow:0 18px 35px -18px rgba(15,23,42,.85);transform:translateY(-6px)}.timeline-node:focus:before,.timeline-node:hover:before{opacity:1}.timeline-node.active{border-color:rgba(212,175,55,.95);box-shadow:0 22px 40px -18px rgba(212,175,55,.45)}.timeline-node.active:before{opacity:1}.thread-story-card{background:rgba(248,250,252,.08);border:1px solid rgba(212,175,55,.25);border-radius:24px;color:#f8fafc;margin-top:2rem;padding:2rem;position:relative}.thread-story-card:before{background:linear-gradient(135deg,rgba(212,175,55,.12),rgba(125,45,45,.18));border-radius:24px;content:"";inset:0;opacity:.9;pointer-events:none;position:absolute}.thread-story-card>*{position:relative;z-index:1}.thread-era{color:rgba(248,250,252,.72);font-family:Cinzel,serif;font-size:.85rem;letter-spacing:.38em;text-transform:uppercase}.thread-title{font-size:2.2rem;line-height:1.15;margin:.75rem 0 1rem}.thread-summary{color:rgba(248,250,252,.88);font-size:1.125rem;line-height:1.7}.thread-highlights{display:grid;gap:.75rem;margin-top:1.5rem}.thread-highlight{align-items:flex-start;background:rgba(15,23,42,.45);border:1px solid rgba(248,250,252,.12);border-radius:14px;display:flex;gap:.75rem;padding:.85rem 1rem}.thread-highlight i{color:rgba(212,175,55,.9);margin-top:.2rem}.thread-media{border:1px solid rgba(212,175,55,.3);border-radius:20px;margin-top:1.5rem;overflow:hidden}.thread-media img{height:260px;-o-object-fit:cover;object-fit:cover;width:100%}.thread-cta{display:flex;flex-wrap:wrap;gap:.75rem;margin-top:1.5rem}.thread-cta button,.timeline-cta-btn{align-items:center;background:linear-gradient(135deg,rgba(212,175,55,.95),rgba(125,45,45,.95));border-radius:9999px;color:#111827;display:inline-flex;font-weight:600;gap:.5rem;padding:.75rem 1.25rem;transition:transform .3s ease,box-shadow .3s ease}.thread-cta button:hover,.timeline-cta-btn:hover{box-shadow:0 15px 30px -20px rgba(212,175,55,.8);transform:translateY(-2px)}.thread-related{color:rgba(248,250,252,.78);display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1.5rem}.thread-related span{background:rgba(15,23,42,.45);border:1px solid rgba(248,250,252,.12);border-radius:9999px;font-size:.85rem;letter-spacing:.04em;padding:.4rem .9rem}@media (max-width:768px){.timeline-node{min-width:180px}.thread-story-card{padding:1.5rem}.thread-title{font-size:1.8rem}.thread-media img{height:200px}}.home-hero{background:radial-gradient(circle at 20% 20%,rgba(212,175,55,.24),transparent 55%),radial-gradient(circle at 80% 10%,rgba(45,80,22,.26),transparent 50%),linear-gradient(135deg,rgba(7,24,48,.95),rgba(15,23,42,.9));border:1px solid rgba(212,175,55,.18);border-radius:40px;box-shadow:0 35px 65px -30px rgba(8,24,43,.85);color:hsla(40,69%,97%,.96);isolation:isolate;overflow:hidden;padding:clamp(2.5rem,6vw,4.5rem);position:relative}.home-hero:before{background-image:url(/assets/castlehome-C1tMJl1Z.jpg);background-position:50%;background-size:cover;filter:saturate(1.18) contrast(1.05);opacity:.38;transform:scale(1.05)}.home-hero:after,.home-hero:before{content:"";inset:0;position:absolute}.home-hero:after{background:linear-gradient(135deg,rgba(7,20,38,.88),rgba(21,39,70,.78))}.home-hero>*{position:relative;z-index:1}.home-hero-grid{align-items:start;display:grid;gap:clamp(2rem,5vw,3.5rem);grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}.home-hero-main{display:flex;flex-direction:column;gap:1.25rem;max-width:48ch}.home-hero-kicker{align-items:center;color:hsla(40,69%,97%,.7);display:inline-flex;font-family:Cinzel,serif;font-size:.85rem;gap:.6rem;letter-spacing:.38em;padding-left:.35rem;text-transform:uppercase}.home-hero-kicker:before{background:rgba(212,175,55,.65);content:"";display:inline-block;height:1px;width:38px}.home-hero-motto{color:hsla(40,69%,97%,.62);font-family:Cinzel,serif;font-size:.78rem;letter-spacing:.32em;text-transform:uppercase}.home-hero-title{font-family:Cinzel,serif;font-size:clamp(2.75rem,6vw,4.5rem);letter-spacing:-.015em;line-height:1.08;text-wrap:balance}.home-hero-description{color:hsla(40,69%,97%,.78);font-size:1.1rem;line-height:1.8}.home-hero-actions{display:flex;flex-wrap:wrap;gap:1rem;margin-top:1.25rem}.home-hero-actions .btn-primary,.home-hero-actions .btn-secondary{align-items:center;border-radius:9999px;display:inline-flex;font-size:1rem;font-weight:600;gap:.65rem;padding:.95rem 1.65rem}.home-hero-highlights{display:grid;gap:1rem;list-style:none;margin-top:2.5rem;padding:0}.home-hero-highlights li{align-items:flex-start;background:rgba(7,22,40,.72);border:1px solid hsla(40,69%,97%,.14);border-radius:22px;box-shadow:inset 0 0 0 1px hsla(40,69%,97%,.04);color:hsla(40,69%,97%,.86);display:flex;gap:.9rem;padding:1.1rem 1.25rem}.home-hero-highlights li strong{color:hsla(40,69%,97%,.98)}.home-hero-highlight-text{display:flex;flex-direction:column;gap:.25rem}.home-hero-highlight-detail{color:rgba(248,250,252,.72);font-size:.9rem;line-height:1.5;margin:0}.home-hero-highlight-detail small{color:hsla(40,69%,97%,.6);display:block;font-size:.75rem}.home-hero-highlights i{color:rgba(212,175,55,.9);font-size:1.2rem;margin-top:.15rem}.home-hero-side{display:grid;gap:1.15rem}.home-hero-card{background:rgba(10,28,48,.75);border:1px solid hsla(40,69%,97%,.12);border-radius:26px;box-shadow:0 25px 40px -35px rgba(8,24,43,.85);padding:clamp(1.4rem,3vw,2rem);position:relative}.home-hero-card:before{background:linear-gradient(135deg,rgba(212,175,55,.08),rgba(128,0,32,.12));border-radius:inherit;content:"";inset:0;mix-blend-mode:screen;opacity:.9;pointer-events:none;position:absolute}.home-hero-card>*{position:relative;z-index:1}.home-hero-seal{align-items:center;aspect-ratio:1;background:linear-gradient(135deg,rgba(128,0,32,.95),rgba(45,80,22,.92));border:3px solid rgba(212,175,55,.8);border-radius:9999px;box-shadow:0 25px 45px -35px rgba(0,0,0,.65);display:flex;justify-content:center;margin-bottom:1.5rem;width:clamp(120px,18vw,160px)}.home-hero-seal i{color:hsla(40,69%,97%,.92);font-size:clamp(2.4rem,5vw,3.2rem)}.home-hero-card h3{font-family:Cinzel,serif;font-size:1.35rem;margin-bottom:.75rem}.home-hero-card p{color:hsla(40,69%,97%,.74);line-height:1.7}.home-hero-card ul{display:grid;gap:.85rem;margin-top:1.25rem}.home-hero-card li{align-items:flex-start;color:hsla(40,69%,97%,.78);display:flex;font-size:.95rem;gap:.6rem}.home-hero-card li i{color:rgba(212,175,55,.9);margin-top:.2rem}.home-hero-metrics{display:grid;gap:.85rem;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));margin-top:1.5rem}.home-hero-metric{background:rgba(7,25,45,.78);border:1px solid rgba(212,175,55,.25);border-radius:18px;display:grid;gap:.35rem;padding:1rem 1.1rem;text-align:left}.home-hero-metric .stat-number{color:hsla(40,69%,97%,.98);font-family:Cinzel,serif;font-size:2.15rem;font-weight:700;letter-spacing:.04em}.home-hero-metric small{color:hsla(40,69%,97%,.65);font-size:.72rem;letter-spacing:.22em;text-transform:uppercase}.home-hero-quote{border-top:1px solid hsla(40,69%,97%,.12);color:hsla(40,69%,97%,.72);font-style:italic;margin-top:1.75rem;padding-top:1.1rem}.home-hero-quote span{color:rgba(212,175,55,.78);display:block;font-size:.8rem;letter-spacing:.18em;margin-top:.75rem;text-transform:uppercase}@media (min-width:768px){.home-hero-highlights{grid-template-columns:repeat(2,minmax(0,1fr))}}@media (min-width:1024px){.home-hero-grid{grid-template-columns:minmax(0,1.25fr) minmax(0,1fr)}}.clan-emblem{background:linear-gradient(135deg,rgba(128,0,32,.92),rgba(45,80,22,.95));border:3px solid rgba(212,175,55,.8);box-shadow:0 25px 45px -30px rgba(0,0,0,.65);isolation:isolate;position:relative}.clan-emblem:after{border:1px solid hsla(0,0%,100%,.25);border-radius:9999px;content:"";inset:12px;opacity:.7;position:absolute}.home-hero .clan-emblem{height:clamp(160px,22vw,200px);width:clamp(160px,22vw,200px)}.content-card{backdrop-filter:blur(10px);background:hsla(0,0%,100%,.95);transition:all .3s ease-in-out}.content-card:hover{box-shadow:0 15px 30px rgba(0,0,0,.1);transform:translateY(-4px)}.btn-primary{background:linear-gradient(45deg,var(--clan-burgundy),var(--clan-forest));border:2px solid var(--clan-gold);color:#fff;transition:all .3s ease}.btn-primary:hover{background:linear-gradient(45deg,var(--clan-forest),var(--clan-burgundy));box-shadow:0 4px 15px rgba(0,0,0,.2);transform:translateY(-1px)}.btn-secondary{background:rgba(15,23,42,.35);border:2px solid hsla(40,69%,97%,.35);color:hsla(40,69%,97%,.95);transition:all .3s ease}.btn-secondary:hover{background:hsla(40,69%,97%,.16);border-color:hsla(40,69%,97%,.55);box-shadow:0 10px 22px -18px rgba(0,0,0,.65);transform:translateY(-1px)}.active-item{background:linear-gradient(90deg,var(--clan-gold),#f4d03f);box-shadow:inset 0 2px 4px rgba(0,0,0,.1);color:var(--clan-burgundy);font-weight:600}.map-emoji-icon{filter:drop-shadow(0 2px 2px rgba(0,0,0,.3));font-size:24px;line-height:24px;text-align:center}#clanMap,#tripBuilderMap{border-radius:12px;box-shadow:0 8px 25px rgba(0,0,0,.2);height:100%;min-height:60vh;width:100%}@keyframes fadeIn{0%{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}.pulse-gold{animation:pulseGold 2s infinite}@keyframes pulseGold{0%,to{box-shadow:0 0 0 0 rgba(212,175,55,.7)}50%{box-shadow:0 0 0 20px rgba(212,175,55,0)}}.ogham-stave:hover{border-color:var(--clan-gold);box-shadow:0 8px 25px rgba(212,175,55,.5);transform:translateY(-5px) rotate(2deg)}.ogham-symbol-svg{height:100px;stroke:var(--parchment);stroke-width:4;width:100%}.color-box{border:3px solid transparent;transition:all .2s ease-in-out}.color-box.selected{border-color:var(--clan-gold);box-shadow:0 0 20px rgba(212,175,55,.6);transform:scale(1.15)}#itinerary-panel{background-color:#fff;bottom:0;box-shadow:0 -4px 12px rgba(0,0,0,.1);left:0;position:absolute;right:0;transform:translateY(calc(100% - 50px));transition:transform .3s ease-in-out;z-index:1000}#itinerary-panel.open{transform:translateY(0)}.itinerary-handle{background-color:#d1d5db;border-radius:5px;height:5px;margin:10px auto;width:60px}</style>
+  <script type="module" crossorigin src="/assets/index-Soua006H.js"></script>
+    <style>:root{--clan-gold:#d4af37;--clan-burgundy:#800020;--clan-forest:#2d5016;--clan-stone:#8b7355;--parchment:#f4f1e8;--aged-paper:#f0ead6}body{background:linear-gradient(135deg,var(--parchment) 0,var(--aged-paper) 100%);font-family:Inter,sans-serif}.font-title{font-family:Cinzel,serif}.nav-link.active{background:rgba(212,175,55,.1);border-bottom:2px solid var(--clan-gold);color:var(--clan-gold)}.page-section{display:none}.page-section.active{animation:fadeIn .6s ease-in-out;display:block}.thread-of-ages{background:rgba(15,23,42,.78);border:1px solid rgba(212,175,55,.3);border-radius:28px;box-shadow:0 20px 45px -20px rgba(15,23,42,.8);color:#f8fafc;overflow:hidden;position:relative}.thread-backdrop{background-position:50%;background-repeat:no-repeat;background-size:cover;filter:brightness(.85) saturate(1.15);inset:0;position:absolute;transform:scale(1.05);transition:background-image .8s ease,filter .6s ease}.thread-overlay{backdrop-filter:blur(6px);background:linear-gradient(135deg,rgba(15,23,42,.92),rgba(45,80,22,.65));position:relative}.thread-track-wrapper{overflow-x:auto;scrollbar-color:rgba(212,175,55,.6) rgba(15,23,42,.4);scrollbar-width:thin}.thread-track-wrapper::-webkit-scrollbar{height:10px}.thread-track-wrapper::-webkit-scrollbar-track{background:rgba(15,23,42,.4);border-radius:9999px}.thread-track-wrapper::-webkit-scrollbar-thumb{background:linear-gradient(90deg,rgba(212,175,55,.9),rgba(125,45,45,.9));border-radius:9999px}.thread-track{align-items:stretch;display:flex;gap:1.5rem;min-width:-moz-max-content;min-width:max-content;padding:1rem 0}.timeline-node{background:rgba(15,23,42,.65);border:1px solid transparent;border-radius:18px;box-shadow:inset 0 0 0 1px hsla(0,0%,100%,.08);color:inherit;min-width:220px;padding:1.25rem 1rem;position:relative;transition:transform .35s ease,box-shadow .35s ease,border-color .35s ease}.timeline-node:before{background:linear-gradient(145deg,rgba(212,175,55,.18),rgba(128,0,32,.15));border-radius:14px;content:"";inset:8px;opacity:0;position:absolute;transition:opacity .35s ease;z-index:-1}.timeline-node span{display:block}.timeline-node .node-year{color:rgba(248,250,252,.75);font-family:Cinzel,serif;font-size:1.15rem;letter-spacing:.08em;text-transform:uppercase}.timeline-node .node-title{font-size:1.25rem;font-weight:600;margin-top:.5rem}.timeline-node .node-era{color:rgba(248,250,252,.6);font-size:.85rem;letter-spacing:.12em;margin-top:.25rem;text-transform:uppercase}.timeline-node:focus,.timeline-node:hover{border-color:rgba(212,175,55,.7);box-shadow:0 18px 35px -18px rgba(15,23,42,.85);transform:translateY(-6px)}.timeline-node:focus:before,.timeline-node:hover:before{opacity:1}.timeline-node.active{border-color:rgba(212,175,55,.95);box-shadow:0 22px 40px -18px rgba(212,175,55,.45)}.timeline-node.active:before{opacity:1}.thread-story-card{background:rgba(248,250,252,.08);border:1px solid rgba(212,175,55,.25);border-radius:24px;color:#f8fafc;margin-top:2rem;padding:2rem;position:relative}.thread-story-card:before{background:linear-gradient(135deg,rgba(212,175,55,.12),rgba(125,45,45,.18));border-radius:24px;content:"";inset:0;opacity:.9;pointer-events:none;position:absolute}.thread-story-card>*{position:relative;z-index:1}.thread-era{color:rgba(248,250,252,.72);font-family:Cinzel,serif;font-size:.85rem;letter-spacing:.38em;text-transform:uppercase}.thread-title{font-size:2.2rem;line-height:1.15;margin:.75rem 0 1rem}.thread-summary{color:rgba(248,250,252,.88);font-size:1.125rem;line-height:1.7}.thread-highlights{display:grid;gap:.75rem;margin-top:1.5rem}.thread-highlight{align-items:flex-start;background:rgba(15,23,42,.45);border:1px solid rgba(248,250,252,.12);border-radius:14px;display:flex;gap:.75rem;padding:.85rem 1rem}.thread-highlight i{color:rgba(212,175,55,.9);margin-top:.2rem}.thread-media{border:1px solid rgba(212,175,55,.3);border-radius:20px;margin-top:1.5rem;overflow:hidden}.thread-media img{height:260px;-o-object-fit:cover;object-fit:cover;width:100%}.thread-cta{display:flex;flex-wrap:wrap;gap:.75rem;margin-top:1.5rem}.thread-cta button,.timeline-cta-btn{align-items:center;background:linear-gradient(135deg,rgba(212,175,55,.95),rgba(125,45,45,.95));border-radius:9999px;color:#111827;display:inline-flex;font-weight:600;gap:.5rem;padding:.75rem 1.25rem;transition:transform .3s ease,box-shadow .3s ease}.thread-cta button:hover,.timeline-cta-btn:hover{box-shadow:0 15px 30px -20px rgba(212,175,55,.8);transform:translateY(-2px)}.thread-related{color:rgba(248,250,252,.78);display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1.5rem}.thread-related span{background:rgba(15,23,42,.45);border:1px solid rgba(248,250,252,.12);border-radius:9999px;font-size:.85rem;letter-spacing:.04em;padding:.4rem .9rem}@media (max-width:768px){.timeline-node{min-width:180px}.thread-story-card{padding:1.5rem}.thread-title{font-size:1.8rem}.thread-media img{height:200px}}.home-hero{background:radial-gradient(circle at 20% 20%,rgba(212,175,55,.24),transparent 55%),radial-gradient(circle at 80% 10%,rgba(45,80,22,.26),transparent 50%),linear-gradient(135deg,rgba(7,24,48,.95),rgba(15,23,42,.9));border:1px solid rgba(212,175,55,.18);border-radius:40px;box-shadow:0 35px 65px -30px rgba(8,24,43,.85);color:hsla(40,69%,97%,.96);isolation:isolate;overflow:hidden;padding:clamp(2.5rem,6vw,4.5rem);position:relative}.home-hero:before{background-image:url(/assets/castlehome-C1tMJl1Z.jpg);background-position:50%;background-size:cover;filter:saturate(1.18) contrast(1.05);opacity:.38;transform:scale(1.05)}.home-hero:after,.home-hero:before{content:"";inset:0;position:absolute}.home-hero:after{background:linear-gradient(135deg,rgba(7,20,38,.88),rgba(21,39,70,.78))}.home-hero>*{position:relative;z-index:1}.home-hero-grid{align-items:start;display:grid;gap:clamp(2rem,5vw,3.5rem);grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}.home-hero-main{display:flex;flex-direction:column;gap:1.25rem;max-width:48ch}.home-hero-kicker{align-items:center;color:hsla(40,69%,97%,.7);display:inline-flex;font-family:Cinzel,serif;font-size:.85rem;gap:.6rem;letter-spacing:.38em;padding-left:.35rem;text-transform:uppercase}.home-hero-kicker:before{background:rgba(212,175,55,.65);content:"";display:inline-block;height:1px;width:38px}.home-hero-motto{color:hsla(40,69%,97%,.62);font-family:Cinzel,serif;font-size:.78rem;letter-spacing:.32em;text-transform:uppercase}.home-hero-title{font-family:Cinzel,serif;font-size:clamp(2.75rem,6vw,4.5rem);letter-spacing:-.015em;line-height:1.08;text-wrap:balance}.home-hero-description{color:hsla(40,69%,97%,.78);font-size:1.1rem;line-height:1.8}.home-hero-actions{display:flex;flex-wrap:wrap;gap:1rem;margin-top:1.25rem}.home-hero-actions .btn-primary,.home-hero-actions .btn-secondary{align-items:center;border-radius:9999px;display:inline-flex;font-size:1rem;font-weight:600;gap:.65rem;padding:.95rem 1.65rem}.home-hero-highlights{display:grid;gap:1rem;list-style:none;margin-top:2.5rem;padding:0}.home-hero-highlights li{align-items:flex-start;background:rgba(7,22,40,.72);border:1px solid hsla(40,69%,97%,.14);border-radius:22px;box-shadow:inset 0 0 0 1px hsla(40,69%,97%,.04);color:hsla(40,69%,97%,.86);display:flex;gap:.9rem;padding:1.1rem 1.25rem}.home-hero-highlights li strong{color:hsla(40,69%,97%,.98)}.home-hero-highlights i{color:rgba(212,175,55,.9);font-size:1.2rem;margin-top:.15rem}.home-hero-side{display:grid;gap:1.15rem}.home-hero-card{background:rgba(10,28,48,.75);border:1px solid hsla(40,69%,97%,.12);border-radius:26px;box-shadow:0 25px 40px -35px rgba(8,24,43,.85);padding:clamp(1.4rem,3vw,2rem);position:relative}.home-hero-card:before{background:linear-gradient(135deg,rgba(212,175,55,.08),rgba(128,0,32,.12));border-radius:inherit;content:"";inset:0;mix-blend-mode:screen;opacity:.9;pointer-events:none;position:absolute}.home-hero-card>*{position:relative;z-index:1}.home-hero-seal{align-items:center;aspect-ratio:1;background:linear-gradient(135deg,rgba(128,0,32,.95),rgba(45,80,22,.92));border:3px solid rgba(212,175,55,.8);border-radius:9999px;box-shadow:0 25px 45px -35px rgba(0,0,0,.65);display:flex;justify-content:center;margin-bottom:1.5rem;width:clamp(120px,18vw,160px)}.home-hero-seal i{color:hsla(40,69%,97%,.92);font-size:clamp(2.4rem,5vw,3.2rem)}.home-hero-card h3{font-family:Cinzel,serif;font-size:1.35rem;margin-bottom:.75rem}.home-hero-card p{color:hsla(40,69%,97%,.74);line-height:1.7}.home-hero-card ul{display:grid;gap:.85rem;margin-top:1.25rem}.home-hero-card li{align-items:flex-start;color:hsla(40,69%,97%,.78);display:flex;font-size:.95rem;gap:.6rem}.home-hero-card li i{color:rgba(212,175,55,.9);margin-top:.2rem}.home-hero-metrics{display:grid;gap:.85rem;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));margin-top:1.5rem}.home-hero-metric{background:rgba(7,25,45,.78);border:1px solid rgba(212,175,55,.25);border-radius:18px;display:grid;gap:.35rem;padding:1rem 1.1rem;text-align:left}.home-hero-metric span:first-child{color:hsla(40,69%,97%,.98);font-family:Cinzel,serif;font-size:1.9rem;font-weight:700}.home-hero-metric small{color:hsla(40,69%,97%,.65);font-size:.72rem;letter-spacing:.22em;text-transform:uppercase}.home-hero-quote{border-top:1px solid hsla(40,69%,97%,.12);color:hsla(40,69%,97%,.72);font-style:italic;margin-top:1.75rem;padding-top:1.1rem}.home-hero-quote span{color:rgba(212,175,55,.78);display:block;font-size:.8rem;letter-spacing:.18em;margin-top:.75rem;text-transform:uppercase}@media (min-width:768px){.home-hero-highlights{grid-template-columns:repeat(2,minmax(0,1fr))}}@media (min-width:1024px){.home-hero-grid{grid-template-columns:minmax(0,1.25fr) minmax(0,1fr)}}.clan-emblem{background:linear-gradient(135deg,rgba(128,0,32,.92),rgba(45,80,22,.95));border:3px solid rgba(212,175,55,.8);box-shadow:0 25px 45px -30px rgba(0,0,0,.65);isolation:isolate;position:relative}.clan-emblem:after{border:1px solid hsla(0,0%,100%,.25);border-radius:9999px;content:"";inset:12px;opacity:.7;position:absolute}.home-hero .clan-emblem{height:clamp(160px,22vw,200px);width:clamp(160px,22vw,200px)}.content-card{backdrop-filter:blur(10px);background:hsla(0,0%,100%,.95);transition:all .3s ease-in-out}.content-card:hover{box-shadow:0 15px 30px rgba(0,0,0,.1);transform:translateY(-4px)}.btn-primary{background:linear-gradient(45deg,var(--clan-burgundy),var(--clan-forest));border:2px solid var(--clan-gold);color:#fff;transition:all .3s ease}.btn-primary:hover{background:linear-gradient(45deg,var(--clan-forest),var(--clan-burgundy));box-shadow:0 4px 15px rgba(0,0,0,.2);transform:translateY(-1px)}.btn-secondary{background:rgba(15,23,42,.35);border:2px solid hsla(40,69%,97%,.35);color:hsla(40,69%,97%,.95);transition:all .3s ease}.btn-secondary:hover{background:hsla(40,69%,97%,.16);border-color:hsla(40,69%,97%,.55);box-shadow:0 10px 22px -18px rgba(0,0,0,.65);transform:translateY(-1px)}.active-item{background:linear-gradient(90deg,var(--clan-gold),#f4d03f);box-shadow:inset 0 2px 4px rgba(0,0,0,.1);color:var(--clan-burgundy);font-weight:600}.map-emoji-icon{filter:drop-shadow(0 2px 2px rgba(0,0,0,.3));font-size:24px;line-height:24px;text-align:center}#clanMap,#tripBuilderMap{border-radius:12px;box-shadow:0 8px 25px rgba(0,0,0,.2);height:100%;min-height:60vh;width:100%}@keyframes fadeIn{0%{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}.pulse-gold{animation:pulseGold 2s infinite}@keyframes pulseGold{0%,to{box-shadow:0 0 0 0 rgba(212,175,55,.7)}50%{box-shadow:0 0 0 20px rgba(212,175,55,0)}}.ogham-stave:hover{border-color:var(--clan-gold);box-shadow:0 8px 25px rgba(212,175,55,.5);transform:translateY(-5px) rotate(2deg)}.ogham-symbol-svg{height:100px;stroke:var(--parchment);stroke-width:4;width:100%}.color-box{border:3px solid transparent;transition:all .2s ease-in-out}.color-box.selected{border-color:var(--clan-gold);box-shadow:0 0 20px rgba(212,175,55,.6);transform:scale(1.15)}#itinerary-panel{background-color:#fff;bottom:0;box-shadow:0 -4px 12px rgba(0,0,0,.1);left:0;position:absolute;right:0;transform:translateY(calc(100% - 50px));transition:transform .3s ease-in-out;z-index:1000}#itinerary-panel.open{transform:translateY(0)}.itinerary-handle{background-color:#d1d5db;border-radius:5px;height:5px;margin:10px auto;width:60px}</style>
+    <style>:root{--clan-gold:#d4af37;--clan-burgundy:#800020;--clan-forest:#2d5016;--clan-stone:#8b7355;--parchment:#f4f1e8;--aged-paper:#f0ead6}body{background:linear-gradient(135deg,var(--parchment) 0,var(--aged-paper) 100%);font-family:Inter,sans-serif}.font-title{font-family:Cinzel,serif}.nav-link.active{background:rgba(212,175,55,.1);border-bottom:2px solid var(--clan-gold);color:var(--clan-gold)}.page-section{display:none}.page-section.active{animation:fadeIn .6s ease-in-out;display:block}.thread-of-ages{background:rgba(15,23,42,.78);border:1px solid rgba(212,175,55,.3);border-radius:28px;box-shadow:0 20px 45px -20px rgba(15,23,42,.8);color:#f8fafc;overflow:hidden;position:relative}.thread-backdrop{background-position:50%;background-repeat:no-repeat;background-size:cover;filter:brightness(.85) saturate(1.15);inset:0;position:absolute;transform:scale(1.05);transition:background-image .8s ease,filter .6s ease}.thread-overlay{backdrop-filter:blur(6px);background:linear-gradient(135deg,rgba(15,23,42,.92),rgba(45,80,22,.65));position:relative}.thread-track-wrapper{overflow-x:auto;scrollbar-color:rgba(212,175,55,.6) rgba(15,23,42,.4);scrollbar-width:thin}.thread-track-wrapper::-webkit-scrollbar{height:10px}.thread-track-wrapper::-webkit-scrollbar-track{background:rgba(15,23,42,.4);border-radius:9999px}.thread-track-wrapper::-webkit-scrollbar-thumb{background:linear-gradient(90deg,rgba(212,175,55,.9),rgba(125,45,45,.9));border-radius:9999px}.thread-track{align-items:stretch;display:flex;gap:1.5rem;min-width:-moz-max-content;min-width:max-content;padding:1rem 0}.timeline-node{background:rgba(15,23,42,.65);border:1px solid transparent;border-radius:18px;box-shadow:inset 0 0 0 1px hsla(0,0%,100%,.08);color:inherit;min-width:220px;padding:1.25rem 1rem;position:relative;transition:transform .35s ease,box-shadow .35s ease,border-color .35s ease}.timeline-node:before{background:linear-gradient(145deg,rgba(212,175,55,.18),rgba(128,0,32,.15));border-radius:14px;content:"";inset:8px;opacity:0;position:absolute;transition:opacity .35s ease;z-index:-1}.timeline-node span{display:block}.timeline-node .node-year{color:rgba(248,250,252,.75);font-family:Cinzel,serif;font-size:1.15rem;letter-spacing:.08em;text-transform:uppercase}.timeline-node .node-title{font-size:1.25rem;font-weight:600;margin-top:.5rem}.timeline-node .node-era{color:rgba(248,250,252,.6);font-size:.85rem;letter-spacing:.12em;margin-top:.25rem;text-transform:uppercase}.timeline-node:focus,.timeline-node:hover{border-color:rgba(212,175,55,.7);box-shadow:0 18px 35px -18px rgba(15,23,42,.85);transform:translateY(-6px)}.timeline-node:focus:before,.timeline-node:hover:before{opacity:1}.timeline-node.active{border-color:rgba(212,175,55,.95);box-shadow:0 22px 40px -18px rgba(212,175,55,.45)}.timeline-node.active:before{opacity:1}.thread-story-card{background:rgba(248,250,252,.08);border:1px solid rgba(212,175,55,.25);border-radius:24px;color:#f8fafc;margin-top:2rem;padding:2rem;position:relative}.thread-story-card:before{background:linear-gradient(135deg,rgba(212,175,55,.12),rgba(125,45,45,.18));border-radius:24px;content:"";inset:0;opacity:.9;pointer-events:none;position:absolute}.thread-story-card>*{position:relative;z-index:1}.thread-era{color:rgba(248,250,252,.72);font-family:Cinzel,serif;font-size:.85rem;letter-spacing:.38em;text-transform:uppercase}.thread-title{font-size:2.2rem;line-height:1.15;margin:.75rem 0 1rem}.thread-summary{color:rgba(248,250,252,.88);font-size:1.125rem;line-height:1.7}.thread-highlights{display:grid;gap:.75rem;margin-top:1.5rem}.thread-highlight{align-items:flex-start;background:rgba(15,23,42,.45);border:1px solid rgba(248,250,252,.12);border-radius:14px;display:flex;gap:.75rem;padding:.85rem 1rem}.thread-highlight i{color:rgba(212,175,55,.9);margin-top:.2rem}.thread-media{border:1px solid rgba(212,175,55,.3);border-radius:20px;margin-top:1.5rem;overflow:hidden}.thread-media img{height:260px;-o-object-fit:cover;object-fit:cover;width:100%}.thread-cta{display:flex;flex-wrap:wrap;gap:.75rem;margin-top:1.5rem}.thread-cta button,.timeline-cta-btn{align-items:center;background:linear-gradient(135deg,rgba(212,175,55,.95),rgba(125,45,45,.95));border-radius:9999px;color:#111827;display:inline-flex;font-weight:600;gap:.5rem;padding:.75rem 1.25rem;transition:transform .3s ease,box-shadow .3s ease}.thread-cta button:hover,.timeline-cta-btn:hover{box-shadow:0 15px 30px -20px rgba(212,175,55,.8);transform:translateY(-2px)}.thread-related{color:rgba(248,250,252,.78);display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1.5rem}.thread-related span{background:rgba(15,23,42,.45);border:1px solid rgba(248,250,252,.12);border-radius:9999px;font-size:.85rem;letter-spacing:.04em;padding:.4rem .9rem}@media (max-width:768px){.timeline-node{min-width:180px}.thread-story-card{padding:1.5rem}.thread-title{font-size:1.8rem}.thread-media img{height:200px}}.home-hero{background:linear-gradient(135deg,rgba(212,175,55,.35),rgba(45,80,22,.35));border-radius:32px;box-shadow:0 25px 65px -30px rgba(15,23,42,.75);isolation:isolate;overflow:hidden;padding:2px;position:relative}.home-hero:before{background:linear-gradient(120deg,rgba(15,23,42,.75),rgba(15,23,42,.3)),url(/assets/castlehome-CFwB6gtN.jpg);background-position:50%;background-size:cover;filter:saturate(1.15);transform:scale(1.05);z-index:-2}.home-hero:after,.home-hero:before{content:"";inset:0;position:absolute}.home-hero:after{background:radial-gradient(circle at top right,rgba(212,175,55,.3),transparent 55%),radial-gradient(circle at bottom left,rgba(45,80,22,.25),transparent 60%);mix-blend-mode:screen;z-index:-1}.home-hero-content{color:#fdfaf4;display:grid;gap:clamp(2rem,4vw,3.5rem);padding:clamp(2.75rem,5vw,4.5rem);position:relative}.home-hero-content a,.home-hero-content h2,.home-hero-content h3,.home-hero-content h4,.home-hero-content p{color:inherit}.home-hero-copy{max-width:720px}.home-hero-motto{color:hsla(43,74%,84%,.85);font-family:Cinzel,serif;font-size:clamp(1.1rem,2vw,1.5rem);letter-spacing:.2em;text-transform:uppercase}.home-hero-description{color:hsla(40,69%,97%,.82);font-size:clamp(1.1rem,2.25vw,1.5rem);line-height:1.8;margin-top:1rem}.home-hero-cta{display:flex;flex-wrap:wrap;gap:.75rem;margin-top:2rem}.home-hero-highlights{display:grid;gap:.75rem;list-style:none;margin-top:2.5rem;padding:0}.home-hero-highlights li{align-items:start;background:rgba(15,23,42,.4);border:1px solid rgba(212,175,55,.28);border-radius:18px;box-shadow:inset 0 0 0 1px hsla(0,0%,100%,.08);display:flex;gap:.75rem;padding:.85rem 1rem}.home-hero-highlights i{color:rgba(212,175,55,.9);margin-top:.15rem}.home-hero-side{display:grid;gap:1.25rem}.home-hero-panel{backdrop-filter:blur(10px);background:rgba(15,23,42,.58);border:1px solid rgba(212,175,55,.32);border-radius:26px;box-shadow:0 18px 45px -28px rgba(8,8,20,.9);padding:clamp(1.75rem,4vw,2.5rem)}.home-hero-panel h3{align-items:center;color:hsla(40,69%,97%,.92);display:flex;font-family:Cinzel,serif;font-size:1.35rem;gap:.5rem;margin-bottom:1.25rem}.home-hero-panel h3 span{align-items:center;border:1px solid hsla(40,69%,97%,.25);border-radius:9999px;color:hsla(40,69%,97%,.75);display:inline-flex;font-size:.75rem;font-weight:600;gap:.35rem;letter-spacing:.18em;padding:.35rem .6rem;text-transform:uppercase}.home-hero-panel ul{display:grid;gap:1rem;list-style:none;margin:0;padding:0}.home-hero-panel li{align-items:flex-start;color:hsla(40,69%,97%,.8);display:grid;gap:.75rem;grid-template-columns:auto 1fr}.home-hero-panel li i{color:rgba(212,175,55,.95);margin-top:.2rem}.home-hero-metrics{display:grid;gap:1rem;margin-top:1.75rem}.home-hero-metric{align-items:center;background:hsla(40,69%,97%,.08);border:1px solid hsla(40,69%,97%,.08);border-radius:18px;color:hsla(40,69%,97%,.85);display:flex;gap:.75rem;padding:.75rem 1rem}.home-hero-metric span:first-child{color:rgba(212,175,55,.9);font-family:Cinzel,serif;font-size:1.5rem;font-weight:600}.home-hero-metric small{color:hsla(40,69%,97%,.65);display:block;font-size:.75rem;letter-spacing:.18em;text-transform:uppercase}@media (min-width:768px){.home-hero-highlights{grid-template-columns:repeat(2,minmax(0,1fr))}}@media (min-width:1024px){.home-hero-content{align-items:start;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr)}.home-hero-side{align-self:stretch}}.clan-emblem{background:linear-gradient(135deg,rgba(128,0,32,.92),rgba(45,80,22,.95));border:3px solid rgba(212,175,55,.8);box-shadow:0 25px 45px -30px rgba(0,0,0,.65);isolation:isolate;position:relative}.clan-emblem:after{border:1px solid hsla(0,0%,100%,.25);border-radius:9999px;content:"";inset:12px;opacity:.7;position:absolute}.home-hero .clan-emblem{height:clamp(160px,22vw,200px);width:clamp(160px,22vw,200px)}.content-card{backdrop-filter:blur(10px);background:hsla(0,0%,100%,.95);transition:all .3s ease-in-out}.content-card:hover{box-shadow:0 15px 30px rgba(0,0,0,.1);transform:translateY(-4px)}.btn-primary{background:linear-gradient(45deg,var(--clan-burgundy),var(--clan-forest));border:2px solid var(--clan-gold);color:#fff;transition:all .3s ease}.btn-primary:hover{background:linear-gradient(45deg,var(--clan-forest),var(--clan-burgundy));box-shadow:0 4px 15px rgba(0,0,0,.2);transform:translateY(-1px)}.btn-secondary{background:rgba(15,23,42,.35);border:2px solid hsla(40,69%,97%,.35);color:hsla(40,69%,97%,.95);transition:all .3s ease}.btn-secondary:hover{background:hsla(40,69%,97%,.16);border-color:hsla(40,69%,97%,.55);box-shadow:0 10px 22px -18px rgba(0,0,0,.65);transform:translateY(-1px)}.active-item{background:linear-gradient(90deg,var(--clan-gold),#f4d03f);box-shadow:inset 0 2px 4px rgba(0,0,0,.1);color:var(--clan-burgundy);font-weight:600}.map-emoji-icon{filter:drop-shadow(0 2px 2px rgba(0,0,0,.3));font-size:24px;line-height:24px;text-align:center}#clanMap,#tripBuilderMap{border-radius:12px;box-shadow:0 8px 25px rgba(0,0,0,.2);height:100%;min-height:60vh;width:100%}@keyframes fadeIn{0%{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}.pulse-gold{animation:pulseGold 2s infinite}@keyframes pulseGold{0%,to{box-shadow:0 0 0 0 rgba(212,175,55,.7)}50%{box-shadow:0 0 0 20px rgba(212,175,55,0)}}.ogham-stave:hover{border-color:var(--clan-gold);box-shadow:0 8px 25px rgba(212,175,55,.5);transform:translateY(-5px) rotate(2deg)}.ogham-symbol-svg{height:100px;stroke:var(--parchment);stroke-width:4;width:100%}.color-box{border:3px solid transparent;transition:all .2s ease-in-out}.color-box.selected{border-color:var(--clan-gold);box-shadow:0 0 20px rgba(212,175,55,.6);transform:scale(1.15)}#itinerary-panel{background-color:#fff;bottom:0;box-shadow:0 -4px 12px rgba(0,0,0,.1);left:0;position:absolute;right:0;transform:translateY(calc(100% - 50px));transition:transform .3s ease-in-out;z-index:1000}#itinerary-panel.open{transform:translateY(0)}.itinerary-handle{background-color:#d1d5db;border-radius:5px;height:5px;margin:10px auto;width:60px}</style>
+  <script type="module" crossorigin src="/assets/index-slAoRN0C.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-CykfHHL1.css">
+</head>
+<body class="bg-gradient-to-br from-yellow-50 via-orange-50 to-red-50 text-gray-800">
+    
+    <!-- Header -->
+    <header class="bg-white/90 backdrop-blur-lg shadow-2xl sticky top-0 z-50 border-b-4 border-yellow-600">
+        <div class="max-w-7xl mx-auto px-4 py-4">
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center space-x-6">
+                    <div class="clan-emblem w-16 h-16 rounded-full flex items-center justify-center">
+                        <i class="fas fa-crown text-2xl text-yellow-300"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-3xl md:text-4xl font-title font-bold text-yellow-800">The Clan Hearth</h1>
+                        <p class="text-sm text-gray-600 italic font-medium">Troimh theine tha sinn aonaichte</p>
+                        <p class="text-xs text-gray-500">Through Fire We Are United</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <!-- Removed Cart Button -->
+                    <button id="mobile-menu-btn" class="md:hidden text-gray-700 text-2xl" aria-label="Toggle mobile menu">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Main Navigation -->
+            <nav id="main-nav" class="hidden md:flex items-center justify-center flex-wrap bg-gray-50 rounded-2xl p-2" aria-label="Main navigation">
+                <button class="nav-link font-semibold text-gray-600 hover:text-yellow-800 px-3 py-2 rounded-xl transition-all" data-target="home" aria-current="page"><i class="fas fa-home mr-2"></i>Home</button>
+                <button class="nav-link font-semibold text-gray-600 hover:text-yellow-800 px-3 py-2 rounded-xl transition-all" data-target="clans"><i class="fas fa-map-marker-alt mr-2"></i>Clans & Map</button>
+                <button class="nav-link font-semibold text-gray-600 hover:text-yellow-800 px-3 py-2 rounded-xl transition-all" data-target="finder-creator"><i class="fas fa-magic mr-2"></i>Finder & Creator</button>
+                <button class="nav-link font-semibold text-gray-600 hover:text-yellow-800 px-3 py-2 rounded-xl transition-all" data-target="ogham-reading"><i class="fas fa-leaf mr-2"></i>Ogham Reading</button>
+                <button class="nav-link font-semibold text-gray-600 hover:text-yellow-800 px-3 py-2 rounded-xl transition-all" data-target="trip-builder"><i class="fas fa-route mr-2"></i>Trip Builder</button>
+                <button class="nav-link font-semibold text-gray-600 hover:text-yellow-800 px-3 py-2 rounded-xl transition-all" data-target="ai-assistant"><i class="fas fa-robot mr-2"></i>Och-I Assistant</button>
+                <button class="nav-link font-semibold text-gray-600 hover:text-yellow-800 px-3 py-2 rounded-xl transition-all" data-target="legends"><i class="fas fa-scroll mr-2"></i>Legends & Myths</button>
+                <button class="nav-link font-semibold text-gray-600 hover:text-yellow-800 px-3 py-2 rounded-xl transition-all" data-target="tartan-designer"><i class="fas fa-palette mr-2"></i>Tartan Designer</button>
+                <button class="nav-link font-semibold text-gray-600 hover:text-yellow-800 px-3 py-2 rounded-xl transition-all" data-target="recipes"><i class="fas fa-utensils mr-2"></i>Recipes</button>
+            </nav>
+            
+            <!-- Mobile Menu -->
+            <div id="mobile-menu" class="hidden md:hidden bg-white/95 rounded-2xl mt-4 shadow-xl">
+                <!-- Links dynamically populated in JS -->
+            </div>
+        </div>
+    </header>
+
+    <main id="main-content" class="max-w-7xl mx-auto px-4 py-8">
+        
+        <!-- Home Section -->
+        <section id="home-section" class="page-section active">
+            <div class="home-hero animate-fade-in mb-12">
+                <div class="home-hero-grid">
+                    <div class="home-hero-main">
+                        <span class="home-hero-kicker">Scotland's living atlas</span>
+                        <h2 class="home-hero-title">Kindle Your Scottish Story</h2>
+                        <p class="home-hero-motto">Troimh theine tha sinn aonaichte — Through fire we are united</p>
+                <div class="home-hero-content">
+                    <div class="home-hero-copy">
+                        <div class="clan-emblem mx-auto md:mx-0 mb-8 rounded-full flex items-center justify-center pulse-gold">
+                            <div class="text-center">
+                                <i class="fas fa-crown text-5xl md:text-6xl text-yellow-200 mb-2"></i>
+                                <div class="text-yellow-200/90 font-bold text-sm tracking-[0.3em] uppercase">Clan Hearth</div>
+                            </div>
+                        </div>
+                        <h2 class="text-4xl md:text-6xl font-bold font-title tracking-tight">Kindle Your Scottish Story</h2>
+                        <p class="home-hero-motto mt-4">Troimh theine tha sinn aonaichte</p>
+                        <p class="home-hero-description">
+                            The Clan Hearth is your invitation to explore Scotland with the warmth of kin. Dive into living clan histories,
+                            trace ancestral footsteps with immersive maps, and craft journeys alongside Highland guides who keep the flame alight.
+                        </p>
+                        <div class="home-hero-actions">
+                            <button class="btn-primary nav-link" data-target="finder-creator" aria-label="Find your clan soul">
+                                <i class="fas fa-magic mr-2"></i>Find Your Clan Soul
+                            </button>
+                            <button class="btn-secondary nav-link" data-target="trip-builder" aria-label="Plan your heritage journey">
+                        <div class="home-hero-cta">
+                            <button class="btn-primary px-7 py-3.5 rounded-2xl font-semibold text-lg transition-all nav-link" data-target="finder-creator" aria-label="Find your clan soul">
+                                <i class="fas fa-magic mr-2"></i>Find Your Clan Soul
+                            </button>
+                            <button class="btn-secondary px-7 py-3.5 rounded-2xl font-semibold text-lg transition-all nav-link" data-target="trip-builder" aria-label="Plan your heritage journey">
+                                <i class="fas fa-route mr-2"></i>Plan Your Heritage Journey
+                            </button>
+                        </div>
+                        <ul class="home-hero-highlights" role="list">
+                            <li data-highlight="timeline">
+                                <i class="fas fa-scroll" aria-hidden="true"></i>
+                                <div class="home-hero-highlight-text">
+                                    <strong>Thread of Ages</strong>
+                                    <p class="home-hero-highlight-detail">
+                                        <span data-highlight="timeline-count">0</span> chapters from
+                                        <span data-highlight="timeline-first">—</span> to
+                                        <span data-highlight="timeline-last">—</span>.
+                                    </p>
+                                </div>
+                            </li>
+                            <li data-highlight="clans">
+                                <i class="fas fa-shield-halved" aria-hidden="true"></i>
+                                <div class="home-hero-highlight-text">
+                                    <strong>Clan Dossiers</strong>
+                                    <p class="home-hero-highlight-detail">
+                                        Featuring <span data-highlight="clan-sample">—</span> kindreds.
+                                        <small>Linked surnames like <span data-highlight="surname-sample">—</span> (<span data-highlight="surname-count">0</span> recorded)</small>
+                                    </p>
+                                </div>
+                            </li>
+                            <li data-highlight="maps">
+                                <i class="fas fa-compass" aria-hidden="true"></i>
+                                <div class="home-hero-highlight-text">
+                                    <strong>Immersive Maps</strong>
+                                    <p class="home-hero-highlight-detail">
+                                        <span data-highlight="map-count">0</span> storied places across
+                                        <span data-highlight="map-categories">0</span> journeys.
+                                    </p>
+                                </div>
+                            </li>
+                            <li data-highlight="gaelic">
+                                <i class="fas fa-fire" aria-hidden="true"></i>
+                                <div class="home-hero-highlight-text">
+                                    <strong>Gaelic & Rituals</strong>
+                                    <p class="home-hero-highlight-detail" data-highlight="gaelic-detail">Fàilte — Welcome</p>
+                                </div>
+                            </li>
+                        </ul>
+                        <div class="home-hero-credit" data-hero-credit role="note">
+                            <i class="fas fa-mountain-sun" aria-hidden="true"></i>
+                            <div class="home-hero-credit-body">
+                                <strong data-hero-credit-title>Highland twilight over Loch Awe</strong>
+                                <div class="home-hero-credit-meta">
+                                    <span data-hero-credit-location>Argyll, Western Highlands</span>
+                                    <span aria-hidden="true" data-hero-credit-separator hidden>·</span>
+                                    <a data-hero-credit-link aria-disabled="true" tabindex="-1">Artwork by Clan Hearth Studio</a>
+                                </div>
+                            </div>
+                        </div>
+                            <li>
+                                <i class="fas fa-scroll"></i>
+                                <span><strong>Clan Dossiers:</strong> Tartans, lineages, and legends restored from museum archives and family keepers.</span>
+                            </li>
+                            <li>
+                                <i class="fas fa-compass"></i>
+                                <span><strong>Immersive Maps:</strong> Layer historic territories over Highlands, Isles, and Lowlands routes.</span>
+                            </li>
+                            <li>
+                                <i class="fas fa-fire"></i>
+                                <span><strong>Och-I Companion:</strong> Gaelic phrases, recipes, and rituals tailored to every gathering.</span>
+                            </li>
+                            <li>
+                                <i class="fas fa-gem"></i>
+                                <span><strong>Member Exclusives:</strong> Collect heirloom keepsakes, session replays, and seasonal ceremonies.</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="home-hero-side">
+                        <div class="home-hero-card">
+                            <div class="home-hero-seal" aria-hidden="true">
+                                <i class="fas fa-crown"></i>
+                            </div>
+                            <h3>Inside the Hearth</h3>
+                            <p>Morning embers, evening ceilidhs, and curated stories converge to keep your kinfire bright.</p>
+                            <ul role="list">
+                        <div class="home-hero-panel">
+                            <h3>Inside the Hearth <span><i class="fas fa-sun"></i>Daily Spark</span></h3>
+                            <ul>
+                                <li>
+                                    <i class="fas fa-map-location-dot"></i>
+                                    <span>Plot historic clan territories alongside modern journeys with synchronized map layers.</span>
+                                </li>
+                                <li>
+                                    <i class="fas fa-drum"></i>
+                                    <span>Experience the Thread of Ages timeline—animated eras with music, artefacts, and storycards.</span>
+                                </li>
+                                <li>
+                                    <i class="fas fa-mug-hot"></i>
+                                    <span>Share recipes, rituals, and seasonal celebrations that keep your hearth blazing year-round.</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="home-hero-card">
+                            <h3>Signals from the Fire</h3>
+                            <div class="home-hero-metrics" role="list" aria-label="Clan Hearth in numbers">
+                                <div class="home-hero-metric" role="listitem">
+                                    <span class="stat-number" data-stat="clans">0</span>
+                                    <div>
+                                        <strong>Clan lineages curated</strong>
+                                        <small>Across <span data-stat="territories">0</span> historic heartlands</small>
+                                    </div>
+                                </div>
+                                <div class="home-hero-metric" role="listitem">
+                                    <span class="stat-number" data-stat="timeline">0</span>
+                                    <div>
+                                        <strong>Moments in the Thread of Ages</strong>
+                                        <small>Latest chapter: <span data-highlight="timeline-detail">—</span></small>
+                                    </div>
+                                </div>
+                                <div class="home-hero-metric" role="listitem">
+                                    <span class="stat-number" data-stat="recipes">0</span>
+                                    <div>
+                                        <strong>Heritage recipes preserved</strong>
+                                        <small>Try <span data-highlight="recipe-name">—</span> tonight</small>
+                                    <span>650+</span>
+                                    <div>
+                                        <strong>Living clans welcomed</strong>
+                                        <small>Across 38 regions</small>
+                                    </div>
+                                </div>
+                                <div class="home-hero-metric" role="listitem">
+                                    <span>120</span>
+                                    <div>
+                                        <strong>Guided journeys crafted</strong>
+                                        <small>By local storytellers</small>
+                                    </div>
+                                </div>
+                                <div class="home-hero-metric" role="listitem">
+                                    <span>24</span>
+                                    <div>
+                                        <strong>Seasonal circles</strong>
+                                        <small>Live rituals & workshops</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="home-hero-quote">“It feels like stepping into a candlelit hall where every voice knows your name.”<span>Isla, Highland Explorer</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Thread of Ages Timeline -->
+            <div id="thread-of-ages" class="thread-of-ages mt-16">
+                <div id="thread-backdrop" class="thread-backdrop"></div>
+                <div class="thread-overlay p-8 md:p-12">
+                    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+                            <div class="max-w-2xl">
+                                <p class="thread-era tracking-[0.5em] text-yellow-200/80">Thread of Ages</p>
+                                <h3 class="thread-title font-title font-bold text-4xl md:text-5xl text-yellow-100">The Living Timeline of Scotland</h3>
+                                <p class="thread-summary text-lg md:text-xl mt-3">Glide through millennia of resilience, rebellion, and renaissance. Each luminous node reveals a cinematic story card woven with artefacts, lore, and connections to clans around the world.</p>
+                            </div>
+                            <div class="flex flex-col items-start gap-3 bg-white/10 border border-white/20 rounded-2xl p-5 max-w-sm">
+                                <div class="flex items-center gap-3">
+                                    <span class="w-3 h-3 rounded-full bg-yellow-400 animate-pulse"></span>
+                                    <p class="text-sm uppercase tracking-[0.35em] text-yellow-100/90">Interactive nodes</p>
+                                </div>
+                                <p class="text-sm text-yellow-50/90">Tap a moment to step inside its story. Related clans, artefacts, and itinerary hooks cascade into the rest of the experience.</p>
+                                <div class="thread-cta">
+                                    <button id="thread-scroll-next" class="inline-flex items-center gap-2 bg-white/20 text-yellow-50 font-semibold px-4 py-2 rounded-full hover:bg-white/30 transition">
+                                        <span>Jump to Present Day</span>
+                                        <i class="fas fa-arrow-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="thread-track-wrapper mt-10" tabindex="0" aria-label="Timeline of pivotal Scottish history moments">
+                            <div id="thread-track" class="thread-track" role="list">
+                                <!-- Timeline nodes injected by JS -->
+                            </div>
+                        </div>
+                        <section id="thread-story" class="thread-story-card mt-10" aria-live="polite" aria-atomic="true">
+                            <!-- Story card injected by JS -->
+                        </section>
+                    </div>
+                </div>
+
+                <!-- Gaelic Phrase of the Day -->
+                <div class="mt-12 mb-8 bg-clan-stone/20 p-6 rounded-2xl max-w-2xl mx-auto border-2 border-clan-gold/50">
+                    <h3 class="font-title text-2xl text-yellow-800 mb-4">Gaelic Phrase of the Day</h3>
+                    <p id="gaelic-phrase" class="text-3xl font-semibold text-clan-burgundy"></p>
+                    <p id="gaelic-pronunciation" class="text-lg text-gray-600 italic mb-2"></p>
+                    <p id="gaelic-translation" class="text-xl text-clan-forest font-medium"></p>
+                </div>
+                
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
+                <div class="content-card p-6 rounded-2xl">
+                    <i class="fas fa-hourglass-half text-4xl text-yellow-600 mb-4"></i>
+                    <h3 class="text-xl font-bold mb-2">Immersive Timeline</h3>
+                    <p class="text-gray-600">Glide through centuries of rebellion, artistry, and kinship with cinematic clan storycards.</p>
+                </div>
+                <div class="content-card p-6 rounded-2xl">
+                    <i class="fas fa-shield-halved text-4xl text-yellow-600 mb-4"></i>
+                    <h3 class="text-xl font-bold mb-2">Clan Manifest</h3>
+                    <p class="text-gray-600">Search authentic tartans, mottos, strongholds, and ancestral lore for every Scottish clan.</p>
+                </div>
+                <div class="content-card p-6 rounded-2xl">
+                    <i class="fas fa-compass text-4xl text-yellow-600 mb-4"></i>
+                    <h3 class="text-xl font-bold mb-2">Travel Concierge</h3>
+                    <p class="text-gray-600">Save bespoke itineraries, distillery stops, and Highland retreats tailored to your kin.</p>
+                </div>
+            </div>
+
+                <div class="flex flex-col md:flex-row justify-center space-y-4 md:space-y-0 md:space-x-6 mt-12">
+                    <button class="btn-primary px-8 py-4 rounded-2xl font-bold text-lg transition-all nav-link" data-target="finder-creator" aria-label="Find your clan soul"><i class="fas fa-magic mr-2"></i>Find Your Clan Soul</button>
+                    <button class="btn-secondary px-8 py-4 rounded-2xl font-bold text-lg transition-all nav-link" data-target="trip-builder" aria-label="Plan your heritage journey"><i class="fas fa-route mr-2"></i>Plan Your Heritage Journey</button>
+                </div>
+        </section>
+
+        <!-- Clans & Map Section (Detailed Clan View) -->
+        <section id="clans-section" class="page-section">
+            <div class="flex flex-col lg:flex-row min-h-screen bg-white/80 rounded-3xl shadow-2xl overflow-hidden">
+                <aside class="w-full lg:w-96 bg-gray-50 border-r border-gray-200 p-6 flex flex-col">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-2xl font-bold text-gray-800 font-title"><i class="fas fa-shield-alt mr-2 text-yellow-600"></i>Scottish Clans</h2>
+                    </div>
+                    <div class="search-container mb-4">
+                        <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-stone-400"></i>
+                        <input type="search" id="clan-search-input" placeholder="Search for a clan..." class="w-full p-3 pl-10 border border-stone-300 rounded-lg focus:ring-2 focus:ring-yellow-800 transition bg-white/80 backdrop-blur-sm">
+                    </div>
+                    <div id="clan-list-container" class="sidebar-scroll overflow-y-auto flex-grow space-y-3" role="list">
+                        <!-- Clan list populated by JS -->
+                    </div>
+                </aside>
+                <main id="clans-main-content" class="flex-1 p-4 sm:p-6 lg:p-8">
+                    <div class="grid grid-cols-1 xl:grid-cols-3 gap-8 h-full">
+                        <div class="xl:col-span-2 h-full">
+                            <div id="clanMap" class="w-full h-full rounded-2xl shadow-2xl" aria-label="Interactive map of Scottish clan territories"></div>
+                        </div>
+                        <div id="clan-detail-container" class="bg-gray-50 p-6 rounded-2xl shadow-inner overflow-y-auto">
+                            <h3 class="text-xl font-bold mb-4 font-title text-yellow-800"><i class="fas fa-info-circle mr-2"></i>Clan Details</h3>
+                            <div class="text-center py-12">
+                                <i class="fas fa-map-marked-alt text-6xl text-gray-300 mb-4"></i>
+                                <p class="text-gray-500">Select a clan from the list to explore their territory, history, and heritage.</p>
+                            </div>
+                        </div>
+                    </div>
+                </main>
+            </div>
+        </section>
+
+        <!-- Clan Finder & Creator Section (Merged: Spiritual Finder + Creator) -->
+        <section id="finder-creator-section" class="page-section">
+            <div class="content-card rounded-3xl shadow-2xl p-6 md:p-12 animate-fade-in">
+                <!-- Tabs -->
+                <div class="flex justify-center border-b-2 border-stone-200 mb-8">
+                    <button id="tab-finder-btn" class="tab-btn active text-lg font-title py-3 px-6">Find Your Spirit Clan</button>
+                    <button id="tab-creator-btn" class="tab-btn text-lg font-title py-3 px-6">Create Your Own Clan</button>
+                </div>
+                
+                <!-- Finder Content (Quiz) -->
+                <div id="finder-content" class="tab-content active">
+                    <div class="text-center mb-8">
+                        <div class="clan-emblem w-24 h-24 mx-auto mb-6 rounded-full flex items-center justify-center"><i class="fas fa-magic text-3xl text-yellow-300"></i></div>
+                        <h2 class="text-4xl md:text-5xl font-title font-bold text-gray-900 mb-4">Spiritual Clan Finder</h2>
+                        <p class="text-xl text-gray-600 max-w-3xl mx-auto">Discover your connection to Scottish heritage through our personality quiz.</p>
+                    </div>
+                    <div id="quiz-container" class="max-w-3xl mx-auto"></div>
+                    <div id="quiz-result" class="hidden text-center max-w-3xl mx-auto">
+                        <div id="result-content" class="bg-white rounded-lg shadow-xl p-8"></div>
+                        <button id="restart-quiz-btn" class="mt-8 bg-stone-200 text-stone-800 font-semibold py-3 px-6 rounded-lg hover:bg-stone-300 shadow">Retake Quiz</button>
+                    </div>
+                </div>
+
+                <!-- Creator Content -->
+                <div id="creator-content" class="tab-content">
+                    <div class="text-center mb-12">
+                         <div class="clan-emblem w-24 h-24 mx-auto mb-6 rounded-full flex items-center justify-center"><i class="fas fa-crow text-3xl text-yellow-300"></i></div>
+                        <h2 class="text-3xl md:text-4xl font-title font-bold text-stone-900">Forge Your Own Legacy</h2>
+                        <p class="text-lg text-stone-700 mt-2">No Scottish roots? Forge your own legacy and create a personal clan identity.</p>
+                    </div>
+                    <div class="grid lg:grid-cols-2 gap-12 max-w-5xl mx-auto">
+                        <!-- Clan Details & Emblem -->
+                        <div class="space-y-8">
+                            <div>
+                                <label for="create-clan-name" class="block text-lg font-semibold mb-2">1. Name Your Clan</label>
+                                <input type="text" id="create-clan-name" class="w-full p-3 border border-stone-300 rounded-lg focus:ring-2 focus:ring-yellow-800 transition" placeholder="e.g., The Noble Order of the Digital Owl">
+                            </div>
+                            <div>
+                                <label for="create-clan-motto" class="block text-lg font-semibold mb-2">2. Write Your Motto</label>
+                                <input type="text" id="create-clan-motto" class="w-full p-3 border border-stone-300 rounded-lg focus:ring-2 focus:ring-yellow-800 transition" placeholder="e.g., Wisdom in the Wires">
+                            </div>
+                             <div>
+                                <h3 class="text-lg font-semibold mb-2">3. Design Your Tartan</h3>
+                                <p class="text-stone-700 mb-4">Click below to open the Tartan Designer and save your creation.</p>
+                                <button id="go-to-tartan-designer" class="btn-primary px-5 py-2 rounded-lg hover:bg-yellow-900 shadow transition transform hover:scale-105">Design Tartan</button>
+                            </div>
+                        </div>
+                        <!-- Preview & Finalize -->
+                        <div class="bg-stone-50 p-6 rounded-xl border border-stone-200 flex flex-col items-center">
+                            <h3 class="font-title text-2xl font-bold mb-6">Your Clan Charter Preview</h3>
+                            <div class="w-48 h-48 mb-4 rounded-full overflow-hidden border-4 border-yellow-800 shadow-lg">
+                               <img src="https://placehold.co/200x200/2d5016/d4af37?text=Clan+Emblem" alt="Custom Clan Emblem" class="w-full h-full object-cover">
+                            </div>
+                            <h4 id="charter-clan-name" class="font-title text-2xl font-bold text-stone-800">Your Clan Name</h4>
+                            <p id="charter-clan-motto" class="text-stone-700 italic">"Your Motto"</p>
+                            <div class="mt-auto w-full pt-6">
+                                 <button id="finalize-clan-btn" class="w-full bg-green-700 text-white font-semibold px-5 py-3 rounded-lg hover:bg-green-800 shadow-lg transition transform hover:scale-105">Finalize & View Your Clan</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Ogham Rune Reading Section -->
+        <section id="ogham-reading-section" class="page-section">
+            <div class="content-card rounded-3xl shadow-2xl p-6 md:p-12 animate-fade-in">
+                <div class="text-center mb-12">
+                    <div class="clan-emblem w-24 h-24 mx-auto mb-6 rounded-full flex items-center justify-center"><i class="fas fa-leaf text-3xl text-yellow-300"></i></div>
+                    <h2 class="text-4xl md:text-5xl font-title font-bold text-gray-900 mb-4">Ogham Rune Reading</h2>
+                    <p class="text-xl text-gray-600 max-w-3xl mx-auto">Connect with ancient Celtic wisdom. Focus your mind on a question and cast a rune to receive guidance from the sacred trees.</p>
+                </div>
+                
+                <div id="ogham-caster" class="max-w-4xl mx-auto text-center">
+                    <div id="ogham-start">
+                        <p class="text-lg text-gray-700 mb-8">Take a deep breath, clear your mind, and when you are ready, cast your rune.</p>
+                        <button id="cast-rune-btn" class="btn-primary px-12 py-5 rounded-2xl font-bold text-xl transition-all"><i class="fas fa-hand-sparkles mr-3"></i>Cast Your Rune</button>
+                    </div>
+                    <div id="ogham-casting" class="hidden">
+                        <p class="text-lg text-gray-700 mb-8 animate-pulse">The sacred trees are whispering...</p>
+                        <div class="grid grid-cols-5 md:grid-cols-10 gap-4 shuffling"></div>
+                    </div>
+                    <div id="ogham-result" class="hidden animate-fade-in">
+                        <div class="grid md:grid-cols-3 gap-8 items-center bg-gray-50 p-8 rounded-2xl">
+                            <div class="md:col-span-1 text-center">
+                                <div id="ogham-result-symbol" class="bg-clan-stone mx-auto p-4 rounded-lg shadow-lg w-48"></div>
+                            </div>
+                            <div class="md:col-span-2 text-left">
+                                <h3 id="ogham-result-name" class="text-4xl font-bold font-title text-yellow-800"></h3>
+                                <p id="ogham-result-tree" class="text-xl text-gray-600 mb-4 italic"></p>
+                                <p id="ogham-result-meaning" class="text-lg text-gray-700 leading-relaxed"></p>
+                            </div>
+                        </div>
+                        <button id="cast-again-btn" class="mt-12 btn-primary px-8 py-4 rounded-2xl font-bold text-lg transition-all"><i class="fas fa-redo mr-2"></i>Cast Again</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Trip Builder Section (Merged: Trip Builder + Planner) -->
+        <section id="trip-builder-section" class="page-section">
+            <div class="content-card rounded-3xl shadow-2xl p-6 md:p-12 animate-fade-in">
+                <div class="text-center mb-8">
+                    <h2 class="text-4xl md:text-5xl font-title font-bold text-gray-900 mb-4"><i class="fas fa-route mr-4 text-yellow-600"></i>Heritage Trip Planner</h2>
+                    <p class="text-xl text-gray-600 mb-6">Discover locations, build your itinerary, and save your custom Scottish journey.</p>
+                </div>
+                
+                <div class="relative">
+                    <div id="tripBuilderMap" style="height: 70vh; z-index: 10;" class="rounded-2xl shadow-2xl" aria-label="Interactive map for trip planning"></div>
+                    
+                    <!-- Map Controls (from index.html planner) -->
+                    <div id="map-controls" class="absolute top-5 right-5 bg-white/90 backdrop-blur-sm p-4 rounded-lg shadow-lg w-64 max-h-[calc(70vh-40px)] overflow-y-auto" role="group" aria-label="Map filter controls" style="z-index: 1000;">
+                        <h3 class="text-xl font-bold text-gray-900 mb-4">Filter Sights</h3>
+                        <div id="tourism-filter-buttons" class="space-y-3">
+                            <!-- Filter buttons generated by JS -->
+                        </div>
+                        <div class="mt-6 pt-4 border-t border-gray-200">
+                            <h4 class="font-semibold text-gray-900 mb-3">Map Legend</h4>
+                            <div class="space-y-2 text-sm">
+                                <div class="flex items-center"><span class="text-xl mr-2">🛡️</span><span>Clan Seats</span></div>
+                                <div class="flex items-center"><span class="text-xl mr-2">🏰</span><span>Castles</span></div>
+                                <div class="flex items-center"><span class="text-xl mr-2">⚔️</span><span>Battlefields</span></div>
+                                <div class="flex items-center"><span class="text-xl mr-2">🥃</span><span>Whisky</span></div>
+                                <div class="flex items-center"><span class="text-xl mr-2">🗿</span><span>Ancient Sites</span></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Itinerary Panel (from index.html planner) -->
+                    <div id="itinerary-panel" class="max-h-80">
+                        <div id="itinerary-header" class="bg-gray-800 text-white p-3 flex justify-between items-center cursor-pointer rounded-t-lg" role="button" aria-expanded="false" aria-controls="itinerary-body">
+                            <div class="flex items-center">
+                                <div class="itinerary-handle mr-3"></div>
+                                <h3 class="text-lg font-bold">My Scottish Journey (<span id="trip-count">0</span>)</h3>
+                            </div>
+                            <div><span id="itinerary-toggle-text">Expand</span> <i class="fas fa-chevron-up ml-2"></i></div>
+                        </div>
+                        <div id="itinerary-body" class="p-4 overflow-y-auto bg-white" style="max-height: 200px;">
+                            <ul id="trip-list" class="space-y-2" role="list"></ul>
+                            <p id="empty-trip-message" class="text-stone-500 text-center p-2 hidden">Your itinerary is empty. Click a map marker to add a location!</p>
+                        </div>
+                        <div class="p-4 bg-gray-100 border-t flex justify-between rounded-b-lg">
+                            <button id="clear-trip-btn" class="bg-red-600 text-white py-2 px-4 rounded-lg font-semibold hover:bg-red-700 transition"><i class="fas fa-trash mr-2"></i>Clear Trip</button>
+                            <button id="save-trip-btn" class="btn-primary py-2 px-4 rounded-lg font-semibold"><i class="fas fa-save mr-2"></i>Save Trip</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- AI Assistant Section -->
+        <section id="ai-assistant-section" class="page-section">
+            <div class="content-card rounded-3xl shadow-2xl p-6 md:p-12 animate-fade-in">
+                <div class="text-center mb-8">
+                    <h2 class="text-4xl md:text-5xl font-title font-bold text-gray-900 mb-4"><i class="fas fa-robot mr-4 text-yellow-600"></i>Och-I, Your Scottish Heritage Assistant</h2>
+                    <p id="ai-persona-status" class="text-xl text-gray-600 mb-6">Chat with our AI assistant for personalized heritage guidance</p>
+                </div>
+                <div class="max-w-4xl mx-auto">
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        <div class="lg:col-span-2">
+                            <div class="bg-gray-50 rounded-2xl p-6 shadow-inner">
+                                <div class="chat-container p-4 rounded-xl mb-4 h-[400px] overflow-y-auto" id="chat-messages" role="log" aria-live="polite">
+                                    <div class="chat-message assistant p-3 rounded-xl max-w-[80%] my-3" style="background: linear-gradient(45deg, var(--clan-forest), var(--clan-burgundy)); color: white;">
+                                        <div class="flex items-start space-x-3">
+                                            <i class="fas fa-robot text-2xl text-yellow-400 mt-1"></i>
+                                            <div>
+                                                <p class="font-bold text-sm text-yellow-300 mb-1">Och-I</p>
+                                                <p>Failte! I'm Och-I, your Scottish heritage assistant. I can help you discover clan connections, plan heritage tours, recommend whisky tastings, or answer any questions about Scottish culture. What would you like to know about bonnie Scotland?</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex space-x-2">
+                                    <input type="text" id="chat-input" placeholder="Ask me about Scottish heritage..." class="flex-1 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500" aria-label="Type your message">
+                                    <button id="send-chat-btn" class="btn-primary px-6 py-3 rounded-lg" aria-label="Send message"><i class="fas fa-paper-plane"></i></button>
+                                </div>
+                                <div id="chat-loading" class="spinner hidden mt-3 mx-auto"></div>
+                            </div>
+                        </div>
+                        <div class="space-y-4">
+                            <h3 class="text-xl font-bold font-title text-gray-800"><i class="fas fa-bolt mr-2 text-yellow-600"></i>Quick Actions</h3>
+                            <button class="w-full text-left p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-all quick-chat-btn" data-message="What clan should I connect with based on my personality?" aria-label="Find my clan"><i class="fas fa-search mr-3 text-yellow-600"></i><span class="font-semibold">Find My Clan</span></button>
+                            <button class="w-full text-left p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-all quick-chat-btn" data-message="I want to plan a premium heritage tour to Scotland. What experiences do you recommend?" aria-label="Plan heritage tour"><i class="fas fa-route mr-3 text-yellow-600"></i><span class="font-semibold">Plan Heritage Tour</span></button>
+                            <button class="w-full text-left p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-all quick-chat-btn" data-message="Tell me about the best Scottish whisky experiences for visitors." aria-label="Whisky experiences"><i class="fas fa-glass-whiskey mr-3 text-yellow-600"></i><span class="font-semibold">Whisky Experiences</span></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Legends Section (Detailed Legend View) -->
+        <section id="legends-section" class="page-section">
+            <div class="flex flex-col lg:flex-row min-h-screen bg-white/80 rounded-3xl shadow-2xl overflow-hidden">
+                <aside class="w-full lg:w-96 bg-gray-50 border-r border-gray-200 p-6">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-2xl font-bold text-gray-800 font-title"><i class="fas fa-scroll mr-2 text-yellow-600"></i>Highland Legends</h2>
+                    </div>
+                    <div class="sidebar-scroll overflow-y-auto max-h-[70vh] space-y-3" id="legends-list-container" role="list">
+                        <!-- Legend list populated by JS -->
+                    </div>
+                </aside>
+                <main id="legends-main-content" class="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto">
+                    <div id="legend-detail-container" class="text-center py-20">
+                        <i class="fas fa-scroll text-8xl text-gray-300 mb-6"></i>
+                        <p class="text-xl text-gray-500">Select a legend to discover their story and heritage</p>
+                    </div>
+                </main>
+            </div>
+        </section>
+
+        <!-- Tartan Designer Section -->
+        <section id="tartan-designer-section" class="page-section">
+            <div class="content-card rounded-3xl shadow-2xl p-6 md:p-12 animate-fade-in">
+                <div class="text-center mb-8">
+                    <h2 class="text-4xl md:text-5xl font-title font-bold text-gray-900 mb-4"><i class="fas fa-palette mr-4 text-yellow-600"></i>Design Your Own Tartan</h2>
+                    <p class="text-xl text-gray-600 mb-6">Create, save, and share a unique pattern that tells your story.</p>
+                </div>
+                <div class="flex flex-col xl:flex-row gap-8">
+                    <div class="xl:w-1/3 bg-gray-50 p-6 rounded-2xl border border-gray-200">
+                        <div class="space-y-6">
+                            <div>
+                                <h3 class="text-lg font-semibold mb-3"><i class="fas fa-palette mr-2 text-yellow-600"></i>1. Pick Colours (Max 5)</h3>
+                                <div id="color-palette" class="grid grid-cols-5 sm:grid-cols-6 gap-3" role="radiogroup" aria-label="Color palette"></div>
+                            </div>
+                            <div id="selected-colors">
+                                <h3 class="text-lg font-semibold mb-2">Selected Colours</h3>
+                                <div class="flex gap-2 flex-wrap min-h-[40px] items-center"></div>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-semibold mb-3"><i class="fas fa-ruler mr-2 text-yellow-600"></i>2. Set Thread Counts</h3>
+                                <input type="text" id="thread-counts" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500" placeholder="e.g., 24 16 8 (must match number of colors)">
+                                <p class="text-sm text-stone-600 mt-1">Enter space-separated numbers for each selected color.</p>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-semibold mb-3"><i class="fas fa-tag mr-2 text-yellow-600"></i>3. Name Your Tartan</h3>
+                                <input type="text" id="tartan-name" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500" placeholder="e.g., 'Highland Dream'" aria-label="Tartan name">
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-semibold mb-3"><i class="fas fa-share-alt mr-2 text-yellow-600"></i>4. Generate & Save</h3>
+                                <div class="flex justify-between gap-3">
+                                    <button id="generate-tartan-btn" class="flex-1 btn-primary py-3 rounded-lg font-bold">Generate Tartan</button>
+                                    <button id="download-tartan-btn" class="hidden flex-1 bg-green-700 text-white font-semibold py-3 rounded-lg hover:bg-green-800 shadow transition transform hover:scale-105"><i class="fas fa-download mr-2"></i>Download</button>
+                                </div>
+                                <p id="tartan-status" class="text-sm text-stone-700 mt-2 text-center">Choose colors and thread counts to see your tartan!</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="xl:w-2/3 flex flex-col">
+                        <div class="bg-white p-4 rounded-2xl shadow-inner border flex-grow mb-6">
+                            <canvas id="tartan-canvas" class="w-full rounded-lg" style="height: 600px;" aria-label="Tartan preview"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Recipes Section (Detailed Recipe View) -->
+        <section id="recipes-section" class="page-section">
+            <div class="content-card rounded-3xl shadow-2xl p-6 md:p-12 animate-fade-in">
+                <div class="text-center mb-10">
+                    <h1 class="text-4xl md:text-5xl font-bold font-title text-gray-900 mb-4"><i class="fas fa-utensils mr-4 text-yellow-600"></i>The Highland Larder</h1>
+                    <p class="text-xl text-gray-600 mb-6">Authentic Scottish recipes from clan territories across the Highlands</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div id="recipe-list-container" class="md:col-span-1 space-y-4 max-h-[70vh] overflow-y-auto pr-4">
+                        <!-- Recipe list populated by JS -->
+                    </div>
+                    <div id="recipe-detail-container" class="md:col-span-2 bg-white/70 p-6 rounded-lg shadow-lg">
+                        <div class="text-center py-12">
+                            <i class="fas fa-utensils text-6xl text-gray-300 mb-4"></i>
+                            <p class="text-gray-500">Select a recipe from the list to view ingredients and instructions.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+    
+    <!-- Footer -->
+    <footer class="bg-stone-800 text-white py-8 mt-12">
+        <div class="container mx-auto px-6 max-w-7xl">
+            <div class="border-t border-stone-700 mt-8 pt-6 text-center text-stone-400">
+                <p>&copy; 2025 The Clan Hearth. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modal -->
+    <div id="generic-modal" class="fixed inset-0 z-[100] hidden items-center justify-center p-4 modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+        <div id="modal-content" class="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 id="modal-title" class="text-2xl font-bold font-title text-gray-900"></h2>
+                    <button id="close-modal" class="text-gray-500 hover:text-gray-700 text-2xl" aria-label="Close modal"><i class="fas fa-times"></i></button>
+                </div>
+                <div id="modal-body"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-20 left-1/2 transform -translate-x-1/2 text-white py-3 px-6 rounded-lg shadow-2xl transition-all duration-300 z-[110] opacity-0" role="alert" aria-live="assertive">
+        <div class="flex items-center">
+            <i id="toast-icon" class="fas fa-check-circle mr-2"></i>
+            <p id="toast-message"></p>
+        </div>
+    </div>
+</body>
+</html>

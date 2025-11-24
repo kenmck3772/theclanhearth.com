@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 160" role="img" aria-labelledby="title desc">
+  <title id="title">Clan tartan placeholder</title>
+  <desc id="desc">Stylised woven pattern indicating tartan imagery is forthcoming.</desc>
+  <defs>
+    <pattern id="weave" width="40" height="40" patternUnits="userSpaceOnUse">
+      <rect width="40" height="40" fill="#123524" />
+      <path d="M0 0 H40" stroke="#d9b66d" stroke-width="6" stroke-linecap="square" />
+      <path d="M0 20 H40" stroke="#731212" stroke-width="8" stroke-linecap="square" />
+      <path d="M0 40 H40" stroke="#d9b66d" stroke-width="6" stroke-linecap="square" />
+      <path d="M0 0 V40" stroke="#1e3a8a" stroke-width="8" stroke-linecap="square" />
+      <path d="M20 0 V40" stroke="#b45309" stroke-width="6" stroke-linecap="square" />
+      <path d="M40 0 V40" stroke="#1e3a8a" stroke-width="8" stroke-linecap="square" />
+    </pattern>
+    <linearGradient id="overlay" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#000" stop-opacity="0" />
+      <stop offset="100%" stop-color="#111827" stop-opacity="0.45" />
+    </linearGradient>
+  </defs>
+  <rect width="320" height="160" fill="url(#weave)" />
+  <rect width="320" height="160" fill="url(#overlay)" />
+  <text x="50%" y="50%" text-anchor="middle" dy="-4" font-family="'Montserrat', 'Arial', sans-serif" font-size="32" fill="#fdf6e3" font-weight="700">Tartan</text>
+  <text x="50%" y="50%" text-anchor="middle" dy="32" font-family="'Montserrat', 'Arial', sans-serif" font-size="16" fill="#fdf6e3" opacity="0.85">Awaiting archival swatch</text>
+</svg>

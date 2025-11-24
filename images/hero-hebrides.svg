@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" role="img" aria-labelledby="title desc">
+  <title id="title">Dawn over the Hebrides standing stones</title>
+  <desc id="desc">Stylised illustration of the Callanish Stones silhouetted against a Hebridean sunrise.</desc>
+  <defs>
+    <linearGradient id="dawnSky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0a1a34" />
+      <stop offset="40%" stop-color="#16395a" />
+      <stop offset="75%" stop-color="#8c3f5d" />
+      <stop offset="100%" stop-color="#f0a168" />
+    </linearGradient>
+    <radialGradient id="sunGlow" cx="50%" cy="62%" r="45%">
+      <stop offset="0%" stop-color="rgba(255, 200, 112, 0.9)" />
+      <stop offset="35%" stop-color="rgba(255, 163, 84, 0.55)" />
+      <stop offset="100%" stop-color="rgba(240, 115, 78, 0)" />
+    </radialGradient>
+    <linearGradient id="machair" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#355e3b" />
+      <stop offset="100%" stop-color="#1c352d" />
+    </linearGradient>
+    <linearGradient id="stoneGradient" x1="0" y1="0" x2="0.1" y2="1">
+      <stop offset="0%" stop-color="#d9d3c7" />
+      <stop offset="100%" stop-color="#6a6458" />
+    </linearGradient>
+    <filter id="stoneTexture" x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence type="fractalNoise" baseFrequency="1.2" numOctaves="4" seed="11" />
+      <feComponentTransfer>
+        <feFuncR type="linear" slope="0.6" intercept="0.2" />
+        <feFuncG type="linear" slope="0.6" intercept="0.2" />
+        <feFuncB type="linear" slope="0.5" intercept="0.2" />
+        <feFuncA type="linear" slope="0.18" />
+      </feComponentTransfer>
+      <feBlend in2="SourceGraphic" mode="multiply" />
+    </filter>
+  </defs>
+  <rect width="1600" height="1000" fill="url(#dawnSky)" />
+  <ellipse cx="800" cy="620" rx="900" ry="360" fill="url(#sunGlow)" opacity="0.9" />
+  <path d="M0 720 C160 680 320 640 520 660 C730 682 940 610 1160 640 C1360 665 1480 700 1600 680 L1600 1000 L0 1000 Z" fill="url(#machair)" opacity="0.95" />
+  <g filter="url(#stoneTexture)">
+    <path d="M310 540 C340 420 370 420 390 540 L390 810 L310 810 Z" fill="url(#stoneGradient)" />
+    <path d="M460 500 C480 380 520 380 540 520 L540 820 L460 820 Z" fill="url(#stoneGradient)" />
+    <path d="M620 520 C650 410 690 410 710 540 L710 840 L620 840 Z" fill="url(#stoneGradient)" />
+    <path d="M820 450 C845 350 885 360 910 490 L910 860 L820 860 Z" fill="url(#stoneGradient)" />
+    <path d="M1010 520 C1030 410 1070 400 1100 510 L1100 820 L1010 820 Z" fill="url(#stoneGradient)" />
+    <path d="M1190 500 C1205 400 1245 390 1270 520 L1270 800 L1190 800 Z" fill="url(#stoneGradient)" />
+  </g>
+  <g fill="#ffdede" opacity="0.45">
+    <circle cx="520" cy="760" r="22" />
+    <circle cx="580" cy="780" r="18" />
+    <circle cx="640" cy="760" r="20" />
+    <circle cx="700" cy="780" r="16" />
+    <circle cx="760" cy="760" r="19" />
+    <circle cx="820" cy="780" r="17" />
+  </g>
+</svg>

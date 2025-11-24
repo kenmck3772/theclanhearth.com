@@ -3,6 +3,11 @@ node_modules/
 
 # Compiled CSS
 css/*.css
+!css/style.css
+!css/style.min.css
+
+# Built site output
+dist/
 
 # Built site output
 dist/
@@ -14,3 +19,4 @@ dist/
 
 # Backup directory created during setup
 package_json_dir_backup/
+dist

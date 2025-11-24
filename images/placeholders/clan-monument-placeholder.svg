@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 160" role="img" aria-labelledby="title desc">
+  <title id="title">Clan monument placeholder</title>
+  <desc id="desc">Silhouette landscape representing a historic clan landmark.</desc>
+  <defs>
+    <linearGradient id="sky" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a" />
+      <stop offset="60%" stop-color="#1f2937" />
+      <stop offset="100%" stop-color="#111827" />
+    </linearGradient>
+    <linearGradient id="aurora" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#c084fc" stop-opacity="0.6" />
+      <stop offset="50%" stop-color="#38bdf8" stop-opacity="0.45" />
+      <stop offset="100%" stop-color="#facc15" stop-opacity="0.6" />
+    </linearGradient>
+  </defs>
+  <rect width="320" height="160" fill="url(#sky)" />
+  <path d="M0 96 Q52 78 104 96 T208 96 T320 96 V160 H0 Z" fill="#0b1320" />
+  <path d="M64 110 L64 72 L92 62 L120 72 V110 Z" fill="#1f2933" stroke="#eab308" stroke-width="4" />
+  <path d="M92 62 L92 44 L104 32 L116 44 V72" fill="#1f2933" stroke="#facc15" stroke-width="3" />
+  <path d="M196 120 L196 76 L230 66 L264 76 V120 Z" fill="#1f2933" stroke="#94a3b8" stroke-width="4" />
+  <path d="M230 66 L230 46 L242 34 L254 46 V76" fill="#1f2933" stroke="#e2e8f0" stroke-width="3" />
+  <path d="M0 52 H320" stroke="url(#aurora)" stroke-width="8" stroke-linecap="round" opacity="0.6" />
+  <circle cx="36" cy="46" r="6" fill="#facc15" />
+  <text x="20" y="148" font-size="18" font-family="'Montserrat', 'Arial', sans-serif" fill="#f8fafc" font-weight="600">Heritage Landmark</text>
+</svg>

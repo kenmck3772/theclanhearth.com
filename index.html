@@ -11,9 +11,14 @@
     <link rel="stylesheet" href="/css/style.min.css">
     <!-- Fallback for local dev if style.min.css isn't present (optional) -->
     <link rel="stylesheet" href="/css/style.css" media="print">
+    <link rel="preload" href="/css/style.min.css" as="style">
+    <link rel="stylesheet" href="/css/style.min.css">
+    <noscript><link rel="stylesheet" href="/css/style.css"></noscript>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
@@ -26,6 +31,898 @@
             --clan-stone: #8b7355; /* Brown/Stone */
             --parchment: #f4f1e8;
             --aged-paper: #f0ead6;
+        }
+        
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: linear-gradient(135deg, var(--parchment) 0%, var(--aged-paper) 100%);
+        }
+        .font-title { font-family: 'Cinzel', serif; }
+        
+        /* Navigation & Sections */
+        .nav-link.active { 
+            color: var(--clan-gold); 
+            border-bottom: 2px solid var(--clan-gold); 
+            background: rgba(212, 175, 55, 0.1);
+        }
+        .page-section { display: none; }
+        .page-section.active { display: block; animation: fadeIn 0.6s ease-in-out; }
+
+        /* Thread of Ages Timeline */
+        .thread-of-ages {
+            position: relative;
+            overflow: hidden;
+            border-radius: 28px;
+            background: rgba(15, 23, 42, 0.78);
+            color: #f8fafc;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            box-shadow: 0 20px 45px -20px rgba(15, 23, 42, 0.8);
+        }
+        .thread-backdrop {
+            position: absolute;
+            inset: 0;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            filter: brightness(0.85) saturate(1.15);
+            transform: scale(1.05);
+            transition: background-image 0.8s ease, filter 0.6s ease;
+        }
+        .thread-overlay {
+            position: relative;
+            backdrop-filter: blur(6px);
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.92), rgba(45, 80, 22, 0.65));
+        }
+        .thread-track-wrapper {
+            overflow-x: auto;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(212, 175, 55, 0.6) rgba(15, 23, 42, 0.4);
+        }
+        .thread-track-wrapper::-webkit-scrollbar {
+            height: 10px;
+        }
+        .thread-track-wrapper::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.4);
+            border-radius: 9999px;
+        }
+        .thread-track-wrapper::-webkit-scrollbar-thumb {
+            background: linear-gradient(90deg, rgba(212, 175, 55, 0.9), rgba(125, 45, 45, 0.9));
+            border-radius: 9999px;
+        }
+        .thread-track {
+            display: flex;
+            align-items: stretch;
+            gap: 1.5rem;
+            padding: 1rem 0;
+            min-width: max-content;
+        }
+        .timeline-node {
+            position: relative;
+            min-width: 220px;
+            border-radius: 18px;
+            padding: 1.25rem 1rem;
+            background: rgba(15, 23, 42, 0.65);
+            border: 1px solid transparent;
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+            color: inherit;
+            transition: transform 0.35s ease, box-shadow 0.35s ease, border-color 0.35s ease;
+        }
+        .timeline-node::before {
+            content: '';
+            position: absolute;
+            inset: 8px;
+            border-radius: 14px;
+            background: linear-gradient(145deg, rgba(212, 175, 55, 0.18), rgba(128, 0, 32, 0.15));
+            opacity: 0;
+            transition: opacity 0.35s ease;
+            z-index: -1;
+        }
+        .timeline-node span {
+            display: block;
+        }
+        .timeline-node .node-year {
+            font-family: 'Cinzel', serif;
+            font-size: 1.15rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: rgba(248, 250, 252, 0.75);
+        }
+        .timeline-node .node-title {
+            margin-top: 0.5rem;
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+        .timeline-node .node-era {
+            margin-top: 0.25rem;
+            font-size: 0.85rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: rgba(248, 250, 252, 0.6);
+        }
+        .timeline-node:hover,
+        .timeline-node:focus {
+            transform: translateY(-6px);
+            border-color: rgba(212, 175, 55, 0.7);
+            box-shadow: 0 18px 35px -18px rgba(15, 23, 42, 0.85);
+        }
+        .timeline-node:hover::before,
+        .timeline-node:focus::before {
+            opacity: 1;
+        }
+        .timeline-node.active {
+            border-color: rgba(212, 175, 55, 0.95);
+            box-shadow: 0 22px 40px -18px rgba(212, 175, 55, 0.45);
+        }
+        .timeline-node.active::before {
+            opacity: 1;
+        }
+        .thread-story-card {
+            position: relative;
+            margin-top: 2rem;
+            border-radius: 24px;
+            background: rgba(248, 250, 252, 0.08);
+            border: 1px solid rgba(212, 175, 55, 0.25);
+            padding: 2rem;
+            color: #f8fafc;
+        }
+        .thread-story-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 24px;
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.12), rgba(125, 45, 45, 0.18));
+            opacity: 0.9;
+            pointer-events: none;
+        }
+        .thread-story-card > * {
+            position: relative;
+            z-index: 1;
+        }
+        .thread-era {
+            font-family: 'Cinzel', serif;
+            font-size: 0.85rem;
+            letter-spacing: 0.38em;
+            text-transform: uppercase;
+            color: rgba(248, 250, 252, 0.72);
+        }
+        .thread-title {
+            font-size: 2.2rem;
+            line-height: 1.15;
+            margin: 0.75rem 0 1rem;
+        }
+        .thread-summary {
+            font-size: 1.125rem;
+            line-height: 1.7;
+            color: rgba(248, 250, 252, 0.88);
+        }
+        .thread-highlights {
+            display: grid;
+            gap: 0.75rem;
+            margin-top: 1.5rem;
+        }
+        .thread-highlight {
+            padding: 0.85rem 1rem;
+            border-radius: 14px;
+            background: rgba(15, 23, 42, 0.45);
+            border: 1px solid rgba(248, 250, 252, 0.12);
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+        }
+        .thread-highlight i {
+            color: rgba(212, 175, 55, 0.9);
+            margin-top: 0.2rem;
+        }
+        .thread-media {
+            margin-top: 1.5rem;
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+        }
+        .thread-media img {
+            width: 100%;
+            height: 260px;
+            object-fit: cover;
+        }
+        .thread-cta {
+            margin-top: 1.5rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+        .thread-cta button,
+        .timeline-cta-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.95), rgba(125, 45, 45, 0.95));
+            color: #111827;
+            font-weight: 600;
+            padding: 0.75rem 1.25rem;
+            border-radius: 9999px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .thread-cta button:hover,
+        .timeline-cta-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px -20px rgba(212, 175, 55, 0.8);
+        }
+        .thread-related {
+            margin-top: 1.5rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            color: rgba(248, 250, 252, 0.78);
+        }
+        .thread-related span {
+            background: rgba(15, 23, 42, 0.45);
+            border-radius: 9999px;
+            padding: 0.4rem 0.9rem;
+            border: 1px solid rgba(248, 250, 252, 0.12);
+            font-size: 0.85rem;
+            letter-spacing: 0.04em;
+        }
+
+        @media (max-width: 768px) {
+            .timeline-node {
+                min-width: 180px;
+            }
+            .thread-story-card {
+                padding: 1.5rem;
+            }
+            .thread-title {
+                font-size: 1.8rem;
+            }
+            .thread-media img {
+                height: 200px;
+            }
+        }
+        
+        /* Components */
+        .home-hero {
+            --hero-backdrop-image: url('images/hero-highlands.svg');
+            --hero-backdrop-position: center center;
+            --hero-backdrop-overlay: linear-gradient(135deg, rgba(7, 20, 38, 0.9), rgba(56, 27, 62, 0.78));
+            --hero-backdrop-glow: radial-gradient(circle at 18% 18%, rgba(212, 175, 55, 0.22), transparent 60%);
+            --hero-backdrop-mist: radial-gradient(circle at 82% 12%, rgba(71, 109, 58, 0.2), transparent 55%);
+            position: relative;
+            overflow: hidden;
+            border-radius: 40px;
+            padding: clamp(2.5rem, 6vw, 4.5rem);
+            background: var(--hero-backdrop-glow), var(--hero-backdrop-mist), linear-gradient(135deg, rgba(7, 24, 48, 0.92), rgba(15, 23, 42, 0.88));
+            color: rgba(253, 250, 244, 0.96);
+            border: 1px solid rgba(212, 175, 55, 0.18);
+            box-shadow: 0 35px 65px -30px rgba(8, 24, 43, 0.85);
+            background: radial-gradient(circle at 20% 20%, rgba(212, 175, 55, 0.24), transparent 55%),
+                        radial-gradient(circle at 80% 10%, rgba(45, 80, 22, 0.26), transparent 50%),
+                        linear-gradient(135deg, rgba(7, 24, 48, 0.95), rgba(15, 23, 42, 0.9));
+            color: rgba(253, 250, 244, 0.96);
+            border: 1px solid rgba(212, 175, 55, 0.18);
+            box-shadow: 0 35px 65px -30px rgba(8, 24, 43, 0.85);
+            border-radius: 32px;
+            padding: 2px;
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.35), rgba(45, 80, 22, 0.35));
+            box-shadow: 0 25px 65px -30px rgba(15, 23, 42, 0.75);
+            isolation: isolate;
+        }
+        .home-hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: var(--hero-backdrop-image);
+            background-size: cover;
+            background-position: var(--hero-backdrop-position, center);
+            background-repeat: no-repeat;
+            filter: saturate(1.08) contrast(1.05);
+            opacity: 0.58;
+            transform: scale(1.06);
+            transition: transform 18s ease-in-out;
+            will-change: transform;
+            background-image: url('images/castlehome.jpg');
+            background-size: cover;
+            background-position: center;
+            filter: saturate(1.18) contrast(1.05);
+            opacity: 0.38;
+            transform: scale(1.05);
+            background: linear-gradient(120deg, rgba(15, 23, 42, 0.75), rgba(15, 23, 42, 0.3)), url('assets/castlehome.jpg');
+            background-size: cover;
+            background-position: center;
+            transform: scale(1.05);
+            filter: saturate(1.15);
+            z-index: -2;
+        }
+        .home-hero::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: var(--hero-backdrop-overlay), radial-gradient(circle at 30% 80%, rgba(216, 171, 94, 0.12), transparent 65%), radial-gradient(circle at 88% 30%, rgba(114, 159, 98, 0.18), transparent 55%);
+            background-blend-mode: multiply, screen, screen;
+            opacity: 0.98;
+        }
+        @keyframes heroDrift {
+            0% { transform: scale(1.06) translate3d(0, 0, 0); }
+            50% { transform: scale(1.08) translate3d(1.5%, -1.5%, 0); }
+            100% { transform: scale(1.06) translate3d(0, 0, 0); }
+        }
+        .home-hero:hover::before {
+            animation: heroDrift 36s ease-in-out infinite;
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .home-hero::before {
+                transition: none;
+                animation: none !important;
+            }
+            background: linear-gradient(135deg, rgba(7, 20, 38, 0.88), rgba(21, 39, 70, 0.78));
+        }
+        .home-hero > * {
+            position: relative;
+            z-index: 1;
+        }
+        .home-hero-grid {
+            display: grid;
+            gap: clamp(2rem, 5vw, 3.5rem);
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            align-items: start;
+        }
+        .home-hero-main {
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+            max-width: 48ch;
+        }
+        .home-hero-kicker {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-size: 0.85rem;
+            letter-spacing: 0.38em;
+            text-transform: uppercase;
+            font-family: 'Cinzel', serif;
+            color: rgba(253, 250, 244, 0.7);
+            padding-left: 0.35rem;
+        }
+        .home-hero-kicker::before {
+            content: '';
+            display: inline-block;
+            width: 38px;
+            height: 1px;
+            background: rgba(212, 175, 55, 0.65);
+        }
+        .home-hero-motto {
+            font-family: 'Cinzel', serif;
+            letter-spacing: 0.32em;
+            text-transform: uppercase;
+            font-size: 0.78rem;
+            color: rgba(253, 250, 244, 0.62);
+        }
+        .home-hero-title {
+            font-family: 'Cinzel', serif;
+            font-size: clamp(2.75rem, 6vw, 4.5rem);
+            line-height: 1.08;
+            letter-spacing: -0.015em;
+            text-wrap: balance;
+        }
+        .home-hero-description {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: rgba(253, 250, 244, 0.78);
+        }
+        .home-hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 1.25rem;
+        }
+        .home-hero-actions .btn-primary,
+        .home-hero-actions .btn-secondary {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.65rem;
+            padding: 0.95rem 1.65rem;
+            border-radius: 9999px;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+        .home-hero-highlights {
+            margin-top: 2.5rem;
+            display: grid;
+            gap: 1rem;
+            list-style: none;
+            padding: 0;
+        }
+        .home-hero-highlights li {
+            display: flex;
+            gap: 0.9rem;
+            align-items: flex-start;
+            padding: 1.1rem 1.25rem;
+            border-radius: 22px;
+            background: rgba(7, 22, 40, 0.72);
+            border: 1px solid rgba(253, 250, 244, 0.14);
+            box-shadow: inset 0 0 0 1px rgba(253, 250, 244, 0.04);
+            color: rgba(253, 250, 244, 0.86);
+        }
+        .home-hero-highlights li strong {
+            color: rgba(253, 250, 244, 0.98);
+        }
+        .home-hero-highlight-text {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+        .home-hero-highlight-detail {
+            margin: 0;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            color: rgba(248, 250, 252, 0.72);
+        }
+        .home-hero-highlight-detail small {
+            display: block;
+            font-size: 0.75rem;
+            color: rgba(253, 250, 244, 0.6);
+        }
+        .home-hero-highlights i {
+            font-size: 1.2rem;
+            color: rgba(212, 175, 55, 0.9);
+            margin-top: 0.15rem;
+        }
+        .home-hero-side {
+            display: grid;
+            gap: 1.15rem;
+        }
+        .home-hero-card {
+            position: relative;
+            background: rgba(10, 28, 48, 0.75);
+            border-radius: 26px;
+            padding: clamp(1.4rem, 3vw, 2rem);
+            border: 1px solid rgba(253, 250, 244, 0.12);
+            box-shadow: 0 25px 40px -35px rgba(8, 24, 43, 0.85);
+        }
+        .home-hero-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.08), rgba(128, 0, 32, 0.12));
+            opacity: 0.9;
+            mix-blend-mode: screen;
+            pointer-events: none;
+        }
+        .home-hero-card > * {
+            position: relative;
+            z-index: 1;
+        }
+        .home-hero-seal {
+            width: clamp(120px, 18vw, 160px);
+            aspect-ratio: 1;
+            border-radius: 9999px;
+            border: 3px solid rgba(212, 175, 55, 0.8);
+            background: linear-gradient(135deg, rgba(128, 0, 32, 0.95), rgba(45, 80, 22, 0.92));
+            box-shadow: 0 25px 45px -35px rgba(0, 0, 0, 0.65);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+        .home-hero-seal i {
+            font-size: clamp(2.4rem, 5vw, 3.2rem);
+            color: rgba(253, 250, 244, 0.92);
+        }
+        .home-hero-card h3 {
+            font-family: 'Cinzel', serif;
+            font-size: 1.35rem;
+            margin-bottom: 0.75rem;
+        }
+        .home-hero-card p {
+            color: rgba(253, 250, 244, 0.74);
+            line-height: 1.7;
+        }
+        .home-hero-card ul {
+            margin-top: 1.25rem;
+            display: grid;
+            gap: 0.85rem;
+        }
+        .home-hero-card li {
+            display: flex;
+            gap: 0.6rem;
+            align-items: flex-start;
+            color: rgba(253, 250, 244, 0.78);
+            font-size: 0.95rem;
+        }
+        .home-hero-card li i {
+            color: rgba(212, 175, 55, 0.9);
+            margin-top: 0.2rem;
+        }
+        .home-hero-metrics {
+            margin-top: 1.5rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 0.85rem;
+        }
+        .home-hero-metric {
+            background: rgba(7, 25, 45, 0.78);
+            border-radius: 18px;
+            padding: 1rem 1.1rem;
+            border: 1px solid rgba(212, 175, 55, 0.25);
+            display: grid;
+            gap: 0.35rem;
+            text-align: left;
+        }
+        .home-hero-metric .stat-number {
+            font-size: 2.15rem;
+            font-weight: 700;
+            font-family: 'Cinzel', serif;
+            color: rgba(253, 250, 244, 0.98);
+            letter-spacing: 0.04em;
+        .home-hero-metric span:first-child {
+            font-size: 1.9rem;
+            font-weight: 700;
+            font-family: 'Cinzel', serif;
+            color: rgba(253, 250, 244, 0.98);
+        }
+        .home-hero-metric small {
+            font-size: 0.72rem;
+            letter-spacing: 0.22em;
+            text-transform: uppercase;
+            color: rgba(253, 250, 244, 0.65);
+        }
+        .home-hero-quote {
+            margin-top: 1.75rem;
+            padding-top: 1.1rem;
+            border-top: 1px solid rgba(253, 250, 244, 0.12);
+            font-style: italic;
+            color: rgba(253, 250, 244, 0.72);
+        }
+        .home-hero-quote span {
+            display: block;
+            font-size: 0.8rem;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            margin-top: 0.75rem;
+            color: rgba(212, 175, 55, 0.78);
+        }
+        .home-hero-credit {
+            margin-top: clamp(1.75rem, 4vw, 2.75rem);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.85rem;
+            padding: 0.85rem 1.15rem;
+            background: rgba(10, 23, 41, 0.72);
+            border: 1px solid rgba(212, 175, 55, 0.18);
+            border-radius: 18px;
+            box-shadow: 0 18px 32px -24px rgba(4, 12, 24, 0.9);
+            font-size: 0.85rem;
+            color: rgba(253, 250, 244, 0.78);
+            max-width: 420px;
+        }
+        .home-hero-credit i {
+            color: rgba(212, 175, 55, 0.68);
+            font-size: 1rem;
+        }
+        .home-hero-credit strong {
+            font-weight: 600;
+            color: rgba(253, 250, 244, 0.92);
+        }
+        .home-hero-credit a {
+            color: rgba(212, 221, 255, 0.88);
+            text-decoration: none;
+        }
+        .home-hero-credit a:hover,
+        .home-hero-credit a:focus {
+            text-decoration: underline;
+        }
+        .home-hero-credit a[aria-disabled="true"] {
+            pointer-events: none;
+            opacity: 0.78;
+            text-decoration: none;
+        }
+        .home-hero-credit-body {
+            display: grid;
+            gap: 0.25rem;
+        }
+        .home-hero-credit-meta {
+            display: inline-flex;
+            flex-wrap: wrap;
+            align-items: baseline;
+            gap: 0.35rem;
+        }
+        .home-hero-credit-meta span[aria-hidden="true"] {
+            color: rgba(212, 175, 55, 0.45);
+            background: radial-gradient(circle at top right, rgba(212, 175, 55, 0.3), transparent 55%),
+                        radial-gradient(circle at bottom left, rgba(45, 80, 22, 0.25), transparent 60%);
+            mix-blend-mode: screen;
+            z-index: -1;
+        }
+        .home-hero-content {
+            position: relative;
+            display: grid;
+            gap: clamp(2rem, 4vw, 3.5rem);
+            padding: clamp(2.75rem, 5vw, 4.5rem);
+            color: #fdfaf4;
+        }
+        .home-hero-content a,
+        .home-hero-content p,
+        .home-hero-content h2,
+        .home-hero-content h3,
+        .home-hero-content h4 {
+            color: inherit;
+        }
+        .home-hero-copy {
+            max-width: 720px;
+        }
+        .home-hero-motto {
+            font-family: 'Cinzel', serif;
+            font-size: clamp(1.1rem, 2vw, 1.5rem);
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: rgba(244, 226, 182, 0.85);
+        }
+        .home-hero-description {
+            font-size: clamp(1.1rem, 2.25vw, 1.5rem);
+            line-height: 1.8;
+            color: rgba(253, 250, 244, 0.82);
+            margin-top: 1rem;
+        }
+        .home-hero-cta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-top: 2rem;
+        }
+        .home-hero-highlights {
+            display: grid;
+            gap: 0.75rem;
+            margin-top: 2.5rem;
+            padding: 0;
+            list-style: none;
+        }
+        .home-hero-highlights li {
+            display: flex;
+            align-items: start;
+            gap: 0.75rem;
+            padding: 0.85rem 1rem;
+            border-radius: 18px;
+            background: rgba(15, 23, 42, 0.4);
+            border: 1px solid rgba(212, 175, 55, 0.28);
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+        }
+        .home-hero-highlights i {
+            margin-top: 0.15rem;
+            color: rgba(212, 175, 55, 0.9);
+        }
+        .home-hero-side {
+            display: grid;
+            gap: 1.25rem;
+        }
+        .home-hero-panel {
+            background: rgba(15, 23, 42, 0.58);
+            border-radius: 26px;
+            border: 1px solid rgba(212, 175, 55, 0.32);
+            box-shadow: 0 18px 45px -28px rgba(8, 8, 20, 0.9);
+            padding: clamp(1.75rem, 4vw, 2.5rem);
+            backdrop-filter: blur(10px);
+        }
+        .home-hero-panel h3 {
+            font-family: 'Cinzel', serif;
+            font-size: 1.35rem;
+            color: rgba(253, 250, 244, 0.92);
+            margin-bottom: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .home-hero-panel h3 span {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: rgba(253, 250, 244, 0.75);
+            padding: 0.35rem 0.6rem;
+            border-radius: 9999px;
+            border: 1px solid rgba(253, 250, 244, 0.25);
+        }
+        .home-hero-panel ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: grid;
+            gap: 1rem;
+        }
+        .home-hero-panel li {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 0.75rem;
+            align-items: flex-start;
+            color: rgba(253, 250, 244, 0.8);
+        }
+        .home-hero-panel li i {
+            color: rgba(212, 175, 55, 0.95);
+            margin-top: 0.2rem;
+        }
+        .home-hero-metrics {
+            display: grid;
+            gap: 1rem;
+            margin-top: 1.75rem;
+        }
+        .home-hero-metric {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            border-radius: 18px;
+            background: rgba(253, 250, 244, 0.08);
+            border: 1px solid rgba(253, 250, 244, 0.08);
+            color: rgba(253, 250, 244, 0.85);
+        }
+        .home-hero-metric span:first-child {
+            font-family: 'Cinzel', serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: rgba(212, 175, 55, 0.9);
+        }
+        .home-hero-metric small {
+            display: block;
+            font-size: 0.75rem;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: rgba(253, 250, 244, 0.65);
+        }
+        @media (min-width: 768px) {
+            .home-hero-highlights {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+        @media (min-width: 1024px) {
+            .home-hero-grid {
+                grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+            .home-hero-content {
+                grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+                align-items: start;
+            }
+            .home-hero-side {
+                align-self: stretch;
+            }
+        }
+        .clan-emblem {
+            position: relative;
+            background: linear-gradient(135deg, rgba(128, 0, 32, 0.92), rgba(45, 80, 22, 0.95));
+            border: 3px solid rgba(212, 175, 55, 0.8);
+            box-shadow: 0 25px 45px -30px rgba(0, 0, 0, 0.65);
+            isolation: isolate;
+        }
+        .clan-emblem::after {
+            content: '';
+            position: absolute;
+            inset: 12px;
+            border-radius: 9999px;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            opacity: 0.7;
+        }
+        }
+        .clan-emblem::after {
+            content: '';
+            position: absolute;
+            inset: 12px;
+            border-radius: 9999px;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            opacity: 0.7;
+        }
+        .home-hero .clan-emblem {
+            width: clamp(160px, 22vw, 200px);
+            height: clamp(160px, 22vw, 200px);
+        }
+        .content-card {
+            transition: all 0.3s ease-in-out;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+        }
+        .content-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+        .btn-primary {
+            background: linear-gradient(45deg, var(--clan-burgundy), var(--clan-forest));
+            color: white;
+            border: 2px solid var(--clan-gold);
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            background: linear-gradient(45deg, var(--clan-forest), var(--clan-burgundy));
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        .btn-secondary {
+            background: rgba(15, 23, 42, 0.35);
+            color: rgba(253, 250, 244, 0.95);
+            border: 2px solid rgba(253, 250, 244, 0.35);
+            transition: all 0.3s ease;
+        }
+        .btn-secondary:hover {
+            background: rgba(253, 250, 244, 0.16);
+            border-color: rgba(253, 250, 244, 0.55);
+            transform: translateY(-1px);
+            box-shadow: 0 10px 22px -18px rgba(0, 0, 0, 0.65);
+        }
+        .active-item { 
+            background: linear-gradient(90deg, var(--clan-gold), #f4d03f);
+            color: var(--clan-burgundy); 
+            font-weight: 600; 
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .map-emoji-icon { 
+            font-size: 24px; 
+            text-align: center; 
+            line-height: 24px; 
+            filter: drop-shadow(0 2px 2px rgba(0,0,0,0.3));
+        }
+        
+        /* Map Styles */
+        #clanMap, #tripBuilderMap {
+            height: 100%;
+            min-height: 60vh;
+            width: 100%;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .pulse-gold {
+            animation: pulseGold 2s infinite;
+        }
+        @keyframes pulseGold {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.7); }
+            50% { box-shadow: 0 0 0 20px rgba(212, 175, 55, 0); }
+        }
+        
+        /* Ogham */
+        .ogham-stave:hover {
+            transform: translateY(-5px) rotate(2deg);
+            box-shadow: 0 8px 25px rgba(212, 175, 55, 0.5);
+            border-color: var(--clan-gold);
+        }
+        .ogham-symbol-svg {
+            stroke: var(--parchment);
+            stroke-width: 4;
+            height: 100px;
+            width: 100%;
+        }
+        
+        /* Tartan Designer */
+        .color-box { 
+            transition: all 0.2s ease-in-out; 
+            border: 3px solid transparent;
+        }
+        .color-box.selected { 
+            border-color: var(--clan-gold); 
+            transform: scale(1.15); 
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.6);
+        }
+
+        /* Trip Itinerary Panel (from index.html) */
+        #itinerary-panel {
+            position: absolute; 
+            bottom: 0; 
+            left: 0; 
+            right: 0; 
+            z-index: 1000; 
+            background-color: white;
+            box-shadow: 0 -4px 12px rgba(0,0,0,0.1); 
+            transition: transform 0.3s ease-in-out;
+            transform: translateY(calc(100% - 50px)); /* Initial state: mostly hidden */
+        }
+        #itinerary-panel.open { transform: translateY(0); }
+        .itinerary-handle {
+            width: 60px;
+            height: 5px;
+            background-color: #d1d5db;
+            border-radius: 5px;
+            margin: 10px auto;
         }
     </style>
 </head>
@@ -77,19 +974,217 @@
         
         <!-- Home Section -->
         <section id="home-section" class="page-section active">
-            <div class="text-center mb-12 content-card rounded-3xl shadow-2xl p-8 md:p-12 animate-fade-in">
-                <div class="clan-emblem w-48 h-48 mx-auto mb-8 rounded-full flex items-center justify-center pulse-gold">
-                    <div class="text-center">
-                        <i class="fas fa-crown text-6xl text-yellow-300 mb-2"></i>
-                        <div class="text-yellow-300 font-bold text-sm">CLAN HEARTH</div>
+            <div class="home-hero animate-fade-in mb-12">
+                <div class="home-hero-grid">
+                    <div class="home-hero-main">
+                        <span class="home-hero-kicker">Scotland's living atlas</span>
+                        <h2 class="home-hero-title">Kindle Your Scottish Story</h2>
+                        <p class="home-hero-motto">Troimh theine tha sinn aonaichte — Through fire we are united</p>
+                <div class="home-hero-content">
+                    <div class="home-hero-copy">
+                        <div class="clan-emblem mx-auto md:mx-0 mb-8 rounded-full flex items-center justify-center pulse-gold">
+                            <div class="text-center">
+                                <i class="fas fa-crown text-5xl md:text-6xl text-yellow-200 mb-2"></i>
+                                <div class="text-yellow-200/90 font-bold text-sm tracking-[0.3em] uppercase">Clan Hearth</div>
+                            </div>
+                        </div>
+                        <h2 class="text-4xl md:text-6xl font-bold font-title tracking-tight">Kindle Your Scottish Story</h2>
+                        <p class="home-hero-motto mt-4">Troimh theine tha sinn aonaichte</p>
+                        <p class="home-hero-description">
+                            The Clan Hearth is your invitation to explore Scotland with the warmth of kin. Dive into living clan histories,
+                            trace ancestral footsteps with immersive maps, and craft journeys alongside Highland guides who keep the flame alight.
+                        </p>
+                        <div class="home-hero-actions">
+                            <button class="btn-primary nav-link" data-target="finder-creator" aria-label="Find your clan soul">
+                                <i class="fas fa-magic mr-2"></i>Find Your Clan Soul
+                            </button>
+                            <button class="btn-secondary nav-link" data-target="trip-builder" aria-label="Plan your heritage journey">
+                        <div class="home-hero-cta">
+                            <button class="btn-primary px-7 py-3.5 rounded-2xl font-semibold text-lg transition-all nav-link" data-target="finder-creator" aria-label="Find your clan soul">
+                                <i class="fas fa-magic mr-2"></i>Find Your Clan Soul
+                            </button>
+                            <button class="btn-secondary px-7 py-3.5 rounded-2xl font-semibold text-lg transition-all nav-link" data-target="trip-builder" aria-label="Plan your heritage journey">
+                                <i class="fas fa-route mr-2"></i>Plan Your Heritage Journey
+                            </button>
+                        </div>
+                        <ul class="home-hero-highlights" role="list">
+                            <li data-highlight="timeline">
+                                <i class="fas fa-scroll" aria-hidden="true"></i>
+                                <div class="home-hero-highlight-text">
+                                    <strong>Thread of Ages</strong>
+                                    <p class="home-hero-highlight-detail">
+                                        <span data-highlight="timeline-count">0</span> chapters from
+                                        <span data-highlight="timeline-first">—</span> to
+                                        <span data-highlight="timeline-last">—</span>.
+                                    </p>
+                                </div>
+                            </li>
+                            <li data-highlight="clans">
+                                <i class="fas fa-shield-halved" aria-hidden="true"></i>
+                                <div class="home-hero-highlight-text">
+                                    <strong>Clan Dossiers</strong>
+                                    <p class="home-hero-highlight-detail">
+                                        Featuring <span data-highlight="clan-sample">—</span> kindreds.
+                                        <small>Linked surnames like <span data-highlight="surname-sample">—</span> (<span data-highlight="surname-count">0</span> recorded)</small>
+                                    </p>
+                                </div>
+                            </li>
+                            <li data-highlight="maps">
+                                <i class="fas fa-compass" aria-hidden="true"></i>
+                                <div class="home-hero-highlight-text">
+                                    <strong>Immersive Maps</strong>
+                                    <p class="home-hero-highlight-detail">
+                                        <span data-highlight="map-count">0</span> storied places across
+                                        <span data-highlight="map-categories">0</span> journeys.
+                                    </p>
+                                </div>
+                            </li>
+                            <li data-highlight="gaelic">
+                                <i class="fas fa-fire" aria-hidden="true"></i>
+                                <div class="home-hero-highlight-text">
+                                    <strong>Gaelic & Rituals</strong>
+                                    <p class="home-hero-highlight-detail" data-highlight="gaelic-detail">Fàilte — Welcome</p>
+                                </div>
+                            </li>
+                        </ul>
+                        <div class="home-hero-credit" data-hero-credit role="note">
+                            <i class="fas fa-mountain-sun" aria-hidden="true"></i>
+                            <div class="home-hero-credit-body">
+                                <strong data-hero-credit-title>Highland twilight over Loch Awe</strong>
+                                <div class="home-hero-credit-meta">
+                                    <span data-hero-credit-location>Argyll, Western Highlands</span>
+                                    <span aria-hidden="true" data-hero-credit-separator hidden>·</span>
+                                    <a data-hero-credit-link aria-disabled="true" tabindex="-1">Artwork by Clan Hearth Studio</a>
+                                </div>
+                            </div>
+                        </div>
+                            <li>
+                                <i class="fas fa-scroll"></i>
+                                <span><strong>Clan Dossiers:</strong> Tartans, lineages, and legends restored from museum archives and family keepers.</span>
+                            </li>
+                            <li>
+                                <i class="fas fa-compass"></i>
+                                <span><strong>Immersive Maps:</strong> Layer historic territories over Highlands, Isles, and Lowlands routes.</span>
+                            </li>
+                            <li>
+                                <i class="fas fa-fire"></i>
+                                <span><strong>Och-I Companion:</strong> Gaelic phrases, recipes, and rituals tailored to every gathering.</span>
+                            </li>
+                            <li>
+                                <i class="fas fa-gem"></i>
+                                <span><strong>Member Exclusives:</strong> Collect heirloom keepsakes, session replays, and seasonal ceremonies.</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="home-hero-side">
+                        <div class="home-hero-card">
+                            <div class="home-hero-seal" aria-hidden="true">
+                                <i class="fas fa-crown"></i>
+                            </div>
+                            <h3>Inside the Hearth</h3>
+                            <p>Morning embers, evening ceilidhs, and curated stories converge to keep your kinfire bright.</p>
+                            <ul role="list">
+                        <div class="home-hero-panel">
+                            <h3>Inside the Hearth <span><i class="fas fa-sun"></i>Daily Spark</span></h3>
+                            <ul>
+                                <li>
+                                    <i class="fas fa-map-location-dot"></i>
+                                    <span>Plot historic clan territories alongside modern journeys with synchronized map layers.</span>
+                                </li>
+                                <li>
+                                    <i class="fas fa-drum"></i>
+                                    <span>Experience the Thread of Ages timeline—animated eras with music, artefacts, and storycards.</span>
+                                </li>
+                                <li>
+                                    <i class="fas fa-mug-hot"></i>
+                                    <span>Share recipes, rituals, and seasonal celebrations that keep your hearth blazing year-round.</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="home-hero-card">
+                            <h3>Signals from the Fire</h3>
+                            <div class="home-hero-metrics" role="list" aria-label="Clan Hearth in numbers">
+                                <div class="home-hero-metric" role="listitem">
+                                    <span class="stat-number" data-stat="clans">0</span>
+                                    <div>
+                                        <strong>Clan lineages curated</strong>
+                                        <small>Across <span data-stat="territories">0</span> historic heartlands</small>
+                                    </div>
+                                </div>
+                                <div class="home-hero-metric" role="listitem">
+                                    <span class="stat-number" data-stat="timeline">0</span>
+                                    <div>
+                                        <strong>Moments in the Thread of Ages</strong>
+                                        <small>Latest chapter: <span data-highlight="timeline-detail">—</span></small>
+                                    </div>
+                                </div>
+                                <div class="home-hero-metric" role="listitem">
+                                    <span class="stat-number" data-stat="recipes">0</span>
+                                    <div>
+                                        <strong>Heritage recipes preserved</strong>
+                                        <small>Try <span data-highlight="recipe-name">—</span> tonight</small>
+                                    <span>650+</span>
+                                    <div>
+                                        <strong>Living clans welcomed</strong>
+                                        <small>Across 38 regions</small>
+                                    </div>
+                                </div>
+                                <div class="home-hero-metric" role="listitem">
+                                    <span>120</span>
+                                    <div>
+                                        <strong>Guided journeys crafted</strong>
+                                        <small>By local storytellers</small>
+                                    </div>
+                                </div>
+                                <div class="home-hero-metric" role="listitem">
+                                    <span>24</span>
+                                    <div>
+                                        <strong>Seasonal circles</strong>
+                                        <small>Live rituals & workshops</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="home-hero-quote">“It feels like stepping into a candlelit hall where every voice knows your name.”<span>Isla, Highland Explorer</span></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <h2 class="text-5xl md:text-7xl font-bold font-title text-gray-900 mb-4">Welcome to The Clan Hearth</h2>
-                <p class="text-2xl text-yellow-800 mb-4 font-title italic">Troimh theine tha sinn aonaichte</p>
-                <p class="text-xl md:text-2xl text-gray-700 max-w-4xl mx-auto leading-relaxed mb-8">
-                    Your premier gateway to authentic Scottish heritage. Discover clan histories, plan premium Highland tours, 
-                    connect with your spiritual clan, and experience Scotland through the eyes of genuine Highland descendants.
-                </p>
+            </div>
+
+            <!-- Thread of Ages Timeline -->
+            <div id="thread-of-ages" class="thread-of-ages mt-16">
+                <div id="thread-backdrop" class="thread-backdrop"></div>
+                <div class="thread-overlay p-8 md:p-12">
+                    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+                            <div class="max-w-2xl">
+                                <p class="thread-era tracking-[0.5em] text-yellow-200/80">Thread of Ages</p>
+                                <h3 class="thread-title font-title font-bold text-4xl md:text-5xl text-yellow-100">The Living Timeline of Scotland</h3>
+                                <p class="thread-summary text-lg md:text-xl mt-3">Glide through millennia of resilience, rebellion, and renaissance. Each luminous node reveals a cinematic story card woven with artefacts, lore, and connections to clans around the world.</p>
+                            </div>
+                            <div class="flex flex-col items-start gap-3 bg-white/10 border border-white/20 rounded-2xl p-5 max-w-sm">
+                                <div class="flex items-center gap-3">
+                                    <span class="w-3 h-3 rounded-full bg-yellow-400 animate-pulse"></span>
+                                    <p class="text-sm uppercase tracking-[0.35em] text-yellow-100/90">Interactive nodes</p>
+                                </div>
+                                <p class="text-sm text-yellow-50/90">Tap a moment to step inside its story. Related clans, artefacts, and itinerary hooks cascade into the rest of the experience.</p>
+                                <div class="thread-cta">
+                                    <button id="thread-scroll-next" class="inline-flex items-center gap-2 bg-white/20 text-yellow-50 font-semibold px-4 py-2 rounded-full hover:bg-white/30 transition">
+                                        <span>Jump to Present Day</span>
+                                        <i class="fas fa-arrow-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="thread-track-wrapper mt-10" tabindex="0" aria-label="Timeline of pivotal Scottish history moments">
+                            <div id="thread-track" class="thread-track" role="list">
+                                <!-- Timeline nodes injected by JS -->
+                            </div>
+                        </div>
+                        <section id="thread-story" class="thread-story-card mt-10" aria-live="polite" aria-atomic="true">
+                            <!-- Story card injected by JS -->
+                        </section>
+                    </div>
+                </div>
 
                 <!-- Gaelic Phrase of the Day -->
                 <div class="mt-12 mb-8 bg-clan-stone/20 p-6 rounded-2xl max-w-2xl mx-auto border-2 border-clan-gold/50">
@@ -99,29 +1194,28 @@
                     <p id="gaelic-translation" class="text-xl text-clan-forest font-medium"></p>
                 </div>
                 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
-                    <div class="content-card p-6 rounded-2xl">
-                        <i class="fas fa-magic text-4xl text-yellow-600 mb-4"></i>
-                        <h3 class="text-xl font-bold mb-2">Spiritual Clan Finder</h3>
-                        <p class="text-gray-600">Discover your spiritual clan connection through our unique personality-based matching system.</p>
-                    </div>
-                    <div class="content-card p-6 rounded-2xl">
-                        <i class="fas fa-route text-4xl text-yellow-600 mb-4"></i>
-                        <h3 class="text-xl font-bold mb-2">Highland Tours</h3>
-                        <p class="text-gray-600">Plan and save your exclusive Scottish experiences with our map-based trip builder.</p>
-                    </div>
-                    <div class="content-card p-6 rounded-2xl">
-                        <i class="fas fa-book-open text-4xl text-yellow-600 mb-4"></i>
-                        <h3 class="text-xl font-bold mb-2">Celtic Wisdom</h3>
-                        <p class="text-gray-600">Connect with ancient traditions through Ogham readings and legendary tales.</p>
-                    </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
+                <div class="content-card p-6 rounded-2xl">
+                    <i class="fas fa-hourglass-half text-4xl text-yellow-600 mb-4"></i>
+                    <h3 class="text-xl font-bold mb-2">Immersive Timeline</h3>
+                    <p class="text-gray-600">Glide through centuries of rebellion, artistry, and kinship with cinematic clan storycards.</p>
                 </div>
-                
-                <div class="flex flex-col md:flex-row justify-center space-y-4 md:space-y-0 md:space-x-6 mt-12">
-                    <button class="btn-primary px-8 py-4 rounded-2xl font-bold text-lg transition-all nav-link" data-target="finder-creator" aria-label="Find your clan soul"><i class="fas fa-magic mr-2"></i>Find Your Clan Soul</button>
-                    <button class="btn-primary px-8 py-4 rounded-2xl font-bold text-lg transition-all nav-link" data-target="trip-builder" aria-label="Plan your heritage journey"><i class="fas fa-route mr-2"></i>Plan Your Heritage Journey</button>
+                <div class="content-card p-6 rounded-2xl">
+                    <i class="fas fa-shield-halved text-4xl text-yellow-600 mb-4"></i>
+                    <h3 class="text-xl font-bold mb-2">Clan Manifest</h3>
+                    <p class="text-gray-600">Search authentic tartans, mottos, strongholds, and ancestral lore for every Scottish clan.</p>
+                </div>
+                <div class="content-card p-6 rounded-2xl">
+                    <i class="fas fa-compass text-4xl text-yellow-600 mb-4"></i>
+                    <h3 class="text-xl font-bold mb-2">Travel Concierge</h3>
+                    <p class="text-gray-600">Save bespoke itineraries, distillery stops, and Highland retreats tailored to your kin.</p>
                 </div>
             </div>
+
+                <div class="flex flex-col md:flex-row justify-center space-y-4 md:space-y-0 md:space-x-6 mt-12">
+                    <button class="btn-primary px-8 py-4 rounded-2xl font-bold text-lg transition-all nav-link" data-target="finder-creator" aria-label="Find your clan soul"><i class="fas fa-magic mr-2"></i>Find Your Clan Soul</button>
+                    <button class="btn-secondary px-8 py-4 rounded-2xl font-bold text-lg transition-all nav-link" data-target="trip-builder" aria-label="Plan your heritage journey"><i class="fas fa-route mr-2"></i>Plan Your Heritage Journey</button>
+                </div>
         </section>
 
         <!-- Clans & Map Section (Detailed Clan View) -->
@@ -1531,5 +2625,6 @@
 </head>
 <body>
     <div id="app"></div>
+    <script type="module" src="/src/main.js"></script>
 </body>
 </html>
