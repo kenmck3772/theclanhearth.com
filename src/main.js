@@ -204,6 +204,13 @@ function hydrateHomeHero(phraseOfDay) {
   const heroCreditLink = document.querySelector('[data-hero-credit-link]');
   const heroCreditSeparator = document.querySelector('[data-hero-credit-separator]');
 
+  const setText = (selector, value, fallback = '—') => {
+    const element = typeof selector === 'string' ? document.querySelector(selector) : selector;
+    if (!element) return;
+    const resolved = value ?? fallback;
+    element.textContent = typeof resolved === 'number' ? resolved.toString() : String(resolved);
+  };
+
   const now = new Date();
   const startOfYear = new Date(now.getFullYear(), 0, 0);
   const dayIndex = Math.floor((now - startOfYear) / (1000 * 60 * 60 * 24));
@@ -255,13 +262,6 @@ function hydrateHomeHero(phraseOfDay) {
       return value.toLocaleString('en-GB');
     }
     return '0';
-  };
-
-  const setText = (selector, value, fallback = '—') => {
-    const element = typeof selector === 'string' ? document.querySelector(selector) : selector;
-    if (!element) return;
-    const resolved = value ?? fallback;
-    element.textContent = typeof resolved === 'number' ? resolved.toString() : String(resolved);
   };
 
   const uniqueTerritories = new Set();
