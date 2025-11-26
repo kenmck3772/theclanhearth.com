@@ -1,140 +1,109 @@
-// --------- Seed data ---------
+// app.js – render founding clans on the Clans page
 
-const clans = [
+const CLAN_DATA = [
   {
     id: "macgregor",
     name: "Clan Gregor",
-    motto: "‘S rioghal mo dhream (Royal is my race)",
-    region: "Central Highlands",
-    tartanImage: "macgregor.jpg",
-    emblemImage: "macgregor-emblem.jpg",
-    monumentImage: "macgregor-monument.jpg", // optional, can be null
-    tartanPalette: ["0b0b0b", "5a0000", "00334d", "f4f1e8"],
+    gaelicName: "Clann Griogair",
+    motto: "‘S Rioghal Mo Dhream – Royal is my race",
+    region: "Glen Orchy, Glenstrae & Glenlochy",
+    sigil: "Lion’s head erased, crowned",
+    images: [
+      "/assets/images/emblems/macgregor-emblem.jpg",
+      "/assets/images/tartans/macgregor-tartan.jpg",
+    ],
+    tartanPalette: ["#7b1414", "#111827", "#1f2937", "#f97316"],
   },
   {
     id: "mackenzie",
     name: "Clan MacKenzie",
-    motto: "Luceo non uro (I shine, not burn)",
-    region: "Ross-shire",
-    tartanImage: "mackenzie.jpg",
-    emblemImage: "mackenzie-emblem.jpg",
-    monumentImage: null,
-    tartanPalette: ["020617", "0f172a", "15803d", "f4f1e8"],
+    gaelicName: "Clann MhicCoinnich",
+    motto: "Luceo Non Uro – I shine, not burn",
+    region: "Ross-shire & Wester Ross",
+    sigil: "Cabalistic stag’s head",
+    images: [
+      "/assets/images/emblems/mackenzie-emblem.jpg",
+      "/assets/images/tartans/mackenzie-tartan.jpg",
+    ],
+    tartanPalette: ["#064e3b", "#0f172a", "#1e293b", "#facc15"],
   },
   {
     id: "campbell",
     name: "Clan Campbell",
-    motto: "Ne obliviscaris (Forget not)",
+    gaelicName: "Clann Cailein",
+    motto: "Ne Obliviscaris – Forget not",
     region: "Argyll",
-    tartanImage: "campbell.jpg",
-    emblemImage: "campbell-emblem.jpg",
-    monumentImage: null,
-    tartanPalette: ["020617", "1e293b", "0369a1", "e5e7eb"],
+    sigil: "Boar’s head erased",
+    images: [
+      "/assets/images/emblems/campbell-emblem.jpg",
+      "/assets/images/tartans/campbell-tartan.jpg",
+    ],
+    tartanPalette: ["#022c22", "#020617", "#111827", "#f97316"],
   },
 ];
 
-// --------- Helpers ---------
-
-function getImagePath(fileName) {
-  if (!fileName) return ""; // will give an empty src (no request)
-  // Adjust this if your folder is different:
-  return `assets/clans/${fileName}`;
-}
-
-function createImg(src, alt) {
-  const img = document.createElement("img");
-  img.alt = alt;
-  img.loading = "lazy";
-  img.decoding = "async";
-  img.src = src;
-  return img;
-}
-
-function createTartanStripe(palette) {
+function createTartanStripe(colors) {
   const stripe = document.createElement("div");
   stripe.className = "tartan-stripe";
 
-  (palette || []).forEach((hex) => {
+  colors.forEach((color) => {
     const cell = document.createElement("div");
     cell.className = "tartan-stripe-cell";
-
-    const cleaned = String(hex).replace("#", "");
-    cell.style.backgroundColor = `#${cleaned}`;
-
+    cell.style.backgroundColor = color;
     stripe.appendChild(cell);
   });
 
   return stripe;
 }
 
-// --------- Render logic ---------
-
-function renderClanList() {
+function renderClans() {
   const container = document.getElementById("clan-list");
   if (!container) return;
 
-  container.innerHTML = ""; // clear
+  container.innerHTML = "";
 
-  clans.forEach((clan) => {
+  CLAN_DATA.forEach((clan) => {
     const card = document.createElement("article");
     card.className = "clan-card";
 
-    // Title
     const title = document.createElement("h2");
     title.textContent = clan.name;
-    card.appendChild(title);
 
-    // Subtitle / motto
     const subtitle = document.createElement("p");
     subtitle.className = "clan-subtitle";
-    subtitle.textContent = clan.motto;
-    card.appendChild(subtitle);
+    subtitle.textContent = "Founding clans of The Clan Hearth";
 
-    // Images row
-    const imagesRow = document.createElement("div");
-    imagesRow.className = "clan-images";
+    const imagesWrapper = document.createElement("div");
+    imagesWrapper.className = "clan-images";
 
-    const tartanSrc = getImagePath(clan.tartanImage);
-    const emblemSrc = getImagePath(clan.emblemImage);
-    const monumentSrc = getImagePath(clan.monumentImage);
+    clan.images.forEach((src, index) => {
+      const img = document.createElement("img");
+      img.src = src;
+      img.alt = `${clan.name} image ${index + 1}`;
+      imagesWrapper.appendChild(img);
+    });
 
-    if (tartanSrc) {
-      imagesRow.appendChild(createImg(tartanSrc, `${clan.name} tartan`));
-    }
-    if (emblemSrc) {
-      imagesRow.appendChild(createImg(emblemSrc, `${clan.name} emblem`));
-    }
-    if (monumentSrc) {
-      imagesRow.appendChild(createImg(monumentSrc, `${clan.name} monument`));
-    }
-
-    card.appendChild(imagesRow);
-
-    // Meta
     const meta = document.createElement("div");
     meta.className = "clan-meta";
     meta.innerHTML = `
-      <div>Region: ${clan.region}</div>
+      <p><strong>Motto:</strong> ${clan.motto}</p>
+      <p><strong>Region:</strong> ${clan.region}</p>
+      <p><strong>Sigil:</strong> ${clan.sigil}</p>
     `;
-    card.appendChild(meta);
 
-    // Badge
     const badge = document.createElement("div");
     badge.className = "badge";
-    badge.innerHTML = `<span>☼ Soul Clan Seed</span>`;
-    card.appendChild(badge);
+    badge.textContent = clan.gaelicName;
 
-    // Tartan palette stripe
-    if (clan.tartanPalette && clan.tartanPalette.length) {
-      card.appendChild(createTartanStripe(clan.tartanPalette));
-    }
+    card.appendChild(title);
+    card.appendChild(subtitle);
+    card.appendChild(imagesWrapper);
+    card.appendChild(meta);
+    card.appendChild(badge);
+    card.appendChild(createTartanStripe(clan.tartanPalette));
 
     container.appendChild(card);
   });
 }
 
-// --------- Bootstrap ---------
-
-document.addEventListener("DOMContentLoaded", () => {
-  renderClanList();
-});
+document.addEventListener("DOMContentLoaded", renderClans);
