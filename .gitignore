@@ -5,6 +5,7 @@ node_modules/
 css/*.css
 !css/style.css
 !css/style.min.css
+!css/clans.css
 
 # Built site output
 dist/
