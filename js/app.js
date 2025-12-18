@@ -509,6 +509,47 @@ function renderClans(clansToRender = CLAN_DATA) {
       card.appendChild(createTartanStripe(clan.tartanPalette));
 
       container.appendChild(card);
+
+      clan.images.forEach((src, index) => {
+        const img = document.createElement("img");
+        img.src = src;
+        img.loading = "lazy"; // Lazy loading for performance
+
+        // Better accessibility with descriptive alt text
+        img.alt = index === 0
+          ? `${clan.name} emblem featuring ${clan.sigil}`
+          : `${clan.name} tartan pattern`;
+
+        // Error handling for missing images
+        img.onerror = () => {
+          img.src = '/assets/images/tartans/tartan-placeholder.png';
+          img.alt = `${clan.name} placeholder image`;
+        };
+
+        imagesWrapper.appendChild(img);
+      });
+
+      const meta = document.createElement("div");
+      meta.className = "clan-meta";
+      meta.innerHTML = `
+        <p><strong>Motto:</strong> ${clan.motto}</p>
+        <p><strong>Region:</strong> ${clan.region}</p>
+        <p><strong>Sigil:</strong> ${clan.sigil}</p>
+        <p><strong>Established:</strong> ${clan.established}</p>
+      `;
+
+      const badge = document.createElement("div");
+      badge.className = "badge";
+      badge.textContent = clan.gaelicName;
+
+      card.appendChild(title);
+      card.appendChild(subtitle);
+      card.appendChild(imagesWrapper);
+      card.appendChild(meta);
+      card.appendChild(badge);
+      card.appendChild(createTartanStripe(clan.tartanPalette));
+
+      container.appendChild(card);
     });
   }, 0);
 }
@@ -535,6 +576,48 @@ function setupSearch() {
         clan.sigil.toLowerCase().includes(searchTerm)
       );
     });
+  }, 0);
+}
+
+// Search and filter functionality
+function setupSearch() {
+  const searchInput = document.getElementById("clan-search");
+  if (!searchInput) return;
+
+  searchInput.addEventListener("input", (e) => {
+    const searchTerm = e.target.value.toLowerCase().trim();
+
+    if (searchTerm === "") {
+      renderClans(CLAN_DATA);
+      return;
+    }
+
+    const filteredClans = CLAN_DATA.filter((clan) => {
+      return (
+        clan.name.toLowerCase().includes(searchTerm) ||
+        clan.gaelicName.toLowerCase().includes(searchTerm) ||
+        clan.region.toLowerCase().includes(searchTerm) ||
+        clan.motto.toLowerCase().includes(searchTerm) ||
+        clan.sigil.toLowerCase().includes(searchTerm)
+      );
+    });
+
+    renderClans(filteredClans);
+  });
+}
+
+// Filter by status (founding vs member)
+function setupStatusFilter() {
+  const statusFilter = document.getElementById("status-filter");
+  if (!statusFilter) return;
+
+  statusFilter.addEventListener("change", (e) => {
+    const selectedStatus = e.target.value;
+
+    if (selectedStatus === "all") {
+      renderClans(CLAN_DATA);
+      return;
+    }
 
     renderClans(filteredClans);
   });
